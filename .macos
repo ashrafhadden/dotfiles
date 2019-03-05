@@ -22,6 +22,7 @@ sudo scutil --set HostName "ashmac"
 sudo scutil --set LocalHostName "ashmac"
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "ashmac"
 
+# LATER
 # Set standby delay to 24 hours (default is 1 hour)
 # sudo pmset -a standbydelay 86400
 
@@ -31,6 +32,7 @@ sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.serve
 # Disable transparency in the menu bar and elsewhere on Yosemite
 # defaults write com.apple.universalaccess reduceTransparency -bool true
 
+# LATER
 # Set highlight color to green
 # defaults write NSGlobalDomain AppleHighlightColor -string "0.764700 0.976500 0.568600"
 
@@ -86,6 +88,7 @@ defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
 # Disable the crash reporter
 defaults write com.apple.CrashReporter DialogType -string "none"
 
+# LATER
 # Set Help Viewer windows to non-floating mode
 # defaults write com.apple.helpviewer DevMode -bool true
 
