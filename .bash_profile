@@ -17,7 +17,7 @@ alias gitconfig="code -r ~/.gitconfig"
 alias hosts="code -r /private/etc/hosts"
 alias npmconfig="npm config edit -g"
 alias omz="code -r '~/code/oh-my-zsh/templates/zshrc.zsh-template'"
-alias p="code -r ~/.bash_profile"
+alias p="code -r ~/code/dotfiles/.bash_profile"
 alias paths="code -r /etc/paths"
 alias shells="code -r /etc/shells"
 alias z="code -r ~/.zshrc"
@@ -29,7 +29,7 @@ alias gpglist="gpg --list-secret-keys --keyid-format LONG"
 alias no="npm outdated"
 alias npmls="npm ls -g --depth=0"
 alias out="npm outdated"
-alias s="tput cl && source ~/.bash_profile"
+alias s="set -- -f; sh ~/code/dotfiles/bootstrap.sh && tput cl && source ~/.bash_profile"
 
 ## TPUT
 # Easy, clean, portable terminal colors
@@ -259,6 +259,7 @@ update() {
 	printf "Updating ${bold}dracula.itermcolors${reset}... " && cd ~/code/misc/dracula_itermcolors && git pull
 	printf "Updating ${bold}powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd
 	printf "Updating ${bold}oh-my-zsh${reset}...\n" && upgrade_oh_my_zsh | tail -n+2 | head -1
+	printf "Updating ${bold}zshrc.zsh-template${reset}..." && cd ~/code/oh-my-zsh && git fetch upstream && git checkout master && git merge upstream/master && cd
 	printf "Running ${bold}brew upgrade${reset}...\n" && brew upgrade
 	printf "Running ${bold}brew cask upgrade${reset}...\n" && brew cask upgrade
 	printf "Running ${bold}brew cleanup${reset}...\n" && brew cleanup
