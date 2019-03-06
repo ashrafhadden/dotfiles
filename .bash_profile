@@ -23,12 +23,10 @@ alias z="code ~/.zshrc"
 
 ## COMMANDS
 alias assertions="pmset -g assertions | grep Prevent"
-alias dated="npm outdated"
-alias gpglist="gpg --list-secret-keys --keyid-format LONG"
-alias no="npm outdated"
+alias gpgls="gpg --list-secret-keys --keyid-format LONG"
 alias npmls="npm ls -g --depth=0"
 alias out="npm outdated"
-alias s="set -- -f; sh ~/code/dotfiles/bootstrap.sh && tput cl && source ~/.bash_profile"
+alias s="sh ~/code/dotfiles/bootstrap.sh --force && source ~/.bash_profile && tput cl"
 
 ## TPUT
 # Easy, clean, portable terminal colors
@@ -73,10 +71,11 @@ dns() {
 	#LATER Add server names alongside addresses
 	#LATER https://stackoverflow.com/questions/14370133/is-there-a-way-to-create-key-value-pairs-in-bash-script
 	# https://servers.opennic.org/
-	local dnsarr=(1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001 162.248.241.94 172.98.193.42)
+	local dnsarr=(8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001 162.248.241.94 172.98.193.42)
+	local dnsarrnames=(google google google google cloudflare cloudflare cloudflare cloudflare opennic opennic)
 	case $1 in
 	arr | a | ls | list | servers)
-		printf '%s\n' "${dnsarr[@]}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
+		printf '%s\n' "${dnsarr[@]} ${dnsarrnames}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
 		;;
 	set)
 		networksetup -setdnsservers "Wi-Fi" ${dnsarr[@]}
@@ -88,12 +87,10 @@ dns() {
 		echo "DNS Servers cleared!"
 		;;
 	*)
-		echo "Wi-Fi"
-		printHZ
-		networksetup -getdnsservers "Wi-Fi" && echo
-		echo "Thunderbolt Ethernet"
-		printHZ
-		networksetup -getdnsservers "Thunderbolt Ethernet" && echo
+		echo "${bold}Wi-Fi${reset}"
+		wifi=$(networksetup -getdnsservers "Wi-Fi")
+		echo "${bold}Thunderbolt Ethernet${reset}"
+		eth=$(networksetup -getdnsservers "Thunderbolt Ethernet")
 		;;
 	esac
 }
@@ -111,84 +108,17 @@ download() {
 
 # Combine Homebrew & NPM `doctor` command
 dr() {
-	case $1 in
-	-v | --verbose | -l | --long)
-		printf "Running ${bold}brew doctor${reset}...\n" && brew doctor
-		printf "Running ${bold}brew cask doctor${reset}...\n" && brew cask doctor
-		printf "Running ${bold}npm doctor${reset}...\n" && npm doctor
-		printf "Finished ${bold}dr${reset}!\n"
-		notify "dr" "Finished dr!"
-		;;
-	*)
-		printf "Running ${bold}brew doctor${reset}...\n" && brew doctor
-		printf "Running ${bold}brew cask doctor${reset}...\n" && brew cask doctor
-		printf "Finished ${bold}dr${reset}!\n"
-		notify "dr" "Finished dr!"
-		;;
-	esac
+	echo "Running ${bold}brew doctor${reset}..." && brew doctor
+	echo "Running ${bold}brew cask doctor${reset}..." && brew cask doctor
+	echo "Running ${bold}npm doctor${reset}..." && npm doctor
+	echo "Finished ${bold}dr${reset}!"
+	notify "dr" "Finished dr!"
 }
 
-# Reminder on how to replace branches
-gitreplace() {
-	printf "${bold}Step 1${reset}\n"
-	printf "Checkout branch to be replaced.\n"
-	printf "${bold}Step 2${reset}\n"
-	printf "git reset --hard TARGET_BRANCH\n"
-}
-
-# Pipeable terminal-notifier alias
-notifyTee() {
-	tee >(notifyCustom $1 $2)
-}
-
-# Easy custom Mac notifications from iTerm2 and VSCode
-notifyCustom() {
-	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
-		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
-	else
-		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
-	fi
-}
-
-# Combine Hombrew & NPM outdated
-outdated() {
-	printf "Running ${bold}brew outdated${reset}...\n" && brew outdated
-	printf "Running ${bold}brew cask outdated${reset}...\n" && brew cask outdated
-	printf "Running ${bold}npm outdated --global${reset}...\n" && npm outdated --global
-	printf "Running ${bold}npm outdated${reset}...\n" && npm outdated
-	printf "Finished ${bold}outdated${reset}!\n"
-	notifyCustom "Done!" "outdated"
-}
-
-# Get parent process
-parent() {
-	printf "$(ps -p $PPID)\n"
-}
-
-# Dymically print a horizontal line
-printHZ() {
-	# http://wiki.bash-hackers.org/snipplets/print_horizontal_line
-	printf "${bold}"
-	printf '%*s' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
-	printf "${reset}"
-}
-
-# Reminder on fixing ports
-portfix() {
-	printf "${bold}lsof -i :port#${reset}\n"
-	printf "${bold}kill -9 PID#${reset}\n"
-}
-
-# Fully reinstall node_modules to fix NPM errors
-reinstall() {
-	posixPrompt "Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset} (${green}y${reset}/${red}n${reset})?"
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		printf "\nRunning ${bold}rm package-lock.json${reset}...\n" && rm package-lock.json
-		printf "Running ${bold}rm -rf node_modules${reset}...\n" && rm -rf node_modules
-		printf "Running ${bold}npm install${reset}...\n" && npm install
-	else
-		printf "\n${bold}reinstall${reset} aborted!\n"
-	fi
+highlight() {
+	local brewls0=$1
+	local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
+	echo ${brewls1//$'\n'/${reset}'\n'}  # Replace newline with reset+newline & print
 }
 
 # Easy computer naming on Mac
@@ -207,6 +137,32 @@ name() {
 		printf "NetBIOSName: $(defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string)\n"
 		;;
 	esac
+}
+
+# Easy custom Mac notifications from iTerm2 and VSCode
+notify() {
+	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
+		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
+	else
+		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
+	fi
+}
+
+# Get parent process
+parent() {
+	printf "$(ps -p $PPID)\n"
+}
+
+# Fully reinstall node_modules to fix NPM errors
+reinstall() {
+	posixPrompt "Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset} (${green}y${reset}/${red}n${reset})?"
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		printf "\nRunning ${bold}rm package-lock.json${reset}...\n" && rm package-lock.json
+		printf "Running ${bold}rm -rf node_modules${reset}...\n" && rm -rf node_modules
+		printf "Running ${bold}npm install${reset}...\n" && npm install
+	else
+		printf "\n${bold}reinstall${reset} aborted!\n"
+	fi
 }
 
 # Check active shell on Mac
@@ -231,26 +187,19 @@ syncfork() {
 	printf "Running ${bold}git merge upstream/master${reset}...\n" && git merge upstream/master
 }
 
-# Easy switching between Hombrew node versions
-nodeswitch() {
-	case $1 in
-	11)
-		# brew unlink node
-		# brew unlink node@10
-		brew link node --overwrite
-		printf "${bold}Current:${reset}\n"
-		which node
-		node -v
-		;;
-	10)
-		# brew unlink node
-		# brew unlink node@10
-		brew link node@10 --overwrite
-		printf "${bold}Current:${reset}\n"
-		which node
-		node -v
-		;;
-	esac
+# Find local apps not installed using Homebrew Cask that have a cask
+uncasked() {
+	local EXCLUDE="firefox-developer-edition gpg-keychain visual-studio-code-insiders iterm"
+	local INCLUDE=""
+
+	while IFS= read -r App; do
+		local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
+		if [[ $ID != com.apple* && $ID != "kMDItemCFBundleIdentifier = (null)" && $ID != *${EXCLUDE}* ]]; then
+			INCLUDE+="$App\n"
+		fi
+	done <<<$(ls /Applications)
+
+	grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
 }
 
 # Combined oh-my-zsh, Homebrew, Rust, & NPM update
@@ -267,66 +216,32 @@ update() {
 	printf "Running ${bold}softwareupdate -i -a${reset}...\n" && softwareupdate -i -a
 	# printf "Running ${bold}npm outdated${reset}...\n" && npm outdated
 	printf "Finished ${bold}update${reset}!\n"
-	notifyCustom "update" "Done!"
-}
-
-# Find local apps not installed using Homebrew Cask that have a cask
-uncasked() {
-	local EXCLUDE="firefox-developer-edition gpg-keychain visual-studio-code-insiders iterm"
-	local INCLUDE=""
-
-	while IFS= read -r App; do
-		local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
-		if [[ $ID != com.apple* && $ID != "kMDItemCFBundleIdentifier = (null)" && $ID != *${EXCLUDE}* ]]; then
-			INCLUDE+="$App\n"
-		fi
-	done <<<$(ls /Applications)
-
-	grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+	notify "update" "Done!"
 }
 
 # Combined iTerm, Homebrew, oh-my-zsh, Rust and NPM versions
 v() {
 	case $1 in
 	-v)
-		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')\n" | column -t
-		printf "\nMas $(brew info mas | xargs | head -c 17 | tail -c 5)${reset}\n"
-		mas list | column -t
-		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}\n"
-		brew list --versions $(brew leaves) | column -t
-		printf "\n${bold}Casks${reset}\n"
-		brew cask list --versions | column -t
-		printf "\n${bold}npm $(npm --version)${reset}\n"
-		npm list --global --depth=0 | tail -n +2 | cut -c 5- | column -t -s @
-		;;
-	*)
 		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')\n"
+		printf "\nMas $(brew info mas | xargs | head -c 17 | tail -c 5)${reset}\n"
+		mas list
 		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}\n"
 		brew list --versions $(brew leaves)
+		printf "\n${bold}Casks${reset}\n"
+		brew cask list --versions
 		printf "\n${bold}npm $(npm --version)${reset}\n"
 		npm list --global --depth=0 | tail -n +2 | cut -c 5-
 		;;
+	*)
+		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && echo
+		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}" | grep -E '\s([0-9].*)'
+		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && echo
+		printf "\n${bold}npm $(npm --version)${reset}\n" | grep -E '\s([0-9].*)'
+		npm list --global --depth=0 | tail -n +2 | cut -c 5- | grep -E '@.*'
+		;;
 	esac
 }
-
-# Switch between code and code-insiders alias in .bash_profile functions
-# vsca() {
-# 	case $1 in
-# 	-code | code | -c | c)
-# 		unset -f code
-# 		printf "VSCode alias set to \"code\"\n"
-# 		;;
-# 	-insiders | insiders | -i | i)
-# 		code() {
-# 			code-insiders $1 $2
-# 		}
-# 		printf "VSCode alias set to \"code-insiders\"\n"
-# 		;;
-# 	*)
-# 		printf "${bold}${red}Invalid${reset} argument!"
-# 		;;
-# 	esac
-# }
 
 # Easy install of local VSCode extensions for testing
 vsix() {
@@ -350,6 +265,14 @@ posixPrompt() {
 	stty raw -echo
 	local REPLY=$(while ! head -c 1 | grep -i '[ny]'; do true; done)
 	stty $old_stty_cfg
+}
+
+## EXAMPLES
+# Highlight 2nd column of output
+exampleParameterSubstitution() {
+	local brewls0=$(brew list --versions $(brew leaves))
+	local brewls1=${brewls0// / ${bold}}
+	echo ${brewls1//$'\n'/${reset}'\n'}
 }
 
 ## TEMPLATES
@@ -386,4 +309,4 @@ getQuotedString() {
 # export GPG_TTY=$(tty)
 # export PATH="$HOME/.cargo/bin:$PATH"
 eval $(thefuck --alias)
-source ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh" # formula bash-completion, dependent of mac-CLI
