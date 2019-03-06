@@ -28,7 +28,7 @@ alias gpglist="gpg --list-secret-keys --keyid-format LONG"
 alias no="npm outdated"
 alias npmls="npm ls -g --depth=0"
 alias out="npm outdated"
-alias s="set -- -f; sh ~/code/dotfiles/bootstrap.sh && tput cl && source ~/.bash_profile"
+alias s="sh ~/code/dotfiles/bootstrap.sh --force && source ~/.bash_profile && tput cl"
 
 ## TPUT
 # Easy, clean, portable terminal colors
