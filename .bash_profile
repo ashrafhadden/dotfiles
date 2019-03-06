@@ -25,6 +25,7 @@ alias z="code ~/.zshrc"
 alias assertions="pmset -g assertions | grep Prevent"
 alias gpgls="gpg --list-secret-keys --keyid-format LONG"
 alias npmls="npm ls -g --depth=0"
+alias brewls="brew list --versions $(brew leaves)"
 alias out="npm outdated"
 alias s="sh ~/code/dotfiles/bootstrap.sh --force && source ~/.bash_profile && tput cl"
 
@@ -309,4 +310,3 @@ getQuotedString() {
 # export GPG_TTY=$(tty)
 # export PATH="$HOME/.cargo/bin:$PATH"
 eval $(thefuck --alias)
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh" # formula bash-completion, dependent of mac-CLI
