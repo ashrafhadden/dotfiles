@@ -3,7 +3,7 @@
 ## DESCRIPTION
 # .bash_profile for oh-my-zsh users, functionality + portability ~= best of both worlds ^_^
 # For when you want the interactiveness of ZSH but the portability of Bash
-# Compatible with Bash ^5.0.2 and ZSH ^5.7.1
+# Compatible with Bash <=3.2.57 and ZSH ^5.7.1
 # Caters to Mac users with the following tools:
 # oh-my-zsh, Homebrew, NPM, Rust, iTerm2, VSCode
 
@@ -14,20 +14,21 @@ alias cdp="cd ~/code/bt-vue"
 ## CONFIGS
 alias css="code '$HOME/Library/Application Support/Code/User/vscode.css'"
 alias gitconfig="code ~/code/dotfiles/.gitconfig"
+alias gitignore="code ~/code/dotfiles/.gitignore"
 alias hosts="code /private/etc/hosts"
-alias npmconfig="npm config edit -g"
 alias p="code ~/code/dotfiles/.bash_profile"
 alias paths="code /etc/paths"
 alias shells="code /etc/shells"
-alias z="code ~/.zshrc"
+alias z="code ~/code/dotfiles/.zshrc"
 
 ## COMMANDS
 alias assertions="pmset -g assertions | grep Prevent"
+alias brewls='brew list --versions $(brew leaves)'
 alias gpgls="gpg --list-secret-keys --keyid-format LONG"
-alias npmls="npm ls -g --depth=0"
-alias brewls="brew list --versions $(brew leaves)"
+alias npmls="npm list --global --depth=0"
 alias out="npm outdated"
-alias s="sh ~/code/dotfiles/bootstrap.sh --force && source ~/.bash_profile && tput cl"
+alias s="sh ~/code/dotfiles/bootstrap.sh --force && src"                          # source all the things
+alias ss="sh ~/code/dotfiles/bootstrap.sh --force > /dev/null && src > /dev/null" # source all the things silently; `src` docs: https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
 
 ## TPUT
 # Easy, clean, portable terminal colors
@@ -76,7 +77,7 @@ dns() {
 	local dnsarrnames=(google google google google cloudflare cloudflare cloudflare cloudflare opennic opennic)
 	case $1 in
 	arr | a | ls | list | servers)
-		printf '%s\n' "${dnsarr[@]} ${dnsarrnames}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
+		printf '%s\n' "${dnsarr[@]} ${dnsarrnames[@]}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
 		;;
 	set)
 		networksetup -setdnsservers "Wi-Fi" ${dnsarr[@]}
@@ -189,27 +190,27 @@ syncfork() {
 }
 
 # Find local apps not installed using Homebrew Cask that have a cask
-uncasked() {
-	local EXCLUDE="firefox-developer-edition gpg-keychain visual-studio-code-insiders iterm"
-	local INCLUDE=""
+# uncasked() {
+# 	local EXCLUDE="firefox-developer-edition gpg-keychain visual-studio-code-insiders iterm"
+# 	local INCLUDE=""
 
-	while IFS= read -r App; do
-		local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
-		if [[ $ID != com.apple* && $ID != "kMDItemCFBundleIdentifier = (null)" && $ID != *${EXCLUDE}* ]]; then
-			INCLUDE+="$App\n"
-		fi
-	done <<<$(ls /Applications)
+# 	while IFS= read -r App; do
+# 		local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
+# 		if [[ $ID != com.apple* && $ID != "kMDItemCFBundleIdentifier = (null)" && $ID != *${EXCLUDE}* ]]; then
+# 			INCLUDE+="$App\n"
+# 		fi
+# 	done <<<$(ls /Applications)
 
-	grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
-}
+# 	grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+# }
 
 # Combined oh-my-zsh, Homebrew, Rust, & NPM update
 update() {
-	printf "Updating ${bold}dracula.itermcolors${reset}... " && cd ~/code/misc/dracula_itermcolors && git pull
-	printf "Updating ${bold}powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd
-	printf "Updating ${bold}oh-my-zsh${reset}...\n" && upgrade_oh_my_zsh | tail -n+2 | head -1
-	printf "Updating ${bold}zshrc.zsh-template${reset}..." && cd ~/code/oh-my-zsh && git fetch upstream && git checkout master && git merge upstream/master && cd
-	printf "Running ${bold}brew upgrade${reset}...\n" && brew upgrade
+	echo "Updating ${bold}dracula.itermcolors${reset}..." && cd ~/code/misc/dracula_itermcolors && git pull
+	echo "Updating ${bold}powerlevel9k.zsh-theme${reset}..." && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd
+	echo "Updating ${bold}oh-my-zsh${reset}..." && upgrade_oh_my_zsh | tail -n+2 | head -1
+	echo "Updating ${bold}tldr${reset}..." &&
+		printf "Running ${bold}brew upgrade${reset}...\n" && brew upgrade
 	printf "Running ${bold}brew cask upgrade${reset}...\n" && brew cask upgrade
 	printf "Running ${bold}brew cleanup${reset}...\n" && brew cleanup
 	printf "Running ${bold}rustup update${rest}...\n" && rustup update
@@ -309,4 +310,13 @@ getQuotedString() {
 ## ENVIRONMENT-SPECIFIC
 # export GPG_TTY=$(tty)
 # export PATH="$HOME/.cargo/bin:$PATH"
-eval $(thefuck --alias)
+# eval $(thefuck --alias)
+
+# Load the shell dotfiles, and then some:
+# * ~/.path can be used to extend `$PATH`.
+# * ~/.extra can be used for other settings you don’t want to commit.
+# https://github.com/mathiasbynens/dotfiles/blob/master/.bash_profile
+for file in ~/.{path,bash_prompt,exports,aliases,functions,extra}; do
+	[ -r "$file" ] && [ -f "$file" ] && source "$file"
+done
+unset file
