@@ -1,11 +1,25 @@
 #!/usr/bin/env zsh
 
 ## DESCRIPTION
-# .bash_profile for oh-my-zsh users, functionality + portability ~= best of both worlds ^_^
-# For when you want the interactiveness of ZSH but the portability of Bash
-# Compatible with Bash <=3.2.57 and ZSH ^5.7.1
+# .zprofile for oh-my-zsh & dotfiles users
+# Compatible with ZSH ^5.7.1
 # Caters to Mac users with the following tools:
-# oh-my-zsh, Homebrew, NPM, Rust, iTerm2, VSCode
+# dotfiles, oh-my-zsh, Homebrew, NPM, Rust, iTerm2, VSCode
+
+syncDotFiles() {
+  cd ~/code/dotfiles
+  rsync --exclude ".git/" \
+    --exclude ".DS_Store" \
+    --exclude "bootstrap.sh" \
+    --exclude "README.md" \
+    --exclude "LICENSE-MIT.txt" \
+    -avh --no-perms . ~
+  source .aliases
+  source .exports
+  source .functions
+  cd -
+}
+syncDotFiles
 
 ## DIRECTORIES
 alias cdc="cd ~/code"
@@ -27,20 +41,19 @@ alias brewls='brew list --versions $(brew leaves)'
 alias gpgls="gpg --list-secret-keys --keyid-format LONG"
 alias npmls="npm list --global --depth=0"
 alias out="npm outdated"
-alias r="src" # https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
-alias s="source ~/code/dotfiles/bootstrap.sh > /dev/null; src"
+alias s="src"                     # https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
 
 ## TPUT
 # Easy, clean, portable terminal colors
 # FOREGROUND
-black=$(tput setaf 0)             # Black
-blue=$(tput setaf 4)              # Blue / Purple
-cyan=$(tput setaf 6)              # Cyan
-green=$(tput setaf 2)             # Green
-pink=$(tput setaf 5)              # Pink / Magenta
-red=$(tput setaf 1)               # Red
-white=$(tput setaf 7)             # White
-yellow=$(tput setaf 3)            # Yellow
+# black=$(tput setaf 0)             # Black
+# blue=$(tput setaf 4)              # Blue / Purple
+# cyan=$(tput setaf 6)              # Cyan
+# green=$(tput setaf 2)             # Green
+# pink=$(tput setaf 5)              # Pink / Magenta
+# red=$(tput setaf 1)               # Red
+# white=$(tput setaf 7)             # White
+# yellow=$(tput setaf 3)            # Yellow
 
 # BACKGROUND
 blackb=$(tput setab 0)            # Black
@@ -203,18 +216,20 @@ syncfork() {
 
 # Combined oh-my-zsh, Homebrew, Rust, & NPM update
 update() {
-  echo "Updating ${bold}dracula.itermcolors${reset}..." && cd ~/code/misc/dracula_itermcolors && git pull
-  echo "Updating ${bold}powerlevel9k.zsh-theme${reset}..." && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd
-  echo "Updating ${bold}oh-my-zsh${reset}..." && upgrade_oh_my_zsh | tail -n+2 | head -1
-  echo "Updating ${bold}tldr${reset}..." &&
-    printf "Running ${bold}brew upgrade${reset}...\n" && brew upgrade
-  printf "Running ${bold}brew cask upgrade${reset}...\n" && brew cask upgrade
-  printf "Running ${bold}brew cleanup${reset}...\n" && brew cleanup
-  printf "Running ${bold}rustup update${rest}...\n" && rustup update
-  printf "Running ${bold}npm update --global${reset}...\n" && npm update --global
-  printf "Running ${bold}softwareupdate -i -a${reset}...\n" && softwareupdate -i -a
-  # printf "Running ${bold}npm outdated${reset}...\n" && npm outdated
-  printf "Finished ${bold}update${reset}!\n"
+  local originalDirectory=$PWD
+  printf "Git pulling ${bold}dracula.itermcolors${reset}..." && cd ~/.iterm2/dracula_itermcolors && git pull
+  printf "Git pulling ${bold}powerlevel9k.zsh-theme${reset}..." && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
+  printf "Running ${bold}upgrade_oh_my_zsh${reset}..." && upgrade_oh_my_zsh | tail -n+2 | head -1
+  echo "Running ${bold}tldr --update${reset}..." && tldr --update
+  echo "Running ${bold}brew upgrade${reset}..." && brew upgrade
+  echo "Running ${bold}brew cask upgrade${reset}..." && brew cask upgrade
+  echo "Running ${bold}brew cleanup${reset}..." && brew cleanup
+  echo "Running ${bold}rustup update${rest}..." && rustup update
+  echo "Running ${bold}npm update --global${reset}..." && npm update --global
+  echo "Running ${bold}softwareupdate --install --all${reset}..." && softwareupdate --install --all
+  # echo "Running ${bold}npm outdated${reset}..." && npm outdated
+  cd $originalDirectory
+  echo "${redb}${black}FINISHED${reset} ${bold}update${reset}!"
   notify "update" "Done!"
 }
 
@@ -305,4 +320,7 @@ getQuotedString() {
 }
 
 ## ENVIRONMENT-SPECIFIC
+source /usr/local/Cellar/zsh-syntax-highlighting/0.6.0/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 eval $(thefuck --alias)
+source ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html

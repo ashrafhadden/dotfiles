@@ -30,11 +30,4 @@ COMPLETION_WAITING_DOTS="true"
 plugins=(zsh_reload)
 
 source $ZSH/oh-my-zsh.sh
-
-# Preferred editor
-export EDITOR='code'
-
-source /usr/local/Cellar/zsh-syntax-highlighting/0.6.0/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.zprofile
-source ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
