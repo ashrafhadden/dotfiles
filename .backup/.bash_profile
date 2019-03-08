@@ -27,8 +27,8 @@ alias brewls='brew list --versions $(brew leaves)'
 alias gpgls="gpg --list-secret-keys --keyid-format LONG"
 alias npmls="npm list --global --depth=0"
 alias out="npm outdated"
-alias s="sh ~/code/dotfiles/bootstrap.sh --force && src"                          # source all the things
-alias ss="sh ~/code/dotfiles/bootstrap.sh --force > /dev/null && src > /dev/null" # source all the things silently; `src` docs: https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
+alias r="src" # https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
+alias s="sh ~/code/dotfiles/bootstrap.sh --force > /dev/null && tput cl; src"
 
 ## TPUT
 # Easy, clean, portable terminal colors
@@ -74,10 +74,10 @@ dns() {
 	#LATER https://stackoverflow.com/questions/14370133/is-there-a-way-to-create-key-value-pairs-in-bash-script
 	# https://servers.opennic.org/
 	local dnsarr=(8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001 162.248.241.94 172.98.193.42)
-	local dnsarrnames=(google google google google cloudflare cloudflare cloudflare cloudflare opennic opennic)
+	local dnsarrnames=(google google google google opennic opennic)
 	case $1 in
 	arr | a | ls | list | servers)
-		printf '%s\n' "${dnsarr[@]} ${dnsarrnames[@]}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
+		printf '%s\n' "${dnsarr[@]}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
 		;;
 	set)
 		networksetup -setdnsservers "Wi-Fi" ${dnsarr[@]}
@@ -89,10 +89,7 @@ dns() {
 		echo "DNS Servers cleared!"
 		;;
 	*)
-		echo "${bold}Wi-Fi${reset}"
-		wifi=$(networksetup -getdnsservers "Wi-Fi")
-		echo "${bold}Thunderbolt Ethernet${reset}"
-		eth=$(networksetup -getdnsservers "Thunderbolt Ethernet")
+		paste <(networksetup -getdnsservers "Wi-Fi") <(printf '%s\n' "${dnsarrnames[@]}") | column -s $'\t' -t
 		;;
 	esac
 }
@@ -118,7 +115,7 @@ dr() {
 }
 
 highlight() {
-	local brewls0=$1
+	local brewls0="'$1'"
 	local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
 	echo ${brewls1//$'\n'/${reset}'\n'}  # Replace newline with reset+newline & print
 }
