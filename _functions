@@ -1,0 +1,275 @@
+#!/usr/bin/env zsh
+
+# Find any application's UTI (Uniform Type Identier), A.K.A. Bundle ID (CFBundleIdentifier) # https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_intro/understand_utis_intro.html
+appid() {
+	osascript -e 'id of app "'$1'"'
+}
+
+# Personal cheatsheet for commands and keyboard shortcuts I want to memorize
+bash() {
+	printf "https://devhints.io/bash \n"
+}
+
+# Change working directory to the top-most Finder window location
+cdf() { # short for `cdfinder`
+	cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
+}
+
+# Personal cheatsheet for commands and keyboard shortcuts I want to memorize
+cheat() {
+	case $1 in
+	chrome)
+		iterm
+		chrome
+		;;
+	keys | hotkeys | shortcuts)
+		iterm
+		chrome
+		;;
+	iterm)
+		iterm
+		;;
+	*)
+		iterm
+		chrome
+		;;
+	esac
+}
+
+chrome() {
+	printf "${bold}Hotkeys${reset}\n"
+	printf "⇧ fn ⌫\t${yellow}Remove prediction result${reset}"
+	printf "https://support.google.com/chrome/answer/157179?hl=en \n"
+}
+
+# Easily change & check dns servers on Mac
+dns() {
+	#LATER Add server names alongside addresses
+	#LATER https://stackoverflow.com/questions/14370133/is-there-a-way-to-create-key-value-pairs-in-bash-script
+	# https://servers.opennic.org/
+	local dnsarr=(8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001 162.248.241.94 172.98.193.42)
+	local dnsarrnames=(google google google google opennic opennic)
+	case $1 in
+	arr | a | ls | list | servers)
+		printf '%s\n' "${dnsarr[@]}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
+		;;
+	set)
+		networksetup -setdnsservers "Wi-Fi" ${dnsarr[@]}
+		networksetup -setdnsservers "Thunderbolt Ethernet" ${dnsarr[@]}
+		;;
+	clr | clear | reset)
+		networksetup -setdnsservers Wi-Fi "Empty"
+		networksetup -setdnsservers "Thunderbolt Ethernet" "Empty"
+		printf "DNS Servers cleared!\n"
+		;;
+	*)
+		paste <(networksetup -getdnsservers "Wi-Fi") <(printf '%s\n' "${dnsarrnames[@]}") | column -s $'\t' -t
+		;;
+	esac
+}
+
+# Combine Homebrew & NPM `doctor` command
+dr() {
+	printf "Running ${bold}brew doctor${reset}...\n" && brew doctor
+	printf "Running ${bold}brew cask doctor${reset}...\n" && brew cask doctor
+	printf "Running ${bold}npm doctor${reset}...\n" && npm doctor
+	printf "Finished ${bold}dr${reset}!\n"
+	notify "dr" "Finished dr!"
+}
+
+highlight() {
+	local brewls0="'$1'"
+	local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
+	echo ${brewls1//$'\n'/${reset}'\n'}  # Replace newline with reset+newline & print
+}
+
+# Open man page in Google Chrome
+mc() {
+	man "$1" | col -b >"/tmp/$1"
+	open -a "/Applications/Google Chrome.app" "/tmp/$1"
+}
+
+# Create a new directory and enter it
+mkd() {
+	mkdir -p "$@" && cd "$_"
+}
+
+# Open man page in Preview
+mp() {
+	man -t "$@" | open -f -a Preview
+}
+
+iterm() {
+	printf "${bold}Hotkeys${reset}\n"
+	printf "⌘ ;\tOpen Autocomplete\n"
+	printf "⌘ ⇧ ;\tOpen Command History\n"
+	printf "⌘ ⇧ H\tOpen Paste History\n"
+	printf "⌘ ⌥ /\tOpen Recent Directories\n"
+	printf "⌘ ⌥ B\tStart Instant Replay\n"
+	printf "https://kapeli.com/cheat_sheets/iTerm2.docset/Contents/Resources/Documents/index \n"
+}
+
+# Easy custom Mac notifications from iTerm2 and VSCode
+notify() {
+	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
+		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
+	else
+		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
+	fi
+}
+
+# Fully reinstall node_modules to fix NPM errors
+reinstall() {
+	read -q "REPLY?Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset} (${green}y${reset}/${red}n${reset})?"
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		printf "\nRunning ${bold}rm package-lock.json${reset}...\n" && rm package-lock.json
+		printf "Running ${bold}rm -rf node_modules${reset}...\n" && rm -rf node_modules
+		printf "Running ${bold}npm install${reset}...\n" && npm install
+	else
+		printf "\n${bold}reinstall${reset} aborted!\n"
+	fi
+}
+
+# Check active shell on Mac
+shell() {
+	printf "Brew zsh location: ${bold}/usr/local/bin/zsh\n${reset}"
+	dscl . -read /Users/$USER UserShell
+	printf "1st line in ${bold}SHELLS${reset}:" && sed -n 5p /etc/shells
+	printf "1st line in ${bold}PATHS${reset}:" && head -n 1 /etc/paths
+}
+
+# Verify that SSD Mac is not saving sleep images
+sleepimage() {
+	pmset -g | grep hibernatemode
+	ls -lh /private/var/vm/sleepimage | grep B
+}
+
+# TODO Turn into git custom command https://coderwall.com/p/bt93ia/extend-git-with-custom-commands
+syncfork() {
+	# https://help.github.com/en/articles/syncing-a-fork
+	printf "Running ${bold}git remote add upstream \$1${reset}...\n" && git remote add upstream $1
+	printf "Running ${bold}git fetch upstream${reset}...\n" && git fetch upstream
+	printf "Running ${bold}git checkout master${reset}...\n" && git checkout master
+	printf "Running ${bold}git merge upstream/master${reset}...\n" && git merge upstream/master
+}
+
+# Find local apps not installed using Homebrew Cask that have a cask
+# uncasked() {
+# 	local EXCLUDE="firefox-developer-edition gpg-keychain visual-studio-code-insiders iterm"
+# 	local INCLUDE=""
+
+# 	while IFS= read -r App; do
+# 		local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
+# 		if [[ $ID != com.apple* && $ID != "kMDItemCFBundleIdentifier = (null)" && $ID != *${EXCLUDE}* ]]; then
+# 			INCLUDE+="$App\n"
+# 		fi
+# 	done <<<$(ls /Applications)
+
+# 	grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+# }
+
+# Combined oh-my-zsh, Homebrew, Rust, & NPM update
+update() {
+	local originalDirectory=$PWD
+	printf "Git pulling ${bold}dotfiles${reset}..." && cd ~/code/dotfiles && git fetch upstream && git checkout master
+	printf "Git pulling ${bold}dracula.itermcolors${reset}..." && cd ~/.iterm2/dracula_itermcolors && git pull
+	printf "Git pulling ${bold}powerlevel9k.zsh-theme${reset}..." && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
+	printf "Running ${bold}upgrade_oh_my_zsh${reset}..." && upgrade_oh_my_zsh | tail -n+2 | head -1
+	printf "Running ${bold}tldr --update${reset}\n" && tldr --update
+	printf "Running ${bold}brew upgrade${reset}\n" && brew upgrade
+	printf "Running ${bold}brew cask upgrade${reset}\n" && brew cask upgrade
+	printf "Running ${bold}brew cleanup${reset}\n" && brew cleanup
+	printf "Running ${bold}rustup update${rest}\n" && rustup update
+	printf "Running ${bold}npm update --global${reset}\n" && npm update --global
+	printf "Running ${bold}softwareupdate --install --all${reset}\n" && softwareupdate --install --all
+	# prtinf "Running ${bold}npm outdated${reset}...\n" && npm outdated
+	cd $originalDirectory
+	printf "${redb}${black}FINISHED${reset} ${bold}update${reset}!\n"
+	notify "update" "Done!"
+}
+
+# Combined iTerm, Homebrew, oh-my-zsh, Rust and NPM versions
+v() {
+	case $1 in
+	-v)
+		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')\n"
+		printf "\nMas $(brew info mas | xargs | head -c 17 | tail -c 5)${reset}\n"
+		mas list
+		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}\n"
+		brew list --versions $(brew leaves)
+		printf "\n${bold}Casks${reset}\n"
+		brew cask list --versions
+		printf "\n${bold}npm $(npm --version)${reset}\n"
+		npm list --global --depth=0 | tail -n +2 | cut -c 5-
+		;;
+	*)
+		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && echo
+		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}" | grep -E '\s([0-9].*)'
+		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && echo
+		printf "\n${bold}npm $(npm --version)${reset}\n" | grep -E '\s([0-9].*)'
+		npm list --global --depth=0 | tail -n +2 | cut -c 5- | grep -E '@.*'
+		;;
+	esac
+}
+
+# Easy install of local VSCode extensions for testing
+vsix() {
+	printf "Running ${bold}vsce package && code --install-extension vscode-eslint@1.6.1${reset}...\n"
+	vsce package && code --install-extension myextension.vsix
+}
+
+# ESLint-warning-free webpack output for Vue CLI
+wo() {
+	printf "/* eslint-disable */\nconst webpack_output = " >webpack_output.js
+	vue inspect | sed "s/native code/'native code'/g" >>webpack_output.js
+	code webpack_output.js
+}
+
+## POSIX
+# Portable sh patches for when Bash implementation doesn't jive with active ZSH shell
+posixPrompt() {
+	# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script
+	echo -n "$1"
+	old_stty_cfg=$(stty -g)
+	stty raw -echo
+	local REPLY=$(while ! head -c 1 | grep -i '[ny]'; do true; done)
+	stty $old_stty_cfg
+}
+
+## EXAMPLES
+# Highlight 2nd column of output
+exampleParameterSubstitution() {
+	local brewls0=$(brew list --versions $(brew leaves))
+	local brewls1=${brewls0// / ${bold}}
+	echo ${brewls1//$'\n'/${reset}'\n'}
+}
+
+## TEMPLATES
+# Easy copy-paste templates for quick construction of new functions
+# https://www.gnu.org/software/bash/manual/bash.html#Conditional-Constructs
+templateCase() {
+	case $1 in
+	verbose | --verbose | v | -v)
+		printf "Argument matched ${bold}v${reset}!\n"
+		;;
+	*)
+		printf "${bold}${red}Invalid${reset} argument!"
+		;;
+	esac
+}
+
+templatePrompt() {
+	# https://stackoverflow.com/questions/1885525/how-do-i-prompt-a-user-for-confirmation-in-bash-script
+	posixPrompt "Are you sure?"
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		printf "\nYou answered ${bold}yes${reset}\n"
+	else
+		printf "\nYou answered ${bold}no${reset}\n"
+	fi
+}
+
+## CHEATSHEET
+getQuotedString() {
+	# https://unix.stackexchange.com/questions/137030/how-do-i-extract-the-content-of-quoted-strings-from-the-output-of-a-command
+	cut -d \" -f2
+}
