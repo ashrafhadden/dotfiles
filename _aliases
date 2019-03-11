@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-
+#
 ## DIRECTORIES
 alias cdc="cd ~/code" # Change directory to ~/code (main projects folder)
 alias cdv="cd ~/code/bt-vue" # Change directory to personal project
