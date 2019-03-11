@@ -27,7 +27,7 @@ whiteb=$(tput setab 7) # White
 yellowb=$(tput setab 3) # Yellow
 
 ## FORMATTING
-bold=$(tput setaf 2 && tput bold) # Bold
+bold=$(tput setaf 5 && tput bold) # Bold
 half=$(tput dim) # Half-bright
 reset=$(tput sgr0) # Reset attributes
 rev=$(tput rev) # Reverse text

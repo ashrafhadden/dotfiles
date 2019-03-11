@@ -5,7 +5,8 @@ alias cdc="cd ~/code" # Change directory to ~/code (main projects folder)
 alias cdv="cd ~/code/bt-vue" # Change directory to personal project
 
 ## WEBPAGES
-alias dotfiles="open https://github.com/mathiasbynens/dotfiles"
+alias dotfiles="open https://github.com/mathiasbynens/dotfiles" # MacOS/OSX Keyboard Shortcuts
+alias mac="open https://support.apple.com/en-us/HT201236"
 alias ztemplate="open https://github.com/robbyrussell/oh-my-zsh/blob/master/templates/zshrc.zsh-template" # Open oh-my-zsh .zshrc template in browser
 
 ## CONFIGS
@@ -31,6 +32,6 @@ alias npmls="npm list --global --depth=0" # List global NPM packages
 alias out="npm outdated" # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
 alias ql="sudo qlmanage -p &> /dev/null" # Open file in Quick Look
-alias r="tput clear; src" # Reload oh_my_zsh https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
+alias r="tput clear && src" # Reload oh_my_zsh https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
 alias rebuildspotlight="sudo mdutil -E /"
 alias symls="ls -lhaF | grep ^l" # List symlinks in current directory

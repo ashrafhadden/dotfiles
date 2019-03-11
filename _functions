@@ -18,14 +18,8 @@ cdf() { # short for `cdfinder`
 
 # Personal cheatsheet for commands and keyboard shortcuts I want to memorize
 cheat() {
+	finder
 	iterm
-	chrome
-}
-
-chrome() {
-	printf "${bold}Chrome Hotkeys${reset}\n"
-	printf "⇧ fn⌫\t${yellow}Remove prediction result${reset}\n\n"
-	# printf "${cyan}https://support.google.com/chrome/answer/157179?hl=en ${reset}\n"
 }
 
 # Easily change & check dns servers on Mac
@@ -68,18 +62,20 @@ finder() {
 	printf  "⇧ ⌘ \\ \n"
 }
 
-handlers() {
-	printf "${bold}txt${reset}\n"
-	duti -x txt
-	printf "\n${bold}sh${reset}\n"
-	duti -x sh
-	printf "\n"
-}
-
 highlight() {
 	local brewls0="'$1'"
 	local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
 	echo ${brewls1//$'\n'/${reset}'\n'}  # Replace newline with reset+newline & print
+}
+
+# Personal cheatsheet for commands and keyboard shortcuts I want to memorize
+iterm() {
+	printf "${bold}iTerm Hotkeys${reset}\n"
+	printf "⌘ ;\t${yellow}Open Autocomplete${reset}\n"
+	printf "⌘ ⇧ ;\t${yellow}Open Command History${reset}\n"
+	printf "⌘ ⇧ H\t${yellow}Open Paste History${reset}\n"
+	printf "⌘ ⌥ /\t${yellow}Open Recent Directories${reset}\n"
+	printf "⌘ ⌥ B\t${yellow}Start Instant Replay${reset}\n\n"
 }
 
 # Open man page in Google Chrome
@@ -96,22 +92,6 @@ mkd() {
 # Open man page in Preview
 mp() {
 	man -t "$@" | open -f -a Preview
-}
-
-iterm() {
-	printf "${bold}iTerm Hotkeys${reset}\n"
-	printf "⌘ ;\t${yellow}Open Autocomplete${reset}\n"
-	printf "⌘ ⇧ ;\t${yellow}Open Command History${reset}\n"
-	printf "⌘ ⇧ H\t${yellow}Open Paste History${reset}\n"
-	printf "⌘ ⌥ /\t${yellow}Open Recent Directories${reset}\n"
-	printf "⌘ ⌥ B\t${yellow}Start Instant Replay${reset}\n\n"
-	# printf "${cyan}https://kapeli.com/cheat_sheets/iTerm2.docset/Contents/Resources/Documents/index ${reset}\n"
-}
-
-# MacOS/OSX Keyboard Shortcuts
-mac() {
-	printf "https://support.apple.com/en-us/HT201236 \n"
-	open https://support.apple.com/en-us/HT201236
 }
 
 # Easy custom Mac notifications from iTerm2 and VSCode
@@ -176,21 +156,22 @@ syncfork() {
 # Combined oh-my-zsh, Homebrew, Rust, & NPM update
 update() {
 	local originalDirectory=$PWD
-	printf "Git pulling ${bold}dotfiles${reset}..." && cd ~/code/dotfiles && git fetch upstream && git checkout master | tail -n 1
-	printf "Git pulling ${bold}dracula.itermcolors${reset}..." && cd /iterm2/dracula_itermcolors && git pull
-	printf "Git pulling ${bold}powerlevel9k.zsh-theme${reset}..." && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
-	printf "Running ${bold}upgrade_oh_my_zsh${reset}..." && upgrade_oh_my_zsh | tail -n+2 | head -1
-	printf "Running ${bold}tldr --update${reset}\n" && tldr --update
-	printf "Running ${bold}brew upgrade${reset}\n" && brew upgrade
-	printf "Running ${bold}brew cask upgrade${reset}\n" && brew cask upgrade
-	printf "Running ${bold}brew cleanup${reset}\n" && brew cleanup
-	printf "Running ${bold}rustup update${rest}\n" && rustup update
-	printf "Running ${bold}npm update --global${reset}\n" && npm update --global
-	printf "Running ${bold}softwareupdate --install --all${reset}\n" && softwareupdate --install --all
-	# prtinf "Running ${bold}npm outdated${reset}...\n" && npm outdated
+	printf "${greenb}${black}START${reset} ${bold}${green}update${reset}!\n"
+	printf "${green}git${reset} pull ${bold}dotfiles${reset}... " && cd ~/code/dotfiles && git fetch upstream && git checkout master | tail -n 1
+	printf "${green}git${reset} pull ${bold}dracula.itermcolors${reset}... " && cd ~/code/dotfiles/iterm && git pull
+	printf "${green}git${reset} pull ${bold}iterm2-macos-dynamic-profile${reset}... " && cd ~/code/dotfiles/iterm2-macos-dynamic-profile && git pull
+	printf "${green}git${reset} pull ${bold}powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
+	printf "Run ${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | tail -n+2 | head -1
+	printf "Run ${bold}tldr --update${reset}...\n" && tldr --update
+	printf "Run ${bold}brew upgrade${reset}...\n" && brew upgrade
+	printf "Run ${bold}brew cask upgrade${reset}...\n" && brew cask upgrade
+	printf "Run ${bold}brew cleanup${reset}...\n" && brew cleanup
+	printf "Run ${bold}npm update --global${reset}...\n" && npm update --global
+	printf "Run ${bold}softwareupdate --install --all${reset}...\n" && softwareupdate --install --all
+	# prtinf "Run ${bold}npm outdated${reset}...\n"; npm outdated
 	cd $originalDirectory
-	printf "${redb}${black}FINISHED${reset} ${bold}update${reset}!\n"
 	notify "update" "Done!"
+	printf "${redb}${black}END${reset} ${bold}${green}update${reset}!\n"
 }
 
 # Combined iTerm, Homebrew, oh-my-zsh, Rust and NPM versions
