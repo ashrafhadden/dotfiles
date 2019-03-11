@@ -4,6 +4,10 @@
 alias cdc="cd ~/code" # Change directory to ~/code (main projects folder)
 alias cdv="cd ~/code/bt-vue" # Change directory to personal project
 
+## WEBPAGES
+alias dotfiles="open https://github.com/mathiasbynens/dotfiles"
+alias ztemplate="open https://github.com/robbyrussell/oh-my-zsh/blob/master/templates/zshrc.zsh-template" # Open oh-my-zsh .zshrc template in browser
+
 ## CONFIGS
 alias a="code ~/code/dotfiles/_aliases" # Open _aliases in VSCode
 alias css="code '$HOME/Library/Application Support/Code/User/vscode.css'" # Open CSS file for VSCode "Custom CSS and JS Loader" Extension https://github.com/be5invis/vscode-custom-css
@@ -11,10 +15,11 @@ alias f="code ~/code/dotfiles/_functions" # Open _functions in VSCode
 alias gitconfig="code ~/code/dotfiles/.gitconfig" # Open .gitconfig file in VSCode
 alias gitignore="code ~/code/dotfiles/.gitignore" # Open .gitignore file in VSCode
 alias hosts="code /private/etc/hosts" # Open hosts file in VSCode
+alias ideas="code ~/code/misc/ideas.txt" # Open ideas file in VSCode
+alias launchservices="defaults read com.apple.LaunchServices/com.apple.launchservices.secure"
 alias path='echo -e ${PATH//:/\\n}' # Print each PATH entry on a separate line
 alias paths="code /etc/paths" # Open paths in VSCode
 alias shells="code /etc/shells" # Open shells in VSCode
-alias z="code ~/code/dotfiles/.zshrc" # Open .zshrc
 alias z="code ~/code/dotfiles/.zshrc" # Open .zshrc in VSCode
 
 ## COMMANDS
@@ -25,5 +30,7 @@ alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/La
 alias npmls="npm list --global --depth=0" # List global NPM packages
 alias out="npm outdated" # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
-alias r="exec ${SHELL} -l; src" # Reload the shell (i.e. invoke as a login shell); Reload oh_my_zsh https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
+alias ql="sudo qlmanage -p &> /dev/null" # Open file in Quick Look
+alias r="tput clear; src" # Reload oh_my_zsh https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
+alias rebuildspotlight="sudo mdutil -E /"
 alias symls="ls -lhaF | grep ^l" # List symlinks in current directory

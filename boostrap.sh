@@ -1,9 +1,25 @@
 #!/usr/bin/env zsh
 
+# Run this once to setup Homebrew, Mac setting defaults,
+# and your oh-my-zsh environment
+
+# Run again safely with no side-effects if you accidentally change anything
+# or just want to be sure all your settings and environment is at it should be
+
+# Ensure colored command output for ${bold}, ${reset}, etc...
+source _tput-colors
+
+which brew &>/dev/null || printf "Homebrew not installed"
+
 source brew.sh
 source macos.sh
 
 ## SYMLINKS
+# Symlinks FTW!!!
+# Pros
+# • Save space
+# • No duplicates in file search
+# • Faster shell reload after dotfiles edits since we aren't rsync'ing or cp'ing
 
 # Symlink dotfiles
 
@@ -36,3 +52,5 @@ ln -s \
 ln -s \
   ~/.iterm2/dracula_itermcolors/Dracula.itermcolors \
   ~/Library/Application\ Support/iTerm2/DynamicProfiles
+
+printf "Don't forget to download OpenInCode! \n${cyan}https://github.com/sozercan/OpenInCode${reset}\n"

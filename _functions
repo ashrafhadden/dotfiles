@@ -5,9 +5,10 @@ appid() {
 	osascript -e 'id of app "'$1'"'
 }
 
-# Personal cheatsheet for commands and keyboard shortcuts I want to memorize
+# Bash cheatsheet
 bash() {
 	printf "https://devhints.io/bash \n"
+	open https://devhints.io/bash
 }
 
 # Change working directory to the top-most Finder window location
@@ -17,29 +18,14 @@ cdf() { # short for `cdfinder`
 
 # Personal cheatsheet for commands and keyboard shortcuts I want to memorize
 cheat() {
-	case $1 in
-	chrome)
-		iterm
-		chrome
-		;;
-	keys | hotkeys | shortcuts)
-		iterm
-		chrome
-		;;
-	iterm)
-		iterm
-		;;
-	*)
-		iterm
-		chrome
-		;;
-	esac
+	iterm
+	chrome
 }
 
 chrome() {
-	printf "${bold}Hotkeys${reset}\n"
-	printf "⇧ fn ⌫\t${yellow}Remove prediction result${reset}"
-	printf "https://support.google.com/chrome/answer/157179?hl=en \n"
+	printf "${bold}Chrome Hotkeys${reset}\n"
+	printf "⇧ fn⌫\t${yellow}Remove prediction result${reset}\n\n"
+	# printf "${cyan}https://support.google.com/chrome/answer/157179?hl=en ${reset}\n"
 }
 
 # Easily change & check dns servers on Mac
@@ -77,6 +63,19 @@ dr() {
 	notify "dr" "Finished dr!"
 }
 
+# Finder cheatsheet
+finder() {
+	printf  "⇧ ⌘ \\ \n"
+}
+
+handlers() {
+	printf "${bold}txt${reset}\n"
+	duti -x txt
+	printf "\n${bold}sh${reset}\n"
+	duti -x sh
+	printf "\n"
+}
+
 highlight() {
 	local brewls0="'$1'"
 	local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
@@ -100,13 +99,19 @@ mp() {
 }
 
 iterm() {
-	printf "${bold}Hotkeys${reset}\n"
-	printf "⌘ ;\tOpen Autocomplete\n"
-	printf "⌘ ⇧ ;\tOpen Command History\n"
-	printf "⌘ ⇧ H\tOpen Paste History\n"
-	printf "⌘ ⌥ /\tOpen Recent Directories\n"
-	printf "⌘ ⌥ B\tStart Instant Replay\n"
-	printf "https://kapeli.com/cheat_sheets/iTerm2.docset/Contents/Resources/Documents/index \n"
+	printf "${bold}iTerm Hotkeys${reset}\n"
+	printf "⌘ ;\t${yellow}Open Autocomplete${reset}\n"
+	printf "⌘ ⇧ ;\t${yellow}Open Command History${reset}\n"
+	printf "⌘ ⇧ H\t${yellow}Open Paste History${reset}\n"
+	printf "⌘ ⌥ /\t${yellow}Open Recent Directories${reset}\n"
+	printf "⌘ ⌥ B\t${yellow}Start Instant Replay${reset}\n\n"
+	# printf "${cyan}https://kapeli.com/cheat_sheets/iTerm2.docset/Contents/Resources/Documents/index ${reset}\n"
+}
+
+# MacOS/OSX Keyboard Shortcuts
+mac() {
+	printf "https://support.apple.com/en-us/HT201236 \n"
+	open https://support.apple.com/en-us/HT201236
 }
 
 # Easy custom Mac notifications from iTerm2 and VSCode
@@ -171,8 +176,8 @@ syncfork() {
 # Combined oh-my-zsh, Homebrew, Rust, & NPM update
 update() {
 	local originalDirectory=$PWD
-	printf "Git pulling ${bold}dotfiles${reset}..." && cd ~/code/dotfiles && git fetch upstream && git checkout master
-	printf "Git pulling ${bold}dracula.itermcolors${reset}..." && cd ~/.iterm2/dracula_itermcolors && git pull
+	printf "Git pulling ${bold}dotfiles${reset}..." && cd ~/code/dotfiles && git fetch upstream && git checkout master | tail -n 1
+	printf "Git pulling ${bold}dracula.itermcolors${reset}..." && cd /iterm2/dracula_itermcolors && git pull
 	printf "Git pulling ${bold}powerlevel9k.zsh-theme${reset}..." && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
 	printf "Running ${bold}upgrade_oh_my_zsh${reset}..." && upgrade_oh_my_zsh | tail -n+2 | head -1
 	printf "Running ${bold}tldr --update${reset}\n" && tldr --update
@@ -203,9 +208,9 @@ v() {
 		npm list --global --depth=0 | tail -n +2 | cut -c 5-
 		;;
 	*)
-		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && echo
+		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && printf "\n"
 		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}" | grep -E '\s([0-9].*)'
-		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && echo
+		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && printf "\n"
 		printf "\n${bold}npm $(npm --version)${reset}\n" | grep -E '\s([0-9].*)'
 		npm list --global --depth=0 | tail -n +2 | cut -c 5- | grep -E '@.*'
 		;;

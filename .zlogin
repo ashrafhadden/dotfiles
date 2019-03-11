@@ -2,5 +2,5 @@
 
 # Mimic VSCode's clean terminal startup
 if [[ $TERM_PROGRAM == "iTerm.app" ]]; then
-  tput cl
+  tput clear
 fi
