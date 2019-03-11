@@ -1,3 +1,4 @@
+# Don't expose personal info often stored in .gitconfigs
 .gitconfig
 
 # Created by https://www.gitignore.io/api/vue,git,node,rust,sass,macos,vuejs,windows,visualstudiocode
