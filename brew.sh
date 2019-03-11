@@ -1,8 +1,8 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 ## Homebrew
 
-local formulas=(
+formulas=(
   duti
   git
   glances
@@ -18,7 +18,7 @@ local formulas=(
   zsh-syntax-highlighting
 )
 
-local casks=(
+casks=(
   android-file-transfer
   beaker-browser
   brave-browser-dev
@@ -60,3 +60,6 @@ local casks=(
 
 brew install ${formulas[@]}
 brew cask install ${casks[@]}
+
+unset formulas
+unset casks

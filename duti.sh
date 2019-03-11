@@ -1,17 +1,10 @@
+#!/usr/bin/env bash
+
 ## duti
-# Set default app for file types/associations
-# Useful for setting your default text editor for all file types
-# To see the list of possible 
+# Ensure that all typeless and plain-text files are opened by VSCode
+# https://apple.stackexchange.com/questions/13557/choose-a-default-app-for-opening-files-with-no-extension
 
-# REQUIREMENTS
-# brew install duti
-
-# Usage
-# Set default app
-# duti -s bundle_id { uti | url_scheme } [ role ]
-
-# Get default app
-# duti -x extension
+which duti || brew install duti
 
 duti -s com.microsoft.VSCode public.plain-text all
 duti -s com.microsoft.VSCode public.source-code all

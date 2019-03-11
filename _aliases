@@ -5,8 +5,10 @@ alias cdc="cd ~/code" # Change directory to ~/code (main projects folder)
 alias cdv="cd ~/code/bt-vue" # Change directory to personal project
 
 ## WEBPAGES
-alias dotfiles="open https://github.com/mathiasbynens/dotfiles" # MacOS/OSX Keyboard Shortcuts
-alias mac="open https://support.apple.com/en-us/HT201236"
+alias mac="open https://support.apple.com/en-us/HT201236" # MacOS/OSX Keyboard Shortcuts
+
+## REPOS
+alias dotfiles="open https://github.com/mathiasbynens/dotfiles" # Open mathiasbynens/dotfiles in browser
 alias ztemplate="open https://github.com/robbyrussell/oh-my-zsh/blob/master/templates/zshrc.zsh-template" # Open oh-my-zsh .zshrc template in browser
 
 ## CONFIGS

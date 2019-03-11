@@ -36,12 +36,13 @@ POWERLEVEL9K_STATUS_OK_BACKGROUND='black'
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
 
+#WARNING No commas between plugins!
 plugins=(
-  colored-man-pages,
   zsh_reload
+  colored-man-pages
 )
 
-source   $ZSH/oh-my-zsh.sh
+source $ZSH/oh-my-zsh.sh
 
 ## SETUP ENVIRONMENT
 
