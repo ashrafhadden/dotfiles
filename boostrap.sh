@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Prevent running script, still a WIP
+printf "Script is still a WIP, do not attempt to run, exiting in 10 seconds...\n"
+sleep 10
+exit 1
+
 # Run this once to setup Homebrew, Mac setting defaults,
 # and your oh-my-zsh environment
 
@@ -8,8 +13,15 @@
 # Ensure colored command output for ${bold}, ${reset}, etc...
 . ./_tput-colors
 
+# Load zsh-bash compatible yes-no prompt
+. ./_yes-no-prompt
+
 _bashprompt() {
   read -p "Install Homebrew? Waiting for input: (${green}y${reset}/${red}n${reset})" choice
+  if   [[ $choice =~ ^[Yy]$ ]]; then
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
   case "$choice" in
   y | Y) printf "You selected ${green}yes${reset}. Installing Homebrew...\n" &&
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" ;;
