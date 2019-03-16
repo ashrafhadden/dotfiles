@@ -90,19 +90,19 @@ iterm() {
 }
 
 # Open man page in Google Chrome
-mc() {
+manc() {
 	man "$1" | col -b >"/tmp/$1"
 	open -a "/Applications/Google Chrome.app" "/tmp/$1"
+}
+
+# Open man page in Preview
+manp() {
+	man -t "$@" | open -f -a Preview
 }
 
 # Create a new directory and enter it
 mkd() {
 	mkdir -p "$@" && cd "$_"
-}
-
-# Open man page in Preview
-mp() {
-	man -t "$@" | open -f -a Preview
 }
 
 # Easy custom Mac notifications from iTerm2 and VSCode
