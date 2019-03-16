@@ -37,12 +37,12 @@ defaults write com.apple.LaunchServices LSQuarantine -bool false
 # Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user
 
-# LATER
+# LOOKUP
 # Display ASCII control characters using caret notation in standard text views
 # Try e.g. `cd /tmp; unidecode "\x{0000}" > cc.txt; open -e cc.txt`
 # defaults write NSGlobalDomain NSTextShowsControlCharacters -bool true
 
-# LATER
+# LOOKUP
 # Disable Resume system-wide
 # defaults write com.apple.systempreferences NSQuitAlwaysKeepsWindows -bool false
 
@@ -52,7 +52,7 @@ defaults write NSGlobalDomain NSDisableAutomaticTermination -bool true
 # Disable the crash reporter
 defaults write com.apple.CrashReporter DialogType -string "none"
 
-# LATER
+# LOOKUP
 # Set Help Viewer windows to non-floating mode
 # defaults write com.apple.helpviewer DevMode -bool true
 
@@ -81,7 +81,7 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 # SSD-specific tweaks                                                         #
 ###############################################################################
 
-# Disable hibernation (speeds up entering sleep mode)
+# Disable hibernation (speeds up entering/leaving sleep mode)
 sudo pmset -a hibernatemode 0
 sudo pmset -a standby 0
 sudo pmset -a autopoweroff 0

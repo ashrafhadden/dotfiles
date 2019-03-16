@@ -1,12 +1,23 @@
 #!/usr/bin/env zsh
 
 # Find any application's UTI (Uniform Type Identier), A.K.A. Bundle ID (CFBundleIdentifier) # https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_intro/understand_utis_intro.html
-appid() {
-	osascript -e 'id of app "'$1'"'
+
+app() {
+	case $1 in
+	id | uti | identifier | cfbundleidentifer)
+		osascript -e 'id of app "'$2'"'
+		;;
+	v | version)
+		osascript -e 'version of app "'$2'"'
+		;;
+	*)
+		printf  "${bold}${red}Invalid${reset} argument!"
+		;;
+	esac
 }
 
 # Bash cheatsheet
-bash() {
+cheatbash() {
 	printf "https://devhints.io/bash \n"
 	open https://devhints.io/bash
 }
@@ -117,6 +128,7 @@ reinstall() {
 
 # Check active shell on Mac
 shell() {
+	echo $SHELL
 	printf "Brew zsh location: ${bold}/usr/local/bin/zsh\n${reset}"
 	dscl . -read /Users/$USER UserShell
 	printf "1st line in ${bold}SHELLS${reset}:" && sed -n 5p /etc/shells
@@ -157,8 +169,8 @@ syncfork() {
 update() {
 	local originalDirectory=$PWD
 	printf "${greenb}${black}START${reset} ${bold}${green}update${reset}!\n"
-	printf "${green}git${reset} pull ${bold}dotfiles${reset}... " && cd ~/code/dotfiles && git fetch upstream && git checkout master | tail -n 1
-	printf "${green}git${reset} pull ${bold}dracula.itermcolors${reset}... " && cd ~/code/dotfiles/iterm && git pull
+	# printf "${green}git${reset} merge upstream/master ${bold}dotfiles${reset}... " && cd ~/code/dotfiles && git fetch upstream && git merge upstream/master | tail -n 1
+	printf "${green}git${reset} pull ${bold}dracula.itermcolors${reset}... " && cd ~/code/dotfiles/dracula.itermcolors && git pull
 	printf "${green}git${reset} pull ${bold}iterm2-macos-dynamic-profile${reset}... " && cd ~/code/dotfiles/iterm2-macos-dynamic-profile && git pull
 	printf "${green}git${reset} pull ${bold}powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
 	printf "Run ${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | tail -n+2 | head -1
@@ -176,6 +188,30 @@ update() {
 
 # Combined iTerm, Homebrew, oh-my-zsh, Rust and NPM versions
 v() {
+	case $1 in
+	-v)
+		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\n"
+		printf "${bold}oh-my-zsh${reset} ${ZSH_VERSION}\n"
+		printf "\n${bold}Mas${reset} $(brew info mas | xargs | head -c 17 | tail -c 5)\n"
+		mas list
+		printf "\n${bold}$(brew --version | xargs | head -c 14)${reset}\n"
+		brew list --versions $(brew leaves)
+		printf "\n${bold}Casks${reset}\n"
+		brew cask list --versions
+		printf "\n${bold}npm $(npm --version)${reset}\n"
+		npm list --global --depth=0 | tail -n +2 | cut -c 5-
+		;;
+	*)
+		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && printf "\n"
+		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}" | grep -E '\s([0-9].*)'
+		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && printf "\n"
+		printf "\n${bold}npm $(npm --version)${reset}\n" | grep -E '\s([0-9].*)'
+		npm list --global --depth=0 | tail -n +2 | cut -c 5- | grep -E '@.*'
+		;;
+	esac
+}
+
+vold() {
 	case $1 in
 	-v)
 		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')\n"

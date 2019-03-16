@@ -2,6 +2,7 @@
 
 # .zshrc for oh-my-zsh & dotfiles users
 # Compatible with ZSH ^5.7.1
+
 # Caters to Mac users with the following tools:
 # dotfiles, oh-my-zsh, Homebrew, NPM, Rust, iTerm2, VSCode
 

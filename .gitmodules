@@ -1,6 +1,6 @@
 [submodule "iterm2-macos-dynamic-profile"]
 	path = iterm2-macos-dynamic-profile
 	url = https://github.com/GabLeRoux/iterm2-macos-dynamic-profile.git
-[submodule "iterm"]
-	path = iterm
+[submodule "dracula.itermcolors"]
+	path = dracula.itermcolors
 	url = https://github.com/dracula/iterm.git

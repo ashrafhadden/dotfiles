@@ -3,11 +3,10 @@
 # Run this once to setup Homebrew, Mac setting defaults,
 # and your oh-my-zsh environment
 
-# Run again safely with no side-effects if you accidentally change anything
-# or just want to be sure all your settings and environment is at it should be
+# You can run this multiple times safely with no side-effects
 
 # Ensure colored command output for ${bold}, ${reset}, etc...
-source _tput-colors
+. ./_tput-colors
 
 _bashprompt() {
   read -p "Install Homebrew? Waiting for input: (${green}y${reset}/${red}n${reset})" choice
@@ -20,54 +19,48 @@ _bashprompt() {
 }
 
 which brew &>/dev/null ||
-  printf "Homebrew not installed. It is required to run \
-${bold}brew.sh${reset}, ${bold}mas.sh${reset}, and ${bold}duti.sh${reset}\n" &&
+  printf "Homebrew not installed. It is required to run ${bold}brew.sh${reset}, ${bold}mas.sh${reset}, and ${bold}duti.sh${reset}\n" &&
   _bashprompt
 
-source brew.sh
-source mas.sh
-source macos.sh
-source duti
+. ./brew.sh
+. ./mas.sh
+. ./macos.sh
+. ./duti
 
 ## SYMLINKS
-# Symlinks FTW!!!
-# Pros
-# • Save space
-# • Faster than copying
-# • No duplicates in file search
-# • Write once, reference aynwhere
-# • Faster shell reload after dotfiles edits since we aren't rsync'ing or cp'ing
+# Symlinks FTW! \o/
+# Symlink stands for symbolic link, A.K.A. an alias
+# same as when you right-click a file > Make Alias in Finder
+
+# Pros vs copying
+# • Faster
+# • Smaller, 50 bytes on avg
+# • Less duplicates in file search
+# • Single source of truth, prevent accidental forks
+# • Write once, reference anywhere
+# • Faster shell reload after dotfiles edits since we aren't having to cp or rsync to $HOME
 
 ## Symlink dotfiles
 
-ln -s \
-  ~/code/dotfiles/.zlogin \
-  ~/.zlogin
-printf "${bold}~/code/dotfiles/.zlogin${reset} symlinked to ${bold}~/.zlogin${reset}\n"
+ln -s ~/code/dotfiles/.zlogin ~/.zlogin &&
+  printf "${bold}~/code/dotfiles/.zlogin${reset} symlinked to ${bold}~/.zlogin${reset}\n"
 
-ln -s \
-  ~/code/dotfiles/.zshrc \
-  ~/.zshrc
-printf "${bold}~/code/dotfiles/.zshrc${reset} symlinked to ${bold}~/.zshrc${reset}\n"
+ln -s ~/code/dotfiles/.zshrc ~/.zshrc &&
+  printf "${bold}~/code/dotfiles/.zshrc${reset} symlinked to ${bold}~/.zshrc${reset}\n"
 
-ln -s \
-  ~/code/dotfiles/.gitconfig \
-  ~/.gitconfig
-printf "${bold}~/code/dotfiles/.gitconfig${reset} symlinked to ${bold}~/.gitconfig${reset}\n"
+ln -s ~/code/dotfiles/.gitconfig ~/.gitconfig &&
+  printf "${bold}~/code/dotfiles/.gitconfig${reset} symlinked to ${bold}~/.gitconfig${reset}\n"
 
-ln -s \
-  ~/code/dotfiles/.gitignore \
-  ~/.gitignore
-printf "${bold}~/code/dotfiles/.gitignore${reset} symlinked to ${bold}~/.gitignore${reset}\n"
+ln -s ~/code/dotfiles/.gitignore ~/.gitignore &&
+  printf "${bold}~/code/dotfiles/.gitignore${reset} symlinked to ${bold}~/.gitignore${reset}\n"
 
-## Symlink App Settings
+## Copy App Settings
+# Most app settings cannot be symlinks since they need to be writable
 
-ln -s \
+rsync \
   ~/code/dotfiles/iterm2-macos-dynamic-profile/fix-iterm2-keys-profile.json \
-  ~/Library/Application\ Support/iTerm2/DynamicProfiles
+  ~/Library/Application\ Support/iTerm2/DynamicProfiles &&
+  printf "${bold}~/code/dotfiles/iterm2-macos-dynamic-profile/fix-iterm2-keys-profile.json${reset} sync'd to ${bold}~/Library/Application\ Support/iTerm2/DynamicProfiles${reset}\n"
 
-ln -s \
-  ~/code/dotfiles/dracula_itermcolors/Dracula.itermcolors \
-  ~/Library/Application\ Support/iTerm2/DynamicProfiles
-
-printf "Don't forget to download OpenInCode! \n${cyan}https://github.com/sozercan/OpenInCode${reset}\n"
+printf "You must manually install ${bold}Dracula.itermcolors${reset}!"
+printf "Packages without managers:\n\n${yellow}(These must be manually downloaded)${reset}\nOpenInCode ${cyan}https://github.com/sozercan/OpenInCode${reset}\n"
