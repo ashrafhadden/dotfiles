@@ -1,6 +1,6 @@
 # Ash's Dotfiles
 
-Ash's dotfiles for Mojave Dark Mode fanatics and devs who like pretty things :)
+Ash's dotfiles for [Mojave Dark Mode](https://developer.apple.com/design/human-interface-guidelines/macos/visual-design/dark-mode/) fanatics and devs who like pretty things :)
 
 ## Install
 

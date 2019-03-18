@@ -167,19 +167,19 @@ syncfork() {
 
 # Combined oh-my-zsh, Homebrew, Rust, & NPM update
 update() {
-	local originalDirectory=$PWD
+	local lastDirectory=$PWD
 	printf "${greenb}${black}START${reset} ${bold}${green}update${reset}!\n"
 	# printf "${green}git${reset} merge upstream/master ${bold}dotfiles${reset}... " && cd ~/code/dotfiles && git fetch upstream && git merge upstream/master | tail -n 1
 	printf "${green}git${reset} pull ${bold}dracula.itermcolors${reset}... " && cd ~/code/dotfiles/dracula.itermcolors && git pull
 	printf "${green}git${reset} pull ${bold}iterm2-macos-dynamic-profile${reset}... " && cd ~/code/dotfiles/iterm2-macos-dynamic-profile && git pull
 	printf "${green}git${reset} pull ${bold}powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
-	printf "Run ${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | tail -n+2 | head -1
-	printf "Run ${bold}tldr --update${reset}...\n" && tldr --update
-	printf "Run ${bold}brew upgrade${reset}...\n" && brew upgrade
-	printf "Run ${bold}brew cask upgrade${reset}...\n" && brew cask upgrade
-	printf "Run ${bold}brew cleanup${reset}...\n" && brew cleanup
-	printf "Run ${bold}npm update --global${reset}...\n" && npm update --global
-	printf "Run ${bold}softwareupdate --install --all${reset}...\n" && softwareupdate --install --all
+	printf "${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | tail -n+2 | head -1
+	printf "${bold}tldr --update${reset}\n" && tldr --update
+	printf "${bold}brew upgrade${reset}\n" && brew upgrade
+	printf "${bold}brew cask upgrade${reset}\n" && brew cask upgrade
+	printf "${bold}brew cleanup${reset}\n" && brew cleanup
+	printf "${bold}npm update --global${reset}\n" && npm update --global
+	printf "${bold}softwareupdate --install --all${reset}\n" && softwareupdate --install --all
 	# prtinf "Run ${bold}npm outdated${reset}...\n"; npm outdated
 	cd $originalDirectory
 	notify "update" "Done!"
@@ -190,46 +190,36 @@ update() {
 v() {
 	case $1 in
 	-v)
-		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\n"
+		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
 		printf "${bold}oh-my-zsh${reset} ${ZSH_VERSION}\n"
-		printf "\n${bold}Mas${reset} $(brew info mas | xargs | head -c 17 | tail -c 5)\n"
+		printf "${bold}Rustup${reset} $(rustup --version | cut -f2)\n"
+		printf "${bold}Rust${reset} $(rustc --version | cut -f2)\n"
+		printf "\n${bold}mas${reset} $(mas version)\n"
 		mas list
-		printf "\n${bold}$(brew --version | xargs | head -c 14)${reset}\n"
+		printf "\n${bold}Homebrew${reset} $(brew -v | xargs | head -c 14 | tail -c 5)${reset}\n"
 		brew list --versions $(brew leaves)
 		printf "\n${bold}Casks${reset}\n"
 		brew cask list --versions
-		printf "\n${bold}npm $(npm --version)${reset}\n"
+		printf "\n${bold}npm${reset} $(npm -v)\n"
 		npm list --global --depth=0 | tail -n +2 | cut -c 5-
 		;;
 	*)
-		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && printf "\n"
-		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}" | grep -E '\s([0-9].*)'
-		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && printf "\n"
-		printf "\n${bold}npm $(npm --version)${reset}\n" | grep -E '\s([0-9].*)'
-		npm list --global --depth=0 | tail -n +2 | cut -c 5- | grep -E '@.*'
-		;;
-	esac
-}
-
-vold() {
-	case $1 in
-	-v)
-		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')\n"
-		printf "\nMas $(brew info mas | xargs | head -c 17 | tail -c 5)${reset}\n"
-		mas list
-		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}\n"
-		brew list --versions $(brew leaves)
-		printf "\n${bold}Casks${reset}\n"
-		brew cask list --versions
-		printf "\n${bold}npm $(npm --version)${reset}\n"
-		npm list --global --depth=0 | tail -n +2 | cut -c 5-
-		;;
-	*)
-		printf "${bold}iTerm $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion)\noh-my-zsh ${ZSH_VERSION}\nRustup $(rustup --version | awk '{print $2}')\nRust $(rustc --version | awk '{print $2}')" | grep -E '\s([0-9].*)' && printf "\n"
-		printf "${bold}\n$(brew --version | xargs | head -c 14)${reset}" | grep -E '\s([0-9].*)'
-		brew list --versions $(brew leaves) | grep -E '\s([0-9].*)' && printf "\n"
-		printf "\n${bold}npm $(npm --version)${reset}\n" | grep -E '\s([0-9].*)'
-		npm list --global --depth=0 | tail -n +2 | cut -c 5- | grep -E '@.*'
+		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
+		printf "${bold}oh-my-zsh${reset} ${ZSH_VERSION}\n"
+		printf "${bold}Rustup${reset} $(rustup --version | awk '{print $2}')\n"
+		printf "${bold}Rust${reset} $(rustc --version | awk '{print $2}')\n"
+		printf "${bold}Homebrew${reset} $(brew -v | xargs | head -c 14 | tail -c 5)${reset}\n"
+		printf "${bold}Node${reset} $(node -v | tail -c 8)\n"
+		printf "${bold}npm${reset} $(npm -v)\n"
+		printf "${bold}Vue${reset} $(vue --version)\n"
+		local lastDirectory=$PWD && cd ~/code/oh-my-zsh
+		printf "${bold}zshrc.zsh-template${reset} $(git log -1 --format="%ad" -- ~/code/oh-my-zsh/templates/zshrc.zsh-template | head -c 10 | tail -c 6)\n"
+		# local status=$(git status ~/code/oh-my-zsh/templates/zshrc.zsh-template)
+		# if [[ $status == *"nothing to commit"* ]]; then
+		# 	printf " latest"
+		# fi
+		cd $lastDirectory
+		# grep -E '\s([0-9].*)'
 		;;
 	esac
 }
