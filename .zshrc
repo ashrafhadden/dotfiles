@@ -46,7 +46,6 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 ## SETUP ENVIRONMENT
-
 # dotfiles
 source ~/code/dotfiles/_aliases
 source ~/code/dotfiles/_exports
@@ -55,5 +54,5 @@ source ~/code/dotfiles/_functions
 # oh-my-zsh plugins
 source /usr/local/Cellar/zsh-syntax-highlighting/0.6.0/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation
 source ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
+eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation

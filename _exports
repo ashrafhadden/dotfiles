@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 
-export EDITOR='code'; # Make VSCode the default editor
-export HISTCONTROL='ignoreboth'; # Omit duplicates and commands that begin with a space from history
-export LANG='en_US.UTF-8'; # Prefer US English
-export LC_ALL='en_US.UTF-8'; # Use UTF-8
-export LESS_TERMCAP_md="${yellow}"; # Highlight section titles in manual pages
+export EDITOR='code'  # Make VSCode the default editor
+export HISTCONTROL='ignoreboth'  # Omit duplicates and commands that begin with a space from history
+export LANG='en_US.UTF-8'  # Prefer US English
+export LC_ALL='en_US.UTF-8'  # Use UTF-8
+export LESS_TERMCAP_md="${yellow}"  # Highlight section titles in manual pages
 # export MANPAGER='less -X'; # Don’t clear the screen after quitting a manual page.

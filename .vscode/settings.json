@@ -1,6 +1,0 @@
-{
-  "search.exclude": {
-    "**/iterm": true,
-    "**/iterm2-macos-dynamic-profile": true
-  }
-}
