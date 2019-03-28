@@ -32,6 +32,10 @@ cheat() {
 	iterm
 }
 
+created() {
+	GetFileInfo -d $1 | head -c 10
+}
+
 # Easily change & check dns servers on Mac
 dns() {
 	#LATER Add server names alongside addresses
@@ -89,13 +93,13 @@ iterm() {
 }
 
 # Open man page in Google Chrome
-manc() {
+manchrome() {
 	man "$1" | col -b >"/tmp/$1"
 	open -a "/Applications/Google Chrome.app" "/tmp/$1"
 }
 
 # Open man page in Preview
-manp() {
+manpreview() {
 	man -t "$@" | open -f -a Preview
 }
 
@@ -164,25 +168,20 @@ syncfork() {
 # 	grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
 # }
 
-# Combined oh-my-zsh, Homebrew, Rust, & NPM update
+# Update all system tools
 update() {
-	local lastDirectory=$PWD
-	printf "${greenb}${black}START${reset} ${bold}${green}update${reset}!\n"
-	# printf "${green}git${reset} merge upstream/master ${bold}dotfiles${reset}... " && cd ~/code/dotfiles && git fetch upstream && git merge upstream/master | tail -n 1
-	printf "${green}git${reset} pull ${bold}dracula.itermcolors${reset}... " && cd ~/code/dotfiles/dracula.itermcolors && git pull
-	printf "${green}git${reset} pull ${bold}iterm2-macos-dynamic-profile${reset}... " && cd ~/code/dotfiles/iterm2-macos-dynamic-profile && git pull
-	printf "${green}git${reset} pull ${bold}powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull
+	printf "${greenb}${black} START ${reset} ${bold}${green}update${reset}!\n"
 	printf "${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | tail -n+2 | head -1
-	printf "${bold}tldr --update${reset}\n" && tldr --update
+	printf "${bold}git pull powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd -
 	printf "${bold}brew upgrade${reset}\n" && brew upgrade
-	printf "${bold}brew cask upgrade${reset}\n" && brew cask upgrade
+	printf "${bold}brew cask upgrade ${reset}" && brew cask upgrade
 	printf "${bold}brew cleanup${reset}\n" && brew cleanup
 	printf "${bold}npm update --global${reset}\n" && npm update --global
+	printf "${bold}mas upgrade ${reset}" && mas upgrade
+	printf "${bold}tldr --update${reset}\n" && tldr --update
 	printf "${bold}softwareupdate --install --all${reset}\n" && softwareupdate --install --all
-	# prtinf "Run ${bold}npm outdated${reset}...\n"; npm outdated
-	cd $originalDirectory
 	notify "update" "Done!"
-	printf "${redb}${black}END${reset} ${bold}${green}update${reset}!\n"
+	printf "${redb}${black} END ${reset} ${bold}${green}update${reset}!\n"
 }
 
 # Combined iTerm, Homebrew, oh-my-zsh, Rust and NPM versions
@@ -191,42 +190,27 @@ v() {
 	-v | v | -l | l)
 		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
 		printf "${bold}oh-my-zsh${reset} ${ZSH_VERSION}\n"
-		printf "${bold}Rustup${reset} $(rustup --version | cut -f2)\n"
 		printf "${bold}Rust${reset} $(rustc --version | cut -f2)\n"
 		printf "\n${bold}mas${reset} $(mas version)\n"
 		mas list
+		printf "\n${bold}npm${reset} $(npm -v)\n"
+		npm list --global --depth=0 | tail -n +2 | cut -c 5-
 		printf "\n${bold}Homebrew${reset} $(brew -v | xargs | head -c 14 | tail -c 5)${reset}\n"
 		brew list --versions $(brew leaves)
 		printf "\n${bold}Casks${reset}\n"
 		brew cask list --versions
-		printf "\n${bold}npm${reset} $(npm -v)\n"
-		npm list --global --depth=0 | tail -n +2 | cut -c 5-
 		;;
 	*)
-		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5) ${blue}$(GetFileInfo -d /Applications/iTerm.app | head -c 10)${reset}\n"
+		printf "${bold}iTerm${reset} $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
 		printf "${bold}oh-my-zsh${reset} ${ZSH_VERSION}\n"
-		printf "${bold}Rustup${reset} $(rustup --version | awk '{print $2}')\n"
 		printf "${bold}Rust${reset} $(rustc --version | awk '{print $2}')\n"
-		printf "${bold}Homebrew${reset} $(brew -v | xargs | head -c 14 | tail -c 5)${reset}\n"
-		local nodeDate=$(date -j -f "%Y-%m-%d" $(brew info node | sed -n '5p' | awk '{ print $5}') +%m-%d-%Y)
-		printf "${bold}Node${reset} $(node -v | tail -c 8) ${blue}${nodeDate}${reset}\n"
-		printf "${bold}npm${reset} $(npm -v) ${blue}${nodeDate}${reset}\n"
+		printf "${bold}Homebrew${reset} $(brew -v | xargs | head -c 14 | tail -c 5)\n"
+		printf "${bold}Node${reset} $(node -v | tail -c 8)\n"
+		printf "${bold}npm${reset} $(npm -v)\n"
 		printf "${bold}Vue${reset} $(vue --version)\n"
-		local lastDirectory=$PWD && cd ~/code/dotfiles/oh-my-zsh && local gitPullOutput=$(git pull)
-		printf "${bold}zshrc.zsh-template${reset} $(git log -1 --format="%ad" -- templates/zshrc.zsh-template | head -c 10 | tail -c 6)\n"
-		if [[ $gitPullOutput != 'Already up to date.' ]]; then
-			echo $gitPullOutput
-		fi
-		cd $lastDirectory
 		# grep -E '\s([0-9].*)'
 		;;
 	esac
-}
-
-# Easy install of local VSCode extensions for testing
-vsix() {
-	printf "Running ${bold}vsce package && code --install-extension vscode-eslint@1.6.1${reset}...\n"
-	vsce package && code --install-extension myextension.vsix
 }
 
 # ESLint-warning-free webpack output for Vue CLI
