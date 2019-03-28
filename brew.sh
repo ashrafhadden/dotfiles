@@ -3,16 +3,18 @@
 ## Homebrew
 
 formulas=(
+  bfg
   duti
+  ffmpeg
   git
-  glances
-  highlight
   mas
   node
+  ruby
   shfmt
   terminal-notifier
   thefuck
   tldr
+  youtube-dl
   zsh
   zsh-autosuggestions
   zsh-syntax-highlighting
