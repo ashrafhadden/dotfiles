@@ -65,7 +65,7 @@ dr() {
 	printf "Running ${bold}brew cask doctor${reset}...\n" && brew cask doctor
 	printf "Running ${bold}npm doctor${reset}...\n" && npm doctor
 	printf "Finished ${bold}dr${reset}!\n"
-	notify "dr" "Finished dr!"
+	# notify "dr" "Finished dr!"
 }
 
 # Keyboard shortcuts I want to memorize
@@ -132,18 +132,30 @@ mkd() {
 }
 
 # Easy custom Mac notifications from iTerm2 and VSCode
-notify() {
-	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
-		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
-	else
-		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
-	fi
-}
+# notify() {
+# 	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
+# 		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
+# 	else
+# 		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
+# 	fi
+# }
+
+# Reload scripts &/or shell
+# r() {
+# 	case $1 in
+# 	-v | -l)
+# 		zpl update --all -q && tput cl && src
+# 		;;
+# 	*)
+# 		zpl update -q "$DOTS/_aliases" "$DOTS/_functions" && tput cl
+# 		;;
+# 	esac
+# }
 
 # Fully reinstall node_modules to fix NPM errors
 reinstall() {
-	read REPLY\?"Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset} (${green}y${reset}/${red}n${reset})?"
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
+	printf "Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset}? [${green}y${reset}/${red}n${reset}]: "
+	if read -q; then
 		printf "\nRunning ${bold}rm package-lock.json${reset}...\n" && rm package-lock.json
 		printf "Running ${bold}rm -rf node_modules${reset}...\n" && rm -rf node_modules
 		printf "Running ${bold}npm install${reset}...\n" && npm install
@@ -195,8 +207,9 @@ syncfork() {
 update() {
 	printf "${greenb}${black} START ${reset} ${bold}${green}update${reset}!\n"
 	printf "${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | head -2
-	printf "${bold}git pull${reset} ${blue}powerlevel9k.zsh-theme${reset}... " 
+	printf "${bold}git pull${reset} ${blue}powerlevel9k.zsh-theme${reset}... "
 	cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd - >/dev/null
+	printf "${bold}zplugin update --all${reset}\n" && zplugin update --all
 	printf "${bold}rustup update ${reset}" && rustup update
 	printf "${bold}brew upgrade${reset}\n" && brew upgrade
 	printf "${bold}brew cask upgrade ${reset}" && brew cask upgrade
@@ -206,7 +219,7 @@ update() {
 	printf "${bold}tldr --update${reset}\n" && tldr --update
 	printf "${bold}softwareupdate --list${reset}\n" && softwareupdate --list
 	printf "${redb}${black} END ${reset} ${bold}${green}update${reset}!\n"
-	notify "update" "Done!"
+	# notify "update" "Done!"
 }
 
 # List versions of all system tools
@@ -243,42 +256,4 @@ wo() {
 	printf "/* eslint-disable */\nconst webpack_output = " >webpack_output.js
 	vue inspect | sed "s/native code/'native code'/g" >>webpack_output.js
 	code webpack_output.js
-}
-
-## EXAMPLES
-# Highlight 2nd column of output
-exampleParameterSubstitution() {
-	local brewls0=$(brew list --versions $(brew leaves))
-	local brewls1=${brewls0// / ${bold}}
-	echo ${brewls1//$'\n'/${reset}'\n'}
-}
-
-## TEMPLATES
-# Easy copy-paste templates for quick construction of new functions
-# https://www.gnu.org/software/bash/manual/bash.html#Conditional-Constructs
-templateCase() {
-	case $1 in
-	verbose | --verbose | v | -v)
-		printf "Argument matched ${bold}v${reset}!\n"
-		;;
-	*)
-		printf "${bold}${red}Invalid${reset} argument!"
-		;;
-	esac
-}
-
-templatePrompt() {
-	# https://stackoverflow.com/questions/15174121/how-can-i-prompt-for-yes-no-style-confirmation-in-a-zsh-script
-	read REPLY\?"Are you sure?"
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		printf "\nYou answered ${bold}yes${reset}\n"
-	else
-		printf "\nYou answered ${bold}no${reset}\n"
-	fi
-}
-
-## CHEATSHEET
-getQuotedString() {
-	# https://unix.stackexchange.com/questions/137030/how-do-i-extract-the-content-of-quoted-strings-from-the-output-of-a-command
-	cut -d \" -f2
 }

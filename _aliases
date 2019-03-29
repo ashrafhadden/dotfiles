@@ -8,19 +8,19 @@ alias cdp="cd ~/code" # Change directory to ~/code (main projects folder)
 alias cdv="cd ~/code/bt-vue" # Change directory to personal project
 
 ## CONFIGS
-alias a="code ~/code/dotfiles/_aliases --add ~/code/dotfiles" # Open _aliases in VSCode, add the root folder
+alias a="code $DOTS/_aliases --add $DOTS" # Open _aliases in VSCode, add the root folder
 alias css="code ~/Library/Application\ Support/Code/User/vscode.css" # Open CSS file for VSCode "Custom CSS and JS Loader" Extension https://github.com/be5invis/vscode-custom-css
-alias dot="code ~/code/dotfiles" # Open dotfiles in VSCode
-alias f="code ~/code/dotfiles/_functions --add ~/code/dotfiles" # Open _functions in VSCode, add the root folder
-alias gitconfig="code ~/code/dotfiles/.gitconfig" # Open .gitconfig file in VSCode
-alias gitignore="code ~/code/dotfiles/.gitignore" # Open .gitignore file in VSCode
+alias dot="code $DOTS" # Open dotfiles in VSCode
+alias f="code $DOTS/_functions --add $DOTS" # Open _functions in VSCode, add the root folder
+alias gitconfig="code $DOTS/.gitconfig" # Open .gitconfig file in VSCode
+alias gitignore="code $DOTS/.gitignore" # Open .gitignore file in VSCode
 alias hosts="code /private/etc/hosts" # Open hosts file in VSCode
 alias ideas="code ~/code/misc/code-ideas.txt" # Open ideas file in VSCode
 alias launchservices="defaults read com.apple.LaunchServices/com.apple.launchservices.secure"
 alias path='echo -e ${PATH//:/\\n}' # Print each PATH entry on a separate line
 alias paths="code /etc/paths" # Open paths in VSCode
 alias shells="code /etc/shells" # Open shells in VSCode
-alias z="code ~/code/dotfiles/.zshrc"
+alias z="code $DOTS/.zshrc"
 
 ## COMMANDS
 alias assertions="pmset -g assertions | grep Prevent" # List processes keeping mac awake
@@ -32,7 +32,7 @@ alias npmls="npm list --global --depth=0" # List global NPM packages
 alias out="npm outdated" # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
 alias ql="sudo qlmanage -p &> /dev/null" # Open file in Quick Look
-alias r="source $DOTS/_aliases && source $DOTS/_functions"
-alias rebuildspotlight="sudo mdutil -E /"
+alias r="tput cl && source $DOTS/_aliases && source $DOTS/_functions"
+alias rebuildspotlight="sudo mdutil -E /" # Rebuild entire Spotlight index
 alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock" # reset Launchpad to its default order
 alias symls="ls -lhaF | grep ^l" # List symlinks in current directory

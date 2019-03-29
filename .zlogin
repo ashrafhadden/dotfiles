@@ -5,7 +5,7 @@ if [[ $TERM_PROGRAM == "iTerm.app" ]]; then
   # (in iTerm clear just puts cursor at the top left, will not delete buffer)
   tput clear
   # Clear iTerm scrollback before every command
-  preexec() {
-    tput clear
-  }
+  # preexec() {
+  #   tput clear
+  # }
 fi
