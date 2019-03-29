@@ -1,16 +1,7 @@
 #!/usr/bin/env zsh
 
-# .zshrc for oh-my-zsh & dotfiles users
-# Compatible with ZSH ^5.7.1
-
-# Caters to Mac users with the following tools:
-# dotfiles, oh-my-zsh, Homebrew, NPM, Rust, iTerm2, VSCode
-
 ## OH-MY-ZSH
-# Initialize & configure oh-my-zsh
-
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh # Path to your oh-my-zsh installation.
 
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
@@ -31,27 +22,39 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time)
 POWERLEVEL9K_STATUS_ERROR_BACKGROUND='black'
 POWERLEVEL9K_STATUS_OK_BACKGROUND='black'
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true" # Uncomment the following line to enable command auto-correction.
+COMPLETION_WAITING_DOTS="true" # Uncomment the following line to display red dots whilst waiting for completion.
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
-
-#WARNING No commas between plugins!
-plugins=(
-  zsh_reload
-  colored-man-pages
-)
+# plugins=(
+#   bgnotify
+#   colored-man-pages
+#   command-not-found
+# )
 
 source $ZSH/oh-my-zsh.sh
 
+## zplug
+export ZPLUG_HOME=/usr/local/opt/zplug
+source $ZPLUG_HOME/init.zsh
+
+zplug "$ZSH/plugins/bgnotify", from:local
+zplug "$ZSH/plugins/colored-man-pages", from:local
+zplug "$ZSH/plugins/command-not-found", from:local
+
+# zplug "plugins/zsh_reload", from:oh-my-zsh
+# zplug "plugins/bgnotify", from:oh-my-zsh
+# zplug "plugins/colored-man-pages", from:oh-my-zsh
+# zplug "plugins/command-not-found", from:oh-my-zsh
+
+zplug load
+
 ## SETUP ENVIRONMENT
-# dotfiles
+# load dotfiles
 source ~/code/dotfiles/_aliases
 source ~/code/dotfiles/_exports
 source ~/code/dotfiles/_tput-colors
 source ~/code/dotfiles/_functions
-# oh-my-zsh plugins
+# load oh-my-zsh plugins
 source /usr/local/Cellar/zsh-syntax-highlighting/0.6.0/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html

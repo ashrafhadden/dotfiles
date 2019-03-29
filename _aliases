@@ -1,15 +1,11 @@
 #!/usr/bin/env zsh
 
+alias sudo='sudo ' # Enable aliases to be sudo’ed https://github.com/mathiasbynens/dotfiles/blob/master/.aliases#L45
+
 ## DIRECTORIES
 alias cdc="cd ~/code" # Change directory to ~/code (main projects folder)
+alias cdp="cd ~/code" # Change directory to ~/code (main projects folder)
 alias cdv="cd ~/code/bt-vue" # Change directory to personal project
-
-## WEBPAGES
-alias mac="open https://support.apple.com/en-us/HT201236" # MacOS/OSX Keyboard Shortcuts
-
-## REPOS
-alias dotfiles="open https://github.com/mathiasbynens/dotfiles" # Open mathiasbynens/dotfiles in browser
-alias ztemplate="open https://github.com/robbyrussell/oh-my-zsh/blob/master/templates/zshrc.zsh-template" # Open oh-my-zsh .zshrc template in browser
 
 ## CONFIGS
 alias a="code ~/code/dotfiles/_aliases --add ~/code/dotfiles" # Open _aliases in VSCode, add the root folder
@@ -24,9 +20,11 @@ alias launchservices="defaults read com.apple.LaunchServices/com.apple.launchser
 alias path='echo -e ${PATH//:/\\n}' # Print each PATH entry on a separate line
 alias paths="code /etc/paths" # Open paths in VSCode
 alias shells="code /etc/shells" # Open shells in VSCode
+alias z="code ~/code/dotfiles/.zshrc"
 
 ## COMMANDS
 alias assertions="pmset -g assertions | grep Prevent" # List processes keeping mac awake
+alias bm="hyperfine -w 2 -S zsh $1" # Benchmark using https://github.com/sharkdp/hyperfine
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias gpgls="gpg --list-secret-keys --keyid-format LONG" # List gpg keys
 alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder" # Clean up LaunchServices to remove duplicates in the “Open With” menu
@@ -34,6 +32,7 @@ alias npmls="npm list --global --depth=0" # List global NPM packages
 alias out="npm outdated" # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
 alias ql="sudo qlmanage -p &> /dev/null" # Open file in Quick Look
-alias r="tput clear && src" # Reload oh_my_zsh https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/zsh_reload
+alias r="source $DOTS/_aliases && source $DOTS/_functions"
 alias rebuildspotlight="sudo mdutil -E /"
+alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock" # reset Launchpad to its default order
 alias symls="ls -lhaF | grep ^l" # List symlinks in current directory

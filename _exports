@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+export DOTS='~/code/dotfiles'
 export EDITOR='code'  # Make VSCode the default editor
 export HISTCONTROL='ignoreboth'  # Omit duplicates and commands that begin with a space from history
 export LANG='en_US.UTF-8'  # Prefer US English

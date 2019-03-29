@@ -11,6 +11,8 @@ sudo duti -s com.microsoft.VSCode public.source-code all
 sudo duti -s com.microsoft.VSCode public.unix-executable all
 sudo duti -s com.microsoft.VSCode sh
 sudo duti -s com.microsoft.VSCode txt
+sudo duti -s com.microsoft.VSCode toml
 
 sudo duti -x sh
 sudo duti -x txt
+sudo duti -x toml

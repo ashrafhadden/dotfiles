@@ -15,41 +15,38 @@ app() {
 	esac
 }
 
-# Bash cheatsheet
-cheatbash() {
-	printf "https://devhints.io/bash \n"
-	open https://devhints.io/bash
-}
-
 # Change working directory to the top-most Finder window location
 cdf() { # short for `cdfinder`
 	cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
 }
 
-# Personal cheatsheet for commands and keyboard shortcuts I want to memorize
-cheat() {
+# Keyboard shortcuts I want to memorize
+shortcuts() {
 	finder
 	iterm
 }
 
+# Print creation date of file
 created() {
 	GetFileInfo -d $1 | head -c 10
 }
 
 # Easily change & check dns servers on Mac
 dns() {
-	#LATER Add server names alongside addresses
-	#LATER https://stackoverflow.com/questions/14370133/is-there-a-way-to-create-key-value-pairs-in-bash-script
 	# https://servers.opennic.org/
-	local dnsarr=(8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844 1.1.1.1 1.0.0.1 2606:4700:4700::1111 2606:4700:4700::1001 162.248.241.94 172.98.193.42)
-	local dnsarrnames=(google google google google opennic opennic)
+	dnsservers="\
+8.8.8.8 Google
+8.8.4.4 Google
+2001:4860:4860::8888 Google
+2001:4860:4860::8844 Google
+162.248.241.94 OpenNIC
+172.98.193.42 OpenNIC"
+	local ip=($(echo $Server_List | cut -d' ' -f1))
+	local name=($(echo $Server_List | cut -d' ' -f2))
 	case $1 in
-	arr | a | ls | list | servers)
-		printf '%s\n' "${dnsarr[@]}" # https://stackoverflow.com/questions/15691942/bash-print-array-elements-on-separate-lines
-		;;
 	set)
-		networksetup -setdnsservers "Wi-Fi" ${dnsarr[@]}
-		networksetup -setdnsservers "Thunderbolt Ethernet" ${dnsarr[@]}
+		networksetup -setdnsservers "Wi-Fi" ${ip[@]}
+		networksetup -setdnsservers "Thunderbolt Ethernet" ${ip[@]}
 		;;
 	clr | clear | reset)
 		networksetup -setdnsservers Wi-Fi "Empty"
@@ -57,7 +54,7 @@ dns() {
 		printf "DNS Servers cleared!\n"
 		;;
 	*)
-		paste <(networksetup -getdnsservers "Wi-Fi") <(printf '%s\n' "${dnsarrnames[@]}") | column -s $'\t' -t
+		paste <(networksetup -getdnsservers "Wi-Fi") <(printf '%s\n' "${dnsarrnames[@]}") | column -ts $'\t'
 		;;
 	esac
 }
@@ -71,9 +68,16 @@ dr() {
 	notify "dr" "Finished dr!"
 }
 
-# Finder cheatsheet
+# Keyboard shortcuts I want to memorize
 finder() {
-	printf  "⇧ ⌘ \\ \n"
+	local string="\
+${bold}Finder${reset}
+⌘ \`\t${yellow}Cycle Through Windows${reset}
+⌘ ↑\t${yellow}Enclosing Folder${reset}
+⌘ ↓\t${yellow}Open the selected item${reset}
+⌥ ⌘ L\t${yellow}Downloads${reset}
+⇧ ⌘ H\t${yellow}Home${reset}"
+	echo $string
 }
 
 highlight() {
@@ -82,14 +86,26 @@ highlight() {
 	echo ${brewls1//$'\n'/${reset}'\n'}  # Replace newline with reset+newline & print
 }
 
-# Personal cheatsheet for commands and keyboard shortcuts I want to memorize
+# Keyboard shortcuts I want to memorize
 iterm() {
-	printf "${bold}iTerm Hotkeys${reset}\n"
-	printf "⌘ ;\t${yellow}Open Autocomplete${reset}\n"
-	printf "⌘ ⇧ ;\t${yellow}Open Command History${reset}\n"
-	printf "⌘ ⇧ H\t${yellow}Open Paste History${reset}\n"
-	printf "⌘ ⌥ /\t${yellow}Open Recent Directories${reset}\n"
-	printf "⌘ ⌥ B\t${yellow}Start Instant Replay${reset}\n\n"
+	local string="\
+${bold}iTerm Hotkeys${reset}
+⌘ ;\t${yellow}Open Autocomplete${reset}
+⌘ ⇧ ;\t${yellow}Open Command History${reset}
+⌘ ⇧ H\t${yellow}Open Paste History${reset}
+⌘ ⌥ /\t${yellow}Open Recent Directories${reset}
+⌘ ⌥ B\t${yellow}Start Instant Replay${reset}"
+	echo $string
+}
+
+# Cheatsheet for mac
+mac() {
+	local string="\
+${bold}macOS Hotkeys${reset}
+⌘ \`\t${yellow}Cycle Through Windows${reset}
+⌘ ↑\t${yellow}Enclosing Folder${reset}
+⌘ ↓\t${yellow}Open the selected item${reset}"
+	echo $string
 }
 
 # Open man page in Google Chrome
@@ -98,9 +114,16 @@ manchrome() {
 	open -a "/Applications/Google Chrome.app" "/tmp/$1"
 }
 
+# Open man page in VSCode
+# If `open` doesn't work use `code`, (open is faster)
+mancode() {
+	man "$1" | col -b >"/tmp/$1"
+	open file:///private/tmp/$1
+}
+
 # Open man page in Preview
 manpreview() {
-	man -t "$@" | open -f -a Preview
+	man -t "$@" | open -fa Preview
 }
 
 # Create a new directory and enter it
@@ -119,7 +142,7 @@ notify() {
 
 # Fully reinstall node_modules to fix NPM errors
 reinstall() {
-	read -q "REPLY?Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset} (${green}y${reset}/${red}n${reset})?"
+	read REPLY\?"Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset} (${green}y${reset}/${red}n${reset})?"
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		printf "\nRunning ${bold}rm package-lock.json${reset}...\n" && rm package-lock.json
 		printf "Running ${bold}rm -rf node_modules${reset}...\n" && rm -rf node_modules
@@ -171,20 +194,22 @@ syncfork() {
 # Update all system tools
 update() {
 	printf "${greenb}${black} START ${reset} ${bold}${green}update${reset}!\n"
-	printf "${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | tail -n+2 | head -1
-	printf "${bold}git pull powerlevel9k.zsh-theme${reset}... " && cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd -
+	printf "${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | head -2
+	printf "${bold}git pull${reset} ${blue}powerlevel9k.zsh-theme${reset}... " 
+	cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd - >/dev/null
+	printf "${bold}rustup update ${reset}" && rustup update
 	printf "${bold}brew upgrade${reset}\n" && brew upgrade
 	printf "${bold}brew cask upgrade ${reset}" && brew cask upgrade
 	printf "${bold}brew cleanup${reset}\n" && brew cleanup
 	printf "${bold}npm update --global${reset}\n" && npm update --global
 	printf "${bold}mas upgrade ${reset}" && mas upgrade
 	printf "${bold}tldr --update${reset}\n" && tldr --update
-	printf "${bold}softwareupdate --install --all${reset}\n" && softwareupdate --install --all
-	notify "update" "Done!"
+	printf "${bold}softwareupdate --list${reset}\n" && softwareupdate --list
 	printf "${redb}${black} END ${reset} ${bold}${green}update${reset}!\n"
+	notify "update" "Done!"
 }
 
-# Combined iTerm, Homebrew, oh-my-zsh, Rust and NPM versions
+# List versions of all system tools
 v() {
 	case $1 in
 	-v | v | -l | l)
@@ -220,17 +245,6 @@ wo() {
 	code webpack_output.js
 }
 
-## POSIX
-# Portable sh patches for when Bash implementation doesn't jive with active ZSH shell
-posixPrompt() {
-	# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script
-	echo -n "$1"
-	old_stty_cfg=$(stty -g)
-	stty raw -echo
-	local REPLY=$(while ! head -c 1 | grep -i '[ny]'; do true; done)
-	stty $old_stty_cfg
-}
-
 ## EXAMPLES
 # Highlight 2nd column of output
 exampleParameterSubstitution() {
@@ -254,8 +268,8 @@ templateCase() {
 }
 
 templatePrompt() {
-	# https://stackoverflow.com/questions/1885525/how-do-i-prompt-a-user-for-confirmation-in-bash-script
-	posixPrompt "Are you sure?"
+	# https://stackoverflow.com/questions/15174121/how-can-i-prompt-for-yes-no-style-confirmation-in-a-zsh-script
+	read REPLY\?"Are you sure?"
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		printf "\nYou answered ${bold}yes${reset}\n"
 	else
