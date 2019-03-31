@@ -154,23 +154,23 @@ mkd() {
 
 # Fully reinstall node_modules to fix NPM errors
 reinstall() {
-	printf "Are you sure you want to ${bold}reinstall${reset} ${yellow}/node_modules${reset}? [${green}y${reset}/${red}n${reset}]: "
+	printf "Are you sure you want to ${bold}reinstall$reset $yellow/node_modules$reset? [${green}y$reset/${red}n$reset]: "
 	if read -q; then
-		printf "\nRunning ${bold}rm package-lock.json${reset}...\n" && rm package-lock.json
-		printf "Running ${bold}rm -rf node_modules${reset}...\n" && rm -rf node_modules
-		printf "Running ${bold}npm install${reset}...\n" && npm install
+		printf "\nRunning ${bold}rm package-lock.json$reset...\n" && rm package-lock.json
+		printf "Running ${bold}rm -rf node_modules$reset...\n" && rm -rf node_modules
+		printf "Running ${bold}npm install$reset...\n" && npm install
 	else
-		printf "\n${bold}reinstall${reset} aborted!\n"
+		printf "\n${bold}reinstall$reset aborted!\n"
 	fi
 }
 
 # Check active shell on Mac
 shell() {
 	echo $SHELL
-	printf "Brew zsh location: ${bold}/usr/local/bin/zsh\n${reset}"
+	printf "Brew zsh location: ${bold}/usr/local/bin/zsh\n$reset"
 	dscl . -read /Users/$USER UserShell
-	printf "1st line in ${bold}SHELLS${reset}:" && sed -n 5p /etc/shells
-	printf "1st line in ${bold}PATHS${reset}:" && head -n 1 /etc/paths
+	printf "1st line in ${bold}SHELLS$reset: " && sed -n 5p /etc/shells
+	printf "1st line in ${bold}PATHS$reset: " && head -n 1 /etc/paths
 }
 
 # Verify that SSD Mac is not saving sleep images
@@ -182,10 +182,10 @@ sleepimage() {
 # TODO Turn into git custom command https://coderwall.com/p/bt93ia/extend-git-with-custom-commands
 syncfork() {
 	# https://help.github.com/en/articles/syncing-a-fork
-	printf "Running ${bold}git remote add upstream \$1${reset}...\n" && git remote add upstream $1
-	printf "Running ${bold}git fetch upstream${reset}...\n" && git fetch upstream
-	printf "Running ${bold}git checkout master${reset}...\n" && git checkout master
-	printf "Running ${bold}git merge upstream/master${reset}...\n" && git merge upstream/master
+	printf "Running ${bold}git remote add upstream \$1$reset...\n" && git remote add upstream $1
+	printf "Running ${bold}git fetch upstream$reset...\n" && git fetch upstream
+	printf "Running ${bold}git checkout master$reset...\n" && git checkout master
+	printf "Running ${bold}git merge upstream/master$reset...\n" && git merge upstream/master
 }
 
 # Find local apps not installed using Homebrew Cask that have a cask
@@ -205,20 +205,21 @@ syncfork() {
 
 # Update all system tools
 update() {
-	printf "${greenb}${black} START ${reset} ${bold}${green}update${reset}!\n"
+	printf "$greenb${black} START $reset $bold${green}update$reset!\n"
 	printf "${bold}upgrade_oh_my_zsh${reset}... " && upgrade_oh_my_zsh | head -2
-	printf "${bold}git pull${reset} ${blue}powerlevel9k.zsh-theme${reset}... "
-	cd ~/.oh-my-zsh/custom/themes/powerlevel9k && git pull && cd - >/dev/null
-	printf "${bold}zplugin update --all${reset}\n" && zplugin update --all
-	printf "${bold}rustup update ${reset}" && rustup update
-	printf "${bold}brew upgrade${reset}\n" && brew upgrade
-	printf "${bold}brew cask upgrade ${reset}" && brew cask upgrade
-	printf "${bold}brew cleanup${reset}\n" && brew cleanup
-	printf "${bold}npm update --global${reset}\n" && npm update --global
-	printf "${bold}mas upgrade ${reset}" && mas upgrade
-	printf "${bold}tldr --update${reset}\n" && tldr --update
-	printf "${bold}softwareupdate --list${reset}\n" && softwareupdate --list
-	printf "${redb}${black} END ${reset} ${bold}${green}update${reset}!\n"
+	printf "${bold}git pull$reset ${blue}powerlevel9k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel9k && git pull && cd - >/dev/null
+	printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - >/dev/null
+	printf "${bold}git pull$reset ${blue}zsh-atutosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - >/dev/null
+	# printf "${bold}zplugin update --all${reset}\n" && zplugin update --all
+	printf "${bold}rustup update $reset" && rustup update
+	printf "${bold}brew upgrade$reset\n" && brew upgrade
+	printf "${bold}brew cask upgrade $reset" && brew cask upgrade
+	printf "${bold}brew cleanup$reset\n" && brew cleanup
+	printf "${bold}npm update --global$reset\n" && npm update --global
+	printf "${bold}mas upgrade $reset" && mas upgrade
+	printf "${bold}tldr --update$reset\n" && tldr --update
+	printf "${bold}softwareupdate --list$reset\n" && softwareupdate --list
+	printf "$redb${black} END $reset $bold${green}update$reset!\n"
 	# notify "update" "Done!"
 }
 

@@ -1,0 +1,30 @@
+source ~/.zplugin/bin/zplugin.zsh
+
+# zplugin theme
+# zpl delete OMZ::lib/git.zsh OMZ::plugins/git/git.plugin.zsh bhilburn/powerlevel9k
+zplugin snippet OMZ::lib/git.zsh
+zplugin snippet OMZ::plugins/git/git.plugin.zsh
+zplugin cdclear -q # <- forget completions provided up to this moment
+setopt promptsubst
+zplugin light bhilburn/powerlevel9k
+
+zplugin snippet "$ZSH/oh-my-szsh.sh" # 0.427
+zplugin snippet 'OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh' # 0.001
+export DOTS='/Users/ashrafhadden/code/dotfiles'
+zplugin snippet "$DOTS/_exports" # 0.003
+zplugin snippet "$DOTS/_aliases" # 0.008
+zplugin snippet "$DOTS/_functions" # 0.014
+zplugin snippet "$DOTS/_tput-colors" # 0.076
+zplugin snippet 'OMZ::plugins/bgnotify/bgnotify.plugin.zsh' # 0.010
+zplugin load 'zsh-users/zsh-autosuggestions' # 0.040
+zplugin snippet 'OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh' # 0.002
+# Lazy load
+zplg ice svn wait'[[ $LOADING=='done' ]]' atload'OMZ::plugins/command-not-found/command-not-found.plugin.zsh' # 1.208
+zplugin snippet 'OMZ::plugins/command-not-found/command-not-found.plugin.zsh'
+# Must be loaded last
+zplugin ice wait'[[ $LOADING=='done' ]]' 'zdharma/fast-syntax-highlighting' atinit'zpcompinit' # 0.185
+zplugin load 'zdharma/fast-syntax-highlighting'
+
+autoload -Uz compinit
+compinit
+zplugin cdreplay -q
