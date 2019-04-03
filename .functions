@@ -1,0 +1,331 @@
+#!/usr/bin/env bash
+
+# Find any application's UTI (Uniform Type Identier), A.K.A. Bundle ID (CFBundleIdentifier) # https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_intro/understand_utis_intro.html
+app() {
+	case $1 in
+	id | uti | identifier | cfbundleidentifer)
+		osascript -e 'id of app "'$2'"'
+		;;
+	v | version)
+		osascript -e 'version of app "'$2'"'
+		;;
+	*)
+		echo  $bold${red}Invalid$reset argument!
+		;;
+	esac
+}
+
+# Benchmark using https://github.com/sharkdp/hyperfine
+alias bm='benchmark'
+benchmark() {
+	local  command1=". ~/.bash_profile;
+app id TorGuard"
+	local  command2=". ~/.bash_profile;
+mdls -name kMDItemCFBundleIdentifier /Applications/TorGuard.app"
+
+	case $1 in
+	--verbose | -v)
+		hyperfine --shell bash --warmup 2 --time-unit second "$command1" "$command2" --show-output
+		;;
+	*)
+		hyperfine --shell bash --warmup 2 --time-unit second "$command1" "$command2"
+		;;
+	esac
+}
+
+# Change working directory to the top-most Finder window location
+cdf() { # short for `cdfinder`
+	cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
+}
+
+change() {
+	case $1 in
+	bash)
+		printf  "Changing shell to${bold}bash${reset}...\n"
+		chsh -s /usr/local/bin/bash
+		sudo dscl . -change /Users/$USER UserShell /usr/local/bin/zsh /usr/local/bin/bash ||
+			sudo dscl . -create /Users/$USER UserShell /usr/local/bin/zsh
+		;;
+	zsh)
+		printf  "Changing shell to ${bold}zsh$reset ...\n"
+		chsh -s /usr/local/bin/zsh
+		sudo dscl . -change /Users/$USER UserShell /usr/local/bin/bash /usr/local/bin/zsh ||
+			sudo dscl . -create /Users/$USER UserShell /usr/local/bin/zsh
+		;;
+	*)
+		printf  "${bold}${red}Invalid${reset} argument!\n"
+		;;
+	esac
+}
+
+# Print creation date of file
+created() {
+	GetFileInfo -d $1 | head -c 10
+}
+
+# Easily change & check dns servers on Mac
+dns() {
+	# https://servers.opennic.org/
+	dnsservers="\
+8.8.8.8 Google
+8.8.4.4 Google
+2001:4860:4860::8888 Google
+2001:4860:4860::8844 Google
+162.248.241.94 OpenNIC
+172.98.193.42 OpenNIC"
+	local ip=($(echo $dnsservers | cut -d' ' -f1))
+	local name=($(echo $dnsservers | cut -d' ' -f2))
+	case $1 in
+	set)
+		networksetup -setdnsservers Wi-Fi $ip[@]
+		networksetup -setdnsservers 'Thunderbolt Ethernet' $ip[@]
+		;;
+	clr | clear | reset)
+		networksetup -setdnsservers Wi-Fi Empty
+		networksetup -setdnsservers 'Thunderbolt Ethernet' Empty
+		echo DNS Servers cleared!
+		;;
+	*)
+		echo ${bold}Wi-Fi$reset
+		paste <(networksetup -getdnsservers Wi-Fi) <(printf '%s\n' $name[@]) | column -ts $'\t'
+		echo ${bold}Thunderbolt Ethernet$reset
+		paste <(networksetup -getdnsservers 'Thunderbolt Ethernet') <(printf '%s\n' $name[@]) | column -ts $'\t'
+		;;
+	esac
+}
+
+# Combine Homebrew & NPM `doctor` command
+dr() {
+	printf "Running ${bold}brew doctor$reset...\n" && brew doctor
+	printf "Running ${bold}brew cask doctor$reset...\n" && brew cask doctor
+	printf "Running ${bold}npm doctor$reset...\n" && npm doctor
+	printf "Finished ${bold}dr$reset!\n"
+	# notify "dr" "Finished dr!"
+}
+
+# Keyboard shortcuts I want to memorize
+finder() {
+	printf "\
+${bold}Finder$reset
+⌘ \`\t${yellow}Cycle Through Windows$reset
+⌘ ↑\t${yellow}Enclosing Folder$reset
+⌘ ↓\t${yellow}Open the selected item$reset
+⌥ ⌘ L\t${yellow}Downloads$reset
+⇧ ⌘ H\t${yellow}Home$reset
+"
+}
+
+highlight() {
+	local brewls0="'$1'"
+	local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
+	echo ${brewls1//$'\n'/${reset}'\n'}  # Replace newline with reset+newline & print
+}
+
+icon() {
+	echo -n "$1" | hexdump # https://stackoverflow.com/questions/13459913/how-to-add-an-icon-to-the-bash-prompt
+}
+
+# Keyboard shortcuts I want to memorize
+iterm() {
+	printf "\
+${bold}iTerm$reset
+⌘ ⇧ O\t${yellow}Open Quickly$reset
+⌘ ;\t${yellow}Open Autocomplete$reset
+⌘ ⇧ ;\t${yellow}Open Command History$reset
+⌘ ⇧ H\t${yellow}Open Paste History$reset
+⌘ ⌥ /\t${yellow}Open Recent Directories$reset
+⌘ ⌥ B\t${yellow}Start Instant Replay$reset
+"
+}
+
+# Cheatsheet for mac
+mac() {
+	printf "\
+${bold}macOS$reset
+⌘ \`\t${yellow}Cycle Through Windows$reset
+⌘ ↑\t${yellow}Enclosing Folder$reset
+⌘ ↓\t${yellow}Open the selected item$reset
+"
+}
+
+# Open man page in Google Chrome
+manchrome() {
+	man "$1" | col -b >"/tmp/$1"
+	open -a "/Applications/Google Chrome.app" "/tmp/$1"
+}
+
+# Open man page in VSCode
+# If `open` doesn't work use `code`, (open is faster)
+mancode() {
+	man "$1" | col -b >"/tmp/$1"
+	open file:///private/tmp/$1
+}
+
+# Open man page in Preview
+manpreview() {
+	man -t "$@" | open -fa Preview
+}
+
+# Create a new directory and enter it
+mkd() {
+	mkdir -p "$@" && cd "$_"
+}
+
+# # Easy custom Mac notifications from iTerm2 and VSCode
+# notify() {
+# 	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
+# 		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2"
+# 		# terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
+# 	else
+# 		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode"
+# 		# terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
+# 	fi
+# }
+
+# Reload scripts &/or shell
+# r() {
+# 	case $1 in
+# 	-v | -l)
+# 		zpl update --all -q && tput cl && src
+# 		;;
+# 	*)
+# 		zpl update -q "$dots/_aliases" "$dots/_functions" && tput cl
+# 		;;
+# 	esac
+# }
+
+# Fully reinstall node_modules to fix NPM errors
+reinstall() {
+	printf "Are you sure you want to ${bold}reinstall$reset $yellow/node_modules$reset? [${green}y$reset/${red}n$reset]: "
+	if read -q; then
+		printf "\nRunning ${bold}rm package-lock.json$reset...\n" && rm package-lock.json
+		printf "Running ${bold}rm -rf node_modules$reset...\n" && rm -rf node_modules
+		printf "Running ${bold}npm install$reset...\n" && npm install
+	else
+		printf "\n${bold}reinstall$reset aborted!\n"
+	fi
+}
+
+# Check active shell on Mac
+shell() {
+	{
+		printf "${bold}PATHS$reset " && head -n 1 /etc/paths
+		printf "${bold}SHELLS$reset " && sed -n 5p /etc/shells
+		echo ${bold}\$SHELL$reset $SHELL
+		echo $bold\$0$reset $0
+	} | column -t
+	dscl . -read /Users/$USER UserShell
+	echo ${bold}ps -p \"\$\$\"$reset
+	ps -p "$$"
+}
+
+# Keyboard shortcuts I want to memorize
+shortcuts() {
+	finder
+	iterm
+	mac
+}
+
+# Verify that SSD Mac is not saving sleep images
+sleepimage() {
+	pmset -g | grep hibernatemode
+	ls -lh /private/var/vm/sleepimage | grep B
+}
+
+# TODO Turn into git custom command https://coderwall.com/p/bt93ia/extend-git-with-custom-commands
+syncfork() {
+	# https://help.github.com/en/articles/syncing-a-fork
+	printf "Running ${bold}git remote add upstream \$1$reset...\n" && git remote add upstream $1
+	printf "Running ${bold}git fetch upstream$reset...\n" && git fetch upstream
+	printf "Running ${bold}git checkout master$reset...\n" && git checkout master
+	printf "Running ${bold}git merge upstream/master$reset...\n" && git merge upstream/master
+}
+
+foo() {
+	echo bar
+}
+
+# Find local apps not installed using Homebrew Cask that have a cask
+uncasked() {
+	local localApps=$(ls /Applications)
+	local exclude=(
+		biglybt
+		utilities
+	)
+	local INCLUDE=""
+
+	# a=("${(@s/.app/)localApps}")
+	echo $a
+
+	# for i in $localApps[@]; do
+	# 	local ID=$(app id $i)
+	# 	if [[ $ID != com.apple* && $App != *"${EXCLUDE[@]}"* ]]; then
+	# 		INCLUDE+="$App\n"
+	# 	fi
+	# done
+
+	# while IFS= read -r App; do
+	# 	local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
+	# 	if [[ $ID != com.apple* && $App != *"${EXCLUDE[@]}"* ]]; then
+	# 		INCLUDE+="$App\n"
+	# 	fi
+	# done <<<$(ls /Applications)
+
+	# grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+}
+
+# Update all system tools
+update() {
+	printf "$greenb${black} START $reset $bold${green}update$reset!\n"
+	printf "${bold}upgrade_oh_my_zsh$reset... " && upgrade_oh_my_zsh | head -2
+	printf "${bold}git pull$reset ${blue}powerlevel9k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel9k && git pull && cd - >/dev/null
+	printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - >/dev/null
+	printf "${bold}git pull$reset ${blue}zsh-atutosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - >/dev/null
+	# printf "${bold}zplugin update --all${reset}\n" && zplugin update --all
+	printf "${bold}rustup update $reset" && rustup update
+	printf "${bold}brew upgrade$reset\n" && brew upgrade
+	printf "${bold}brew cask upgrade $reset" && brew cask upgrade
+	printf "${bold}brew cleanup$reset\n" && brew cleanup
+	printf "${bold}npm update --global$reset\n" && npm update --global
+	printf "${bold}mas upgrade $reset" && mas upgrade
+	printf "${bold}tldr --update$reset\n" && tldr --update
+	printf "${bold}softwareupdate --list$reset\n" && softwareupdate --list
+	printf "$redb${black} END $reset $bold${green}update$reset!\n"
+	# notify "update" "Done!"
+}
+
+# List versions of all system tools
+v() {
+	case $1 in
+	-v | v | -l | l)
+		printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
+		printf "${bold}zsh$reset $ZSH_VERSION\n"
+		printf "${bold}Rust$reset $(rustc --version | cut -f2)\n"
+		printf "\n${bold}mas$reset $(mas version)\n"
+		mas list
+		printf "\n${bold}npm$reset $(npm -v)\n"
+		npm list --global --depth=0 | tail -n +2 | cut -c 5-
+		printf "\n${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)$reset\n"
+		brew list --versions $(brew leaves)
+		printf "\n${bold}Casks$reset\n"
+		brew cask list --versions
+		;;
+	*)
+		printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
+		printf "${bold}oh-my-zsh$reset $ZSH_VERSION\n"
+		printf "${bold}Rust$reset $(rustc --version | awk '{print $2}')\n"
+		printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)\n"
+		printf "${bold}Node$reset $(node -v | tail -c 8)\n"
+		printf "${bold}npm$reset $(npm -v)\n"
+		printf "${bold}Vue$reset $(vue --version)\n"
+		# grep -E '\s([0-9].*)'
+		;;
+	esac
+}
+
+# ESLint-warning-free webpack output for Vue CLI
+wo() {
+	printf "/* eslint-disable */\nconst webpack_output = " >webpack_output.js
+	vue inspect | sed "s/native code/'native code'/g" >>webpack_output.js
+	code webpack_output.js
+}

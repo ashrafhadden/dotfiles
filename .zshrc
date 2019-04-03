@@ -28,7 +28,7 @@ COMPLETION_WAITING_DOTS='true' # Uncomment the following line to display red dot
 
 plugins=(
   # zsh_reload
-  bgnotify
+  # bgnotify
   colored-man-pages
   fast-syntax-highlighting
   zsh-autosuggestions
@@ -36,17 +36,18 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-export DOTS='/Users/ashrafhadden/code/dotfiles'
-source $DOTS/_exports
-source $DOTS/_tput-colors
-source $DOTS/_aliases
-source $DOTS/_functions
+export dots='/Users/ashrafhadden/code/dotfiles'
+. $dots/.fix_zsh_keys
+. $dots/.exports
+. $dots/.tput-colors
+. $dots/.aliases
+. $dots/.functions
 
 ## Zplugin
-# source $DOTS/_zplugin
+# . $dots/_zplugin
 
 ## Misc
-source ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
 eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation
+. ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
 
 # LOADING='done' # ice mod wait condition; tell ice mods they can load now

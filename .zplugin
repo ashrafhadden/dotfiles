@@ -1,4 +1,6 @@
-source ~/.zplugin/bin/zplugin.zsh
+#!/usr/bin/env zsh
+
+. ~/.zplugin/bin/zplugin.zsh
 
 # zplugin theme
 # zpl delete OMZ::lib/git.zsh OMZ::plugins/git/git.plugin.zsh bhilburn/powerlevel9k
@@ -11,10 +13,10 @@ zplugin light bhilburn/powerlevel9k
 zplugin snippet "$ZSH/oh-my-szsh.sh" # 0.427
 zplugin snippet 'OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh' # 0.001
 export DOTS='/Users/ashrafhadden/code/dotfiles'
-zplugin snippet "$DOTS/_exports" # 0.003
-zplugin snippet "$DOTS/_aliases" # 0.008
-zplugin snippet "$DOTS/_functions" # 0.014
-zplugin snippet "$DOTS/_tput-colors" # 0.076
+zplugin snippet "$dots/.exports.sh" # 0.003
+zplugin snippet "$dots/.aliases.sh" # 0.008
+zplugin snippet "$dots/_functions.sh" # 0.014
+zplugin snippet "$dots/_tput-colors.sh" # 0.076
 zplugin snippet 'OMZ::plugins/bgnotify/bgnotify.plugin.zsh' # 0.010
 zplugin load 'zsh-users/zsh-autosuggestions' # 0.040
 zplugin snippet 'OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh' # 0.002

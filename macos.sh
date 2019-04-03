@@ -20,8 +20,11 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 sudo pmset -a standby 0
 sudo pmset -a autopoweroff 0
 
-# Set automatic graphics switching to dedicated gpu only while charging & integrated on battery https://discussions.apple.com/thread/8160651
-sudo pmset -a gpuswitch 1
+# Set automatic graphics switching to dedicated gpu only https://discussions.apple.com/thread/8160651
+sudo pmset -a gpuswitch 0
+
+# Immediately show folder contents even before gathering metadata https://support.apple.com/en-us/HT208209
+defaults write com.apple.desktopservices UseBareEnumeration -bool TRUE
 
 ###############################################################################
 ## General UI/UX                                                              #
