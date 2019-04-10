@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+ZSH_THEME=powerlevel10k/powerlevel10k
+COMPLETION_WAITING_DOTS='true'
+plugins=(
+  # bgnotify
+  colored-man-pages
+  fast-syntax-highlighting
+  zsh-autosuggestions
+)
+
+. ~/code/dotfiles/.exports
+. $DOTS/.powerlevel9k
+. $DOTS/.tput-colors
+. $DOTS/.aliases
+. $DOTS/.functions
+. $ZSH/oh-my-zsh.sh
+
+eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation
+. ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html

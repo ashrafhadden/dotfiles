@@ -1,32 +1,41 @@
 #!/usr/bin/env zsh
 
-. ~/.zplugin/bin/zplugin.zsh
+## OPTIONS
+setopt autocd # enter name of dir to cd into it
 
-# zplugin theme
-# zpl delete OMZ::lib/git.zsh OMZ::plugins/git/git.plugin.zsh bhilburn/powerlevel9k
-zplugin snippet OMZ::lib/git.zsh
-zplugin snippet OMZ::plugins/git/git.plugin.zsh
-zplugin cdclear -q # <- forget completions provided up to this moment
-setopt promptsubst
-zplugin light bhilburn/powerlevel9k
+## HISTORY
+# http://zsh.sourceforge.net/Doc/Release/Options.html
+# HISTSIZE=30             # load last 30 commands, default is 30
+SAVEHIST=30               # save last 30 commands
+setopt HIST_IGNORE_DUPS   # don't save command if duplicate of previous
+setopt HIST_REDUCE_BLANKS # rm superfluous blanks from saved command
+setopt INC_APPEND_HISTORY # allow simultaneous cross-session shared history
 
-zplugin snippet "$ZSH/oh-my-szsh.sh" # 0.427
-zplugin snippet 'OMZ::plugins/zsh_reload/zsh_reload.plugin.zsh' # 0.001
-export DOTS='/Users/ashrafhadden/code/dotfiles'
-zplugin snippet "$dots/.exports.sh" # 0.003
-zplugin snippet "$dots/.aliases.sh" # 0.008
-zplugin snippet "$dots/_functions.sh" # 0.014
-zplugin snippet "$dots/_tput-colors.sh" # 0.076
-zplugin snippet 'OMZ::plugins/bgnotify/bgnotify.plugin.zsh' # 0.010
-zplugin load 'zsh-users/zsh-autosuggestions' # 0.040
-zplugin snippet 'OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh' # 0.002
-# Lazy load
-zplg ice svn wait'[[ $LOADING=='done' ]]' atload'OMZ::plugins/command-not-found/command-not-found.plugin.zsh' # 1.208
-zplugin snippet 'OMZ::plugins/command-not-found/command-not-found.plugin.zsh'
-# Must be loaded last
-zplugin ice wait'[[ $LOADING=='done' ]]' 'zdharma/fast-syntax-highlighting' atinit'zpcompinit' # 0.185
-zplugin load 'zdharma/fast-syntax-highlighting'
+plugin='light'
+lazy='lucid'
 
-autoload -Uz compinit
-compinit
-zplugin cdreplay -q
+export ZPLUGIN_MODE='quiet'
+# export ZPLUGIN_MODE='verbose'
+if [[ $ZPLUGIN_MODE == 'verbose' ]]; then
+  lazy='wait'
+  plugin='load'
+fi
+
+export ZPLG_HOME="${ZDOTDIR:-$HOME}/.zplugin"
+. $ZPLG_HOME/bin/zplugin.zsh
+
+zplg $plugin 'romkatv/powerlevel10k'                                       # 0.022
+zplg snippet "$HOME/code/dotfiles/.exports"                                # 0.001
+zplg snippet "$DOTS/.powerlevel9K"                                         # 0.001
+zplg snippet "$DOTS/.tput-colors"                                          # 0.081
+zplg snippet "$DOTS/.aliases"                                              # 0.011
+zplg snippet "$DOTS/.functions"                                            # 0.003
+zplg $plugin 'zsh-users/zsh-autosuggestions'                               # 0.003
+zplg snippet 'OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh' # 0.001
+
+## Lazy
+zplg ice $lazy'0'
+zplg snippet 'OMZ::plugins/bgnotify/bgnotify.plugin.zsh' # 0.007
+zplg ice $lazy'0'
+zplg $plugin 'zdharma/fast-syntax-highlighting'          # 0.102
+zplg snippet ~/.iterm2_shell_integration.zsh             # 0.007 https://www.iterm2.com/documentation-shell-integration.html

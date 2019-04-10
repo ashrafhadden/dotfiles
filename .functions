@@ -18,10 +18,18 @@ app() {
 # Benchmark using https://github.com/sharkdp/hyperfine
 alias bm='benchmark'
 benchmark() {
-	local  command1=". ~/.bash_profile;
-app id TorGuard"
-	local  command2=". ~/.bash_profile;
-mdls -name kMDItemCFBundleIdentifier /Applications/TorGuard.app"
+	local command1='. ~/.zshrc;
+verbose=true
+if [[ $verbose == true ]]; then
+  lazy='wait'
+  plugin='load'
+fi'
+	local command2='. ~/.zshrc;
+declare verbose
+if [[ -v $verbose ]]; then
+	lazy='wait'
+	plugin='load'
+fi'
 
 	case $1 in
 	--verbose | -v)
@@ -100,19 +108,28 @@ dr() {
 	printf "Running ${bold}brew cask doctor$reset...\n" && brew cask doctor
 	printf "Running ${bold}npm doctor$reset...\n" && npm doctor
 	printf "Finished ${bold}dr$reset!\n"
-	# notify "dr" "Finished dr!"
+	notify "dr" "Finished dr!"
 }
 
 # Keyboard shortcuts I want to memorize
 finder() {
 	printf "\
 ${bold}Finder$reset
-⌘ \`\t${yellow}Cycle Through Windows$reset
 ⌘ ↑\t${yellow}Enclosing Folder$reset
 ⌘ ↓\t${yellow}Open the selected item$reset
 ⌥ ⌘ L\t${yellow}Downloads$reset
 ⇧ ⌘ H\t${yellow}Home$reset
 "
+}
+
+foo() {
+	echo tornados
+}
+
+help() {
+	bash
+	help -m $1
+	exit
 }
 
 highlight() {
@@ -141,10 +158,8 @@ ${bold}iTerm$reset
 # Cheatsheet for mac
 mac() {
 	printf "\
-${bold}macOS$reset
+${bold}Mac$reset
 ⌘ \`\t${yellow}Cycle Through Windows$reset
-⌘ ↑\t${yellow}Enclosing Folder$reset
-⌘ ↓\t${yellow}Open the selected item$reset
 "
 }
 
@@ -172,15 +187,15 @@ mkd() {
 }
 
 # # Easy custom Mac notifications from iTerm2 and VSCode
-# notify() {
-# 	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
-# 		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2"
-# 		# terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2" -sound "default"
-# 	else
-# 		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode"
-# 		# terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode" -sound "default"
-# 	fi
-# }
+notify() {
+	if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
+		terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2"
+		# terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2"
+	else
+		terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode"
+		# terminal-notifier -group "VISUAL STUDIO CODE" -title $1 -message $2 -sender "com.microsoft.VSCode"
+	fi
+}
 
 # Reload scripts &/or shell
 # r() {
@@ -189,7 +204,7 @@ mkd() {
 # 		zpl update --all -q && tput cl && src
 # 		;;
 # 	*)
-# 		zpl update -q "$dots/_aliases" "$dots/_functions" && tput cl
+# 		zpl update -q "$DOTS/.aliases" "$DOTS/.functions" && tput cl
 # 		;;
 # 	esac
 # }
@@ -241,47 +256,15 @@ syncfork() {
 	printf "Running ${bold}git merge upstream/master$reset...\n" && git merge upstream/master
 }
 
-foo() {
-	echo bar
-}
-
-# Find local apps not installed using Homebrew Cask that have a cask
-uncasked() {
-	local localApps=$(ls /Applications)
-	local exclude=(
-		biglybt
-		utilities
-	)
-	local INCLUDE=""
-
-	# a=("${(@s/.app/)localApps}")
-	echo $a
-
-	# for i in $localApps[@]; do
-	# 	local ID=$(app id $i)
-	# 	if [[ $ID != com.apple* && $App != *"${EXCLUDE[@]}"* ]]; then
-	# 		INCLUDE+="$App\n"
-	# 	fi
-	# done
-
-	# while IFS= read -r App; do
-	# 	local ID=$(mdls -name kMDItemCFBundleIdentifier /Applications/$App | cut -d \" -f2)
-	# 	if [[ $ID != com.apple* && $App != *"${EXCLUDE[@]}"* ]]; then
-	# 		INCLUDE+="$App\n"
-	# 	fi
-	# done <<<$(ls /Applications)
-
-	# grep -Fxv -f <(brew cask ls) <(printf $INCLUDE | sed -e 's/.app//g' -e 's/-//g' -e 's/  / /g' -e 's/ /-/g' | tr '[:upper:]' '[:lower:]')
-}
-
 # Update all system tools
 update() {
 	printf "$greenb${black} START $reset $bold${green}update$reset!\n"
 	printf "${bold}upgrade_oh_my_zsh$reset... " && upgrade_oh_my_zsh | head -2
-	printf "${bold}git pull$reset ${blue}powerlevel9k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel9k && git pull && cd - >/dev/null
+	# printf "${bold}zplg update --all${reset}\n" && zplg update --all
+	# printf "${bold}zplg self-update${reset}\n" && zplg self-update
+	printf "${bold}git pull$reset ${blue}powerlevel10k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel10k && git pull && cd - >/dev/null
 	printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - >/dev/null
 	printf "${bold}git pull$reset ${blue}zsh-atutosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - >/dev/null
-	# printf "${bold}zplugin update --all${reset}\n" && zplugin update --all
 	printf "${bold}rustup update $reset" && rustup update
 	printf "${bold}brew upgrade$reset\n" && brew upgrade
 	printf "${bold}brew cask upgrade $reset" && brew cask upgrade
@@ -291,7 +274,7 @@ update() {
 	printf "${bold}tldr --update$reset\n" && tldr --update
 	printf "${bold}softwareupdate --list$reset\n" && softwareupdate --list
 	printf "$redb${black} END $reset $bold${green}update$reset!\n"
-	# notify "update" "Done!"
+	notify "update" "Done!"
 }
 
 # List versions of all system tools
@@ -299,24 +282,31 @@ v() {
 	case $1 in
 	-v | v | -l | l)
 		printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
-		printf "${bold}zsh$reset $ZSH_VERSION\n"
 		printf "${bold}Rust$reset $(rustc --version | cut -f2)\n"
+		printf "${bold}zsh$reset $ZSH_VERSION\n"
+		# printf "${bold}Zplugin$reset\n"
+		# zplg list
+		# zplg ls
 		printf "\n${bold}mas$reset $(mas version)\n"
 		mas list
 		printf "\n${bold}npm$reset $(npm -v)\n"
 		npm list --global --depth=0 | tail -n +2 | cut -c 5-
-		printf "\n${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)$reset\n"
+		printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)$reset\n"
 		brew list --versions $(brew leaves)
 		printf "\n${bold}Casks$reset\n"
 		brew cask list --versions
+		printf "\n${bold}VSCode$reset $(code -v | head -1)\n"
+		code --list-extensions --show-versions
 		;;
 	*)
 		printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
-		printf "${bold}oh-my-zsh$reset $ZSH_VERSION\n"
+		printf "${bold}zsh$reset $ZSH_VERSION\n"
+		# printf "${bold}Zplugin$reset\n"
 		printf "${bold}Rust$reset $(rustc --version | awk '{print $2}')\n"
 		printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)\n"
 		printf "${bold}Node$reset $(node -v | tail -c 8)\n"
 		printf "${bold}npm$reset $(npm -v)\n"
+		printf "${bold}VSCode$reset $(code -v | head -1)\n"
 		printf "${bold}Vue$reset $(vue --version)\n"
 		# grep -E '\s([0-9].*)'
 		;;

@@ -18,10 +18,10 @@ prompter() {
 
 ## Dotfiles
 export dots='/Users/ashrafhadden/code/dotfiles'
-. $dots/.exports
-. $dots/.tput-colors
-. $dots/.aliases
-. $dots/.functions
+. $DOTS/.exports
+. $DOTS/.tput-colors
+. $DOTS/.aliases
+. $DOTS/.functions
 
 ## Misc
 eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation

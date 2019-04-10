@@ -1,53 +1,12 @@
 #!/usr/bin/env zsh
+tput clear
 
-# LOADING='loading' # ice mod wait variable
+## Fix iTerm keys (Mac)
+# https://github.com/GabLeRoux/iterm2-macos-dynamic-profile/blob/master/fix_zsh_keys.sh
+bindkey "^U" backward-kill-line # changes hex 0x15 to delete everything to the left of the cursor, rather than the whole line
+bindkey "^X\\x7f" backward-kill-line # binds hex 0x18 0x7f with deleting everything to the left of the cursor
+bindkey "^X^_" redo # adds redo
 
-## OH-MY-ZSH
-export ZSH="$HOME/.oh-my-zsh" # Path to your oh-my-zsh installation.
-
-ZSH_THEME='powerlevel9k/powerlevel9k'
-
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='transparent'
-POWERLEVEL9K_DIR_DEFAULT_BACKGROUND='transparent'
-POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
-POWERLEVEL9K_DIR_HOME_BACKGROUND='transparent'
-POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND='transparent'
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='white'
-POWERLEVEL9K_DIR_PATH_HIGHLIGHT_BOLD='true'
-POWERLEVEL9K_DIR_PATH_HIGHLIGHT_FOREGROUND='yellow'
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
-POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$''
-POWERLEVEL9K_MODE='nerdfont-complete'
-POWERLEVEL9K_MODE='nerdfont-complete'
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
-POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$''
-
-# ENABLE_CORRECTION="true" # Uncomment the following line to enable command auto-correction.
-COMPLETION_WAITING_DOTS='true' # Uncomment the following line to display red dots whilst waiting for completion.
-
-plugins=(
-  # zsh_reload
-  # bgnotify
-  colored-man-pages
-  fast-syntax-highlighting
-  zsh-autosuggestions
-)
-
-source $ZSH/oh-my-zsh.sh
-
-export dots='/Users/ashrafhadden/code/dotfiles'
-. $dots/.fix_zsh_keys
-. $dots/.exports
-. $dots/.tput-colors
-. $dots/.aliases
-. $dots/.functions
-
-## Zplugin
-# . $dots/_zplugin
-
-## Misc
-eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation
-. ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
-
-# LOADING='done' # ice mod wait condition; tell ice mods they can load now
+## ZSH Plugin Manager
+. ~/code/dotfiles/.oh-my-zsh
+# . ~/code/dotfiles/.zplugin
