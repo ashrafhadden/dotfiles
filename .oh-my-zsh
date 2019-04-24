@@ -11,7 +11,7 @@ plugins=(
 )
 
 . ~/code/dotfiles/.exports
-. $DOTS/.powerlevel9k
+. $DOTS/.powerlevel10k
 . $DOTS/.tput-colors
 . $DOTS/.aliases
 . $DOTS/.functions

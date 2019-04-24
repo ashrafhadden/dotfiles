@@ -18,11 +18,10 @@ prompter() {
 
 ## Dotfiles
 . ~/code/dotfiles/.exports
-. $DOTS/.powerlevel9k
+. $DOTS/.powerlevel10k
 . $DOTS/.tput-colors
 . $DOTS/.aliases
 . $DOTS/.functions
 
 ## Misc
-eval $(thefuck --alias) # https://github.com/nvbn/thefuck#manual-installation
 . ~/.iterm2_shell_integration.bash # https://www.iterm2.com/documentation-shell-integration.html
