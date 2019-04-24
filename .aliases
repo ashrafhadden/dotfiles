@@ -4,12 +4,13 @@ alias sudo='sudo ' # Enable aliases to be sudo’ed https://github.com/mathiasby
 
 ## DIRECTORIES
 alias cdc="cd $CODE" # Change directory to $CODE (main projects folder)
+alias cdd="cd $DOTS"
 alias cdp="cd $CODE" # Change directory to $CODE (main projects folder)
-alias cdv="cd $CODE/bt-vue" # Change directory to personal project
 
 ## CONFIGS
 alias a="code $DOTS/.aliases" # Open _aliases in VSCode
 alias b="code $DOTS/.bashrc" # Open _aliases in VSCode
+alias bt-vue="code $CODE/bt-vue" # Open personal project bt-vue
 alias css='code ~/Library/Application\ Support/Code/User/vscode.css' # Open CSS file for VSCode "Custom CSS and JS Loader" Extension https://github.com/be5invis/vscode-custom-css
 alias dots="code $DOTS" # Open dotfiles in VSCode
 alias f="code $DOTS/.functions" # Open _functions in VSCode
@@ -17,23 +18,25 @@ alias gitconfig="code $DOTS/.gitconfig" # Open .gitconfig file in VSCode
 alias gitignore="code $DOTS/.gitignore" # Open .gitignore file in VSCode
 alias hosts='code /private/etc/hosts' # Open hosts file in VSCode
 alias ideas="code $CODE/misc/code-ideas.txt" # Open ideas file in VSCode
+alias notifications='open /private/var/folders/bl/qdmrp0jd71z545k9zkd8ncqm0000gn/0/com.apple.notificationcenter/db2/db'
+alias omz="code $DOTS/.oh-my-zsh"
 alias openwith='defaults read com.apple.LaunchServices/com.apple.launchservices.secure'
 alias path='echo -e ${PATH//:/\\n}' # Print each PATH entry on a separate line
 alias paths='code /etc/paths' # Open paths in VSCode
 alias shells='code /etc/shells' # Open shells in VSCode
 alias z="code $DOTS/.zshrc"
-alias omz="code $DOTS/.oh-my-zsh"
 
 ## COMMANDS
 alias assertions='pmset -g assertions | grep Prevent' # List processes keeping mac awake
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
 alias lscleanup='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder' # Clean up LaunchServices to remove duplicates in the “Open With” menu
-alias npmls='npm list --global --depth=0' # List global NPM packages
+alias npmls='npm ls -gs --depth=0' # List global NPM packages, ignore annoying peer dep warnings
 alias out='npm outdated' # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
 alias ql='sudo qlmanage -p &> /dev/null' # Open file in Quick Look
 alias r=". ~/.zshrc"
+alias s=". $DOTS/.aliases; . $DOTS/.functions"
 alias rebuildspotlight='sudo mdutil -E /' # Rebuild entire Spotlight index
 alias resetlaunchpad='defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock' # reset Launchpad to its default order
 alias symls='ls -lhaF | grep ^l' # List symlinks in current directory

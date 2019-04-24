@@ -17,8 +17,8 @@ prompter() {
 }
 
 ## Dotfiles
-export dots='/Users/ashrafhadden/code/dotfiles'
-. $DOTS/.exports
+. ~/code/dotfiles/.exports
+. $DOTS/.powerlevel9k
 . $DOTS/.tput-colors
 . $DOTS/.aliases
 . $DOTS/.functions

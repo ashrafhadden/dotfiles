@@ -1,8 +1,12 @@
+_ttd_log_
+
 # Don't expose personal info often stored in .gitconfigs
 .gitconfig
 
-# Created by https://www.gitignore.io/api/vue,git,node,rust,sass,macos,vuejs,windows,visualstudiocode
-# Edit at https://www.gitignore.io/?templates=vue,git,node,rust,sass,macos,vuejs,windows,visualstudiocode
+
+## gitignore.io
+# Created by https://www.gitignore.io/api/git,node,sass,rust,vuejs,macos,windows,visualstudiocode
+# Edit at https://www.gitignore.io/?templates=git,node,sass,rust,vuejs,macos,windows,visualstudiocode
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -54,6 +58,10 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
 pids
@@ -158,19 +166,12 @@ Cargo.lock
 # Ignore all local history of files
 .history
 
-### Vue ###
-# gitignore template for Vue.js projects
-#
+### Vuejs ###
 # Recommended template: Node.gitignore
 
-# TODO: where does this rule come from?
-docs/_book
-
-# TODO: where does this rule come from?
-test/
-
-### Vuejs ###
-node_modules
+dist/
+npm-debug.log
+yarn-error.log
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -197,4 +198,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/vue,git,node,rust,sass,macos,vuejs,windows,visualstudiocode
+# End of https://www.gitignore.io/api/git,node,sass,rust,vuejs,macos,windows,visualstudiocode
