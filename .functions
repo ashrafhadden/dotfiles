@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # Find any application's UTI (Uniform Type Identier), A.K.A. Bundle ID (CFBundleIdentifier) # https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_intro/understand_utis_intro.html
 app() {
@@ -69,6 +69,12 @@ change() {
 # Print creation date of file
 created() {
   GetFileInfo -d $1 | head -c 10
+}
+
+cleanupNotificationCenter() {
+  # [ ! -f $file.bak ] && sqlite3 $file ".backup $file.bak"
+  # sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'SELECT identifier FROM app WHERE identifier LIKE "%canary%";'
+  sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'DELETE FROM app WHERE identifier LIKE "%canary%";'
 }
 
 # Easily change & check dns servers on Mac
@@ -146,7 +152,19 @@ ${bold}Finder$reset
 }
 
 foo() {
-  echo tornados
+  git tag -a v1.0.0 7f86903602e9387875bdb33ac149a5eaac009794 -m "🚀🔖 \`vsce publish 1.0.0.\`"
+  git push --tags origin master
+}
+
+gitignorefix() {
+  printf "${redb}${white} WARNING $reset Make sure all changes committed, including .gitignore! Proceed? [${green}y$reset/${red}N$reset]: "
+  if read -q; then
+    echo "${bold}git rm -r --cached .${reset}..." && git rm -r --cached .
+    echo "${bold}git add .${reset}..." && git add .
+    echo "${bold}git commit -m '.gitignore fix'${reset}..." && git commit -m ".gitignore fix"
+  else
+    echo "${bold}${FUNCNAME[0]}$reset aborted"
+  fi
 }
 
 help() {
@@ -157,6 +175,14 @@ highlight() {
   local brewls0="'$1'"
   local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
   echo ${brewls1//$'\n'/${reset}'\n'} # Replace newline with reset+newline & print
+}
+
+hub() {
+  if [ -z "$1" ]; then
+    open $(git config remote.origin.url)
+  else
+    open "https://github.com/$1"
+  fi
 }
 
 icon() {
@@ -207,12 +233,6 @@ mkd() {
   mkdir -p "$@" && cd "$_"
 }
 
-cleanupNotificationCenter() {
-  # [ ! -f $file.bak ] && sqlite3 $file ".backup $file.bak"
-  # sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'SELECT identifier FROM app WHERE identifier LIKE "%canary%";'
-  sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'DELETE FROM app WHERE identifier LIKE "%canary%";'
-}
-
 # # Easy custom Mac notifications from iTerm2 and VSCode
 notify() {
   if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
@@ -220,6 +240,17 @@ notify() {
   else
     terminal-notifier -group "VSCODE" -title $1 -message $2 -sender "com.microsoft.VSCode"
   fi
+}
+
+path() {
+  case $1 in
+  -u)
+    echo ${PATH//:/\\n} | awk '!seen[$0]++'
+    ;;
+  *)
+    echo ${PATH//:/\\n}
+    ;;
+  esac
 }
 
 # Reload scripts &/or shell
@@ -246,6 +277,16 @@ reinstall() {
   fi
 }
 
+rmtags() {
+  # https://stackoverflow.com/questions/44702757/how-to-remove-all-git-origin-and-local-tags
+  # Fetch all remote tags
+  git fetch
+  # Delete all remote tags
+  git push origin --delete $(git tag -l) # Pushing once should be faster than multiple times
+  # Delete all local tags
+  git tag -d $(git tag -l)
+}
+
 # Check active shell on Mac
 shell() {
   {
@@ -268,7 +309,7 @@ shortcuts() {
 
 # Verify that SSD Mac is not saving sleep images
 sleepimage() {
-  pmset -g | grep hibernatemode
+  pmset -g | grep --color hibernatemode
   ls -lh /private/var/vm/sleepimage | grep B
 }
 
@@ -354,4 +395,10 @@ wo() {
   printf '/* eslint-disable */\nconst webpack_output = ' > webpack_output.js
   vue inspect | tail -n +2 | sed "s/native code/'native code'/g" >> webpack_output.js
   code webpack_output.js
+}
+
+yolo() {
+  echo "${bold}git push -f --all$reset" && git push -f --all
+  echo "${bold}git push -f --tags$reset" && git push -f --tags
+  echo "${bold}git fetch$reset" && git fetch
 }

@@ -17,6 +17,8 @@ plugins=(
 . $DOTS/.functions
 . $ZSH/oh-my-zsh.sh
 
+# Rustup completions
 fpath+=~/.zfunc
 compinit
+
 . ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html

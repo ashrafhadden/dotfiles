@@ -1,16 +1,77 @@
 #!/usr/bin/env zsh
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='transparent'
-POWERLEVEL9K_DIR_DEFAULT_BACKGROUND='transparent'
+
+# envIcons() {
+#   icons="$reset"
+#   node=$(ls package.json) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="$green$reset"
+#   fi
+#   js=$(ls *.js) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+=" $yellow$reset"
+#   fi
+#   py=$(ls *.py) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+=" $green$reset"
+#   fi
+#   shell=$(ls *.sh) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="  $red$reset"
+#   fi
+#   git=$(ls .git) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+=" $red$reset"
+#   fi
+#   echo $icons
+# }
+# envIconsSW() {
+#   icons=''
+#   node=$(ls package.json) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="$green$reset"
+#   fi
+#   js=$(ls *.js) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="$yellow$reset"
+#   fi
+#   py=$(ls *.py) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="$green$reset"
+#   fi
+#   shell=$(ls *.sh) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="$red$reset"
+#   fi
+#   git=$(ls .git) &> /dev/null
+#   if [[ $? == 0 ]]; then
+#     icons+="$red$reset"
+#   fi
+#   echo $icons
+# }
+# POWERLEVEL9K_ETC_ICON=' '
+# POWERLEVEL9K_FOLDER_ICON=' '
+# POWERLEVEL9K_HOME_ICON=' '
+# POWERLEVEL9K_HOME_SUB_ICON=' '
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='clear'
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='yellow'
+POWERLEVEL9K_CUSTOM_ENVICONS_BACKGROUND='black'
+POWERLEVEL9K_CUSTOM_ENVICONS='envIcons'
+POWERLEVEL9K_DIR_DEFAULT_BACKGROUND='clear'
 POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
-POWERLEVEL9K_DIR_HOME_BACKGROUND='transparent'
+POWERLEVEL9K_DIR_HOME_BACKGROUND='clear'
 POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND='transparent'
+POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND='clear'
 POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='white'
 POWERLEVEL9K_DIR_PATH_HIGHLIGHT_BOLD='true'
 POWERLEVEL9K_DIR_PATH_HIGHLIGHT_FOREGROUND='yellow'
+POWERLEVEL9K_DIR_PATH_SEPARATOR_FOREGROUND='blue' # /
+POWERLEVEL9K_ETC_ICON=
+POWERLEVEL9K_FOLDER_ICON=
+POWERLEVEL9K_HOME_ICON=
+POWERLEVEL9K_HOME_SUB_ICON=
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
-POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$''
-POWERLEVEL9K_MODE='nerdfont-complete'
+POWERLEVEL9K_LEFT_SEGMENT_END_SEPARATOR=' ' # put space between prompt and cursor
+POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='' # Default is 
 POWERLEVEL9K_MODE='nerdfont-complete'
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
-POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$''
+POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR='' # Default is 

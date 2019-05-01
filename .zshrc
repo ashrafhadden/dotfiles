@@ -10,3 +10,5 @@ bindkey "^X^_" redo # adds redo
 ## ZSH Plugin Manager
 . ~/code/dotfiles/.oh-my-zsh
 # . ~/code/dotfiles/.zplugin
+
+# typeset -U path # prevent path duplicates
