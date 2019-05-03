@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 export CODE="$HOME/CODE"           # Path to my code projects
 export DOTS="$HOME/code/dotfiles"  # Path to my dotfiles
@@ -10,7 +10,8 @@ export ZSH="$HOME/.oh-my-zsh"      # Path to your oh-my-zsh installation.
 export MANPAGER='less -X'          # Don’t clear the screen after quitting a manual page.
 
 ## PATH
-export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH" # Homebrew sbin
+export PATH="/usr/local/bin:$PATH" # `which brew`
 export PATH="/usr/local/opt/ruby/bin:$PATH" # `brew info ruby` caveat
-export PATH=$(ruby -e 'puts Gem.bindir'):$PATH # `brew info ruby` caveat
-export PATH="$DOTS:$PATH" # enable Git subcommands file:///$HOME/code/dotfiles/git-home
+export PATH="/usr/local/lib/ruby/gems/2.6.0/bin:$PATH" # `brew info ruby` caveat
+export PATH="$DOTS/git-commands:$PATH" # enable Git subcommands file:///$HOME/code/dotfiles/git-home

@@ -12,7 +12,7 @@ plugins=(
 
 . ~/code/dotfiles/.exports
 . $DOTS/.powerlevel10k
-. $DOTS/.tput-colors
+. $DOTS/.colors
 . $DOTS/.aliases
 . $DOTS/.functions
 . $ZSH/oh-my-zsh.sh

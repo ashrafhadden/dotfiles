@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+. ~/code/dotfiles/.colors
+
+# https://help.github.com/en/articles/syncing-a-fork
+printf "${bold}git checkout master -q$reset...\n" && git checkout master -q
+printf "${bold}git fetch upstream$reset...\n" && git fetch upstream
+printf "${bold}git merge upstream/master$reset...\n" && git merge upstream/master

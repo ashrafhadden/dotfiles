@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+. ~/code/dotfiles/.colors
+
+printf "${redb}${black} WARNING $reset Make sure all changes committed, including .gitignore! Proceed? [${green}y$reset/${red}N$reset]: "
+if read -q; then
+  echo "${bold}git stash save 'gitignore-fix'" && git stash save 'gitignore-fix'
+  echo "${bold}git rm -r --cached .${reset}..." && git rm -r --cached .
+  echo "${bold}git add .${reset}..." && git add .
+  echo "${bold}git commit -m '.gitignore fix'${reset}..." && git commit -m ".gitignore fix"
+else
+  echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+fi

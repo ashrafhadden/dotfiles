@@ -19,7 +19,7 @@ prompter() {
 ## Dotfiles
 . ~/code/dotfiles/.exports
 . $DOTS/.powerlevel10k
-. $DOTS/.tput-colors
+. $DOTS/.colors
 . $DOTS/.aliases
 . $DOTS/.functions
 

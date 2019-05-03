@@ -27,7 +27,7 @@ export ZPLG_HOME="${ZDOTDIR:-$HOME}/.zplugin"
 zplg $plugin 'romkatv/powerlevel10k'                                       # 0.022
 zplg snippet "$HOME/code/dotfiles/.exports"                                # 0.001
 zplg snippet "$DOTS/.powerlevel10K"                                         # 0.001
-zplg snippet "$DOTS/.tput-colors"                                          # 0.081
+zplg snippet "$DOTS/.colors"                                          # 0.081
 zplg snippet "$DOTS/.aliases"                                              # 0.011
 zplg snippet "$DOTS/.functions"                                            # 0.003
 zplg $plugin 'zsh-users/zsh-autosuggestions'                               # 0.003

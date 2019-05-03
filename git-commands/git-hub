@@ -1,5 +1,7 @@
 ##!/usr/bin/env bash
 
+. ~/code/dotfiles/.colors
+
 if [ -z $1 ]; then
   open $(git config remote.origin.url)
 else

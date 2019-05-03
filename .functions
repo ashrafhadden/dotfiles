@@ -16,8 +16,7 @@ app() {
 }
 
 # Benchmark using https://github.com/sharkdp/hyperfine
-alias bm='benchmark'
-benchmark() {
+bm() {
   local command1='. ~/.zshrc;
 verbose=true
 if [[ $verbose == true ]]; then
@@ -42,7 +41,7 @@ fi'
 }
 
 # Change working directory to the top-most Finder window location
-cdf() { # short for `cdfinder`
+cdf() {
   cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
 }
 
@@ -75,6 +74,18 @@ cleanupNotificationCenter() {
   # [ ! -f $file.bak ] && sqlite3 $file ".backup $file.bak"
   # sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'SELECT identifier FROM app WHERE identifier LIKE "%canary%";'
   sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'DELETE FROM app WHERE identifier LIKE "%canary%";'
+}
+
+cls() {
+  local systemAppearance=$(defaults read -g AppleInterfaceStyle) &> /dev/null
+  case $systemAppearance in
+  Dark)
+    colorls -a --sd --dark
+    ;;
+  *)
+    colorls -a --sd --light
+    ;;
+  esac
 }
 
 # Easily change & check dns servers on Mac
@@ -136,7 +147,7 @@ installthemes() {
     )
     code --install-extension $themes[@]
   else
-    printf "\nAborting ${bold}installthemes${reset}\n"
+    echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
   fi
 }
 
@@ -152,37 +163,13 @@ ${bold}Finder$reset
 }
 
 foo() {
-  git tag -a v1.0.0 7f86903602e9387875bdb33ac149a5eaac009794 -m "🚀🔖 \`vsce publish 1.0.0.\`"
-  git push --tags origin master
-}
-
-gitignorefix() {
-  printf "${redb}${white} WARNING $reset Make sure all changes committed, including .gitignore! Proceed? [${green}y$reset/${red}N$reset]: "
-  if read -q; then
-    echo "${bold}git rm -r --cached .${reset}..." && git rm -r --cached .
-    echo "${bold}git add .${reset}..." && git add .
-    echo "${bold}git commit -m '.gitignore fix'${reset}..." && git commit -m ".gitignore fix"
-  else
-    echo "${bold}${FUNCNAME[0]}$reset aborted"
-  fi
-}
-
-help() {
-  bash help -m $1
+  echo foo
 }
 
 highlight() {
   local brewls0="'$1'"
   local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
   echo ${brewls1//$'\n'/${reset}'\n'} # Replace newline with reset+newline & print
-}
-
-hub() {
-  if [ -z "$1" ]; then
-    open $(git config remote.origin.url)
-  else
-    open "https://github.com/$1"
-  fi
 }
 
 icon() {
@@ -217,10 +204,9 @@ manchrome() {
 }
 
 # Open man page in VSCode
-# If `open` doesn't work use `code`, (open is faster)
 mancode() {
   man "$1" | col -b > "/tmp/$1"
-  open file:///private/tmp/$1
+  code /private/tmp/$1
 }
 
 # Open man page in Preview
@@ -233,7 +219,7 @@ mkd() {
   mkdir -p "$@" && cd "$_"
 }
 
-# # Easy custom Mac notifications from iTerm2 and VSCode
+# Easy custom Mac notifications from iTerm2 and VSCode
 notify() {
   if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
     terminal-notifier -group "ITERM" -title $1 -message $2 -sender "com.googlecode.iterm2"
@@ -242,9 +228,10 @@ notify() {
   fi
 }
 
+# Pretty-print PATH variable
 path() {
   case $1 in
-  -u)
+  -u) # unique
     echo ${PATH//:/\\n} | awk '!seen[$0]++'
     ;;
   *)
@@ -273,27 +260,15 @@ reinstall() {
     printf "Running ${bold}rm -rf node_modules$reset...\n" && rm -rf node_modules
     printf "Running ${bold}npm install$reset...\n" && npm install
   else
-    printf "\n${bold}reinstall$reset aborted!\n"
+    echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
   fi
-}
-
-rmtags() {
-  # https://stackoverflow.com/questions/44702757/how-to-remove-all-git-origin-and-local-tags
-  # Fetch all remote tags
-  git fetch
-  # Delete all remote tags
-  git push origin --delete $(git tag -l) # Pushing once should be faster than multiple times
-  # Delete all local tags
-  git tag -d $(git tag -l)
 }
 
 # Check active shell on Mac
 shell() {
   {
-    printf "${bold}PATHS$reset " && head -n 1 /etc/paths
     printf "${bold}SHELLS$reset " && sed -n 5p /etc/shells
     echo ${bold}\$SHELL$reset $SHELL
-    echo $bold\$0$reset $0
   } | column -t
   dscl . -read /Users/$USER UserShell
   echo ${bold}ps -p \"\$\$\"$reset
@@ -311,14 +286,6 @@ shortcuts() {
 sleepimage() {
   pmset -g | grep --color hibernatemode
   ls -lh /private/var/vm/sleepimage | grep B
-}
-
-# TODO Turn into git custom command https://coderwall.com/p/bt93ia/extend-git-with-custom-commands
-syncfork() {
-  # https://help.github.com/en/articles/syncing-a-fork
-  printf "${bold}git checkout master -q$reset...\n" && git checkout master -q
-  printf "${bold}git fetch upstream$reset...\n" && git fetch upstream
-  printf "${bold}git merge upstream/master$reset...\n" && git merge upstream/master
 }
 
 # Update all system tools
