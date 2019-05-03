@@ -31,6 +31,7 @@ alias z="code $DOTS/.zshrc" # Open zshrc in VSCode
 ## COMMANDS
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
+alias colortest=". $DOTS/colortest.sh"
 alias dated='npm outdated' # List outdated local NPM packages
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
 alias lscleanup='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder' # Clean up LaunchServices to remove duplicates in the “Open With” menu
