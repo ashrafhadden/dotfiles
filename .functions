@@ -147,27 +147,32 @@ dr() {
   notify "dr" "Finished dr!"
 }
 
-installthemes() {
-  printf "Install wild themes? [${green}y$reset/${red}N$reset]: "
-  if read -q; then
-    local themes=(
-      ChirtleLovesDolls.nebula-theme
-      evturn.cosmic-barf
-      felipe-mendes.slack-theme
-      j0hnm4r5.laser-theme
-      jaredkent.laserwave
-      jeremycantu.hack3r-theme
-      liviuschera.noctis
-      max-SS.Cyberpunk
-      PKief.material-icon-theme
-      samrapdev.outrun
-      theapemachine.scarface-theme
-      zeebo.hacker-colors
-    )
-    code --install-extension $themes[@]
-  else
-    echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
-  fi
+themes() {
+  local themes=(
+    amomum.theme-verdigris-light
+    bimbo1989.code-with-a-tan
+    ChirtleLovesDolls.nebula-theme
+    evturn.cosmic-barf
+    felipe-mendes.slack-theme
+    j0hnm4r5.laser-theme
+    jaredkent.laserwave
+    jeremycantu.hack3r-theme
+    liviuschera.noctis
+    max-SS.cyberpunk
+    max-SS.Cyberpunk
+    PKief.material-icon-theme
+    samrapdev.outrun
+    theapemachine.scarface-theme
+    zeebo.hacker-colors
+  )
+  case $1 in
+  uninstall)
+    prompt 'Install extra themes?' 'code --install-extension $themes[@]'
+    ;;
+  *)
+    prompt 'Uninstall extra themes?' 'code --uninstall-extension $themes[@]'
+    ;;
+  esac
 }
 
 # Keyboard shortcuts I want to memorize
@@ -245,6 +250,15 @@ path() {
     echo ${PATH//:/\\n}
     ;;
   esac
+}
+
+prompt() {
+  printf "$1 [${green}y$reset/${red}N$reset]: "
+  if read -q; then
+    $2
+  else
+    echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+  fi
 }
 
 # Reload scripts &/or shell

@@ -37,7 +37,7 @@ alias yolo='git yolo'
 
 ## COMMANDS
 alias whatthecommit='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
-alias amend='git commit --amend'
+alias amend='git stage . && git commit --amend'
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias colortest=". $DOTS/colortest.sh"
