@@ -4,7 +4,7 @@
 
 printf "Run$bold git yolo$reset? [${green}y$reset/${red}N$reset]: "
 if read -q; then
-  echo "${bold}git stage .$reset..." && git stage .
+  echo "${bold}git stage .$reset" && git stage .
   echo "${bold}git commit -m '$(curl -s whatthecommit.com/index.txt)'$reset..." && git commit -m "$(curl -s whatthecommit.com/index.txt)"
   printf "${bold}git push -f --all$reset..." && git push -f --all
   printf "${bold}git push -f --tags$reset..." && git push -f --tags
