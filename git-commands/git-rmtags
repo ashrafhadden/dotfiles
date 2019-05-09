@@ -1,11 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 . ~/code/dotfiles/.colors
 
-# https://stackoverflow.com/questions/44702757/how-to-remove-all-git-origin-and-local-tags
-echo 'Fetching remote tags...'
-echo "${bold}git fetch$reset" && git fetch
-echo 'Deleteing local tags...'
-echo "${bold}git tag -d \$(git tag -l)$reset" && git tag -d $(git tag -l)
-echo 'Deleting remote tags...'
-echo "${bold}git push origin --delete \$(git tag -l)$reset" && git push origin --delete $(git tag -l) # Pushing once should be faster than multiple times
+printf "Proceed? [${green}y$reset/${red}N$reset]: "
+if read -q; then
+  # https://stackoverflow.com/questions/44702757/how-to-remove-all-git-origin-and-local-tags
+  echo 'Fetching remote tags...'
+  echo "${bold}git fetch$reset" && git fetch
+  echo 'Deleteing local tags...'
+  echo "${bold}git tag -d \$(git tag -l)$reset" && git tag -d $(git tag -l)
+  echo 'Deleting remote tags...'
+  echo "${bold}git push origin --delete \$(git tag -l)$reset" && git push origin --delete $(git tag -l) # Pushing once should be faster than multiple times
+else
+  echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+fi

@@ -6,7 +6,7 @@ app() {
   id | uti | identifier | cfbundleidentifer)
     osascript -e 'id of app "'$2'"'
     ;;
-  v | version)
+  -v | version)
     osascript -e 'version of app "'$2'"'
     ;;
   *)
@@ -65,6 +65,25 @@ change() {
   esac
 }
 
+# chmod shortcuts
+cm() {
+  case $1 in
+  reset)
+    case $1 in
+    file | -f)
+      chmod 644
+      ;;
+    directory | dir | -d)
+      chmod 755
+      ;;
+    esac
+    ;;
+  *)
+    chmod u+x $1
+    ;;
+  esac
+}
+
 # Print creation date of file
 created() {
   GetFileInfo -d $1 | head -c 10
@@ -77,7 +96,7 @@ cleanupNotificationCenter() {
 }
 
 cls() {
-  local systemAppearance=$(defaults read -g AppleInterfaceStyle) &> /dev/null
+  local systemAppearance=$(defaults read -g AppleInterfaceStyle 2> /dev/null)
   case $systemAppearance in
   Dark)
     colorls -a --sd --dark
@@ -172,10 +191,6 @@ highlight() {
   echo ${brewls1//$'\n'/${reset}'\n'} # Replace newline with reset+newline & print
 }
 
-icon() {
-  echo -n "$1" | hexdump # https://stackoverflow.com/questions/13459913/how-to-add-an-icon-to-the-bash-prompt
-}
-
 # Keyboard shortcuts I want to memorize
 iterm() {
   printf "\
@@ -186,14 +201,6 @@ ${bold}iTerm$reset
 ⌘ ⇧ H\t${yellow}Open Paste History$reset
 ⌘ ⌥ /\t${yellow}Open Recent Directories$reset
 ⌘ ⌥ B\t${yellow}Start Instant Replay$reset
-"
-}
-
-# Cheatsheet for mac
-mac() {
-  printf "\
-${bold}Mac$reset
-⌘ \`\t${yellow}Cycle Through Windows$reset
 "
 }
 
@@ -256,8 +263,8 @@ path() {
 reinstall() {
   printf "Are you sure you want to ${bold}reinstall$reset $yellow/node_modules$reset? [${green}y$reset/${red}n$reset]: "
   if read -q; then
-    printf "\nRunning ${bold}rm package-lock.json$reset...\n" && rm package-lock.json
-    printf "Running ${bold}rm -rf node_modules$reset...\n" && rm -rf node_modules
+    printf "\nRunning ${bold}trash package-lock.json$reset...\n" && trash package-lock.json
+    printf "Running ${bold}trash node_modules$reset...\n" && trash node_modules
     printf "Running ${bold}npm install$reset...\n" && npm install
   else
     echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
@@ -288,6 +295,10 @@ sleepimage() {
   ls -lh /private/var/vm/sleepimage | grep B
 }
 
+trash() {
+  osascript -e "tell application \"Finder\" to delete POSIX file \"$PWD/$1\""
+}
+
 # Update all system tools
 update() {
   printf "$greenb${black} START $reset $bold${green}update$reset!\n"
@@ -296,7 +307,7 @@ update() {
   # printf "${bold}zplg self-update${reset}\n" && zplg self-update
   printf "${bold}git pull$reset ${blue}powerlevel10k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel10k && git pull && cd - > /dev/null
   printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - > /dev/null
-  printf "${bold}git pull$reset ${blue}zsh-atutosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - > /dev/null
+  printf "${bold}git pull$reset ${blue}zsh-autosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - > /dev/null
   printf "${bold}rustup update $reset" && rustup update
   printf "${bold}brew upgrade$reset\n" && brew upgrade
   printf "${bold}brew cask upgrade $reset" && brew cask upgrade
@@ -304,7 +315,7 @@ update() {
   printf "${bold}npm update --global$reset\n" && npm update --global
   printf "${bold}tldr --update$reset\n" && tldr --update
   printf "${bold}mas upgrade $reset" && mas upgrade
-  printf "${bold}softwareupdate --list$reset\n" && softwareupdate --list
+  printf "${bold}softwareupdate --install --all$reset\n" && softwareupdate --install --all
   printf "$redb${black} END $reset $bold${green}update$reset!\n"
   notify "update" "Done!"
 }
@@ -313,7 +324,7 @@ update() {
 v() {
   case $1 in
   -v)
-    printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
+    printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}Rust$reset $(rustc --version | cut -d' ' -f2)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
     # printf "${bold}Zplugin$reset\n"
@@ -325,7 +336,7 @@ v() {
     brew ls --versions $(brew leaves)
     ;;
   -vl)
-    printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
+    printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}Rust$reset $(rustc --version | cut -f2)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
     # printf "${bold}Zplugin$reset\n"
@@ -343,7 +354,7 @@ v() {
     code --list-extensions --show-versions
     ;;
   *)
-    printf "${bold}iTerm$reset $(defaults read /Applications/iTerm.app/Contents/Info CFBundleVersion | head -c 5)\n"
+    printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
     # printf "${bold}Zplugin$reset\n"
     printf "${bold}Rust$reset $(rustc --version | awk '{print $2}')\n"
@@ -362,10 +373,4 @@ wo() {
   printf '/* eslint-disable */\nconst webpack_output = ' > webpack_output.js
   vue inspect | tail -n +2 | sed "s/native code/'native code'/g" >> webpack_output.js
   code webpack_output.js
-}
-
-yolo() {
-  echo "${bold}git push -f --all$reset" && git push -f --all
-  echo "${bold}git push -f --tags$reset" && git push -f --tags
-  echo "${bold}git fetch$reset" && git fetch
 }

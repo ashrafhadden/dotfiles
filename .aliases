@@ -28,22 +28,31 @@ alias paths='code /etc/paths' # Open paths in VSCode
 alias shells='code /etc/shells' # Open shells in VSCode
 alias z="code $DOTS/.zshrc" # Open zshrc in VSCode
 
+## Git External Commands
+alias fixignore='git fixignore'
+alias hub='git hub'
+alias rmtags='git rmtags'
+alias syncfork='syncfork'
+alias yolo='git yolo'
+
 ## COMMANDS
+alias whatthecommit='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+alias amend='git commit --amend'
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias colortest=". $DOTS/colortest.sh"
-alias dated='npm outdated' # List outdated local NPM packages
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
 alias grep='grep --color=always'
 alias lscleanup='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder' # Clean up LaunchServices to remove duplicates in the “Open With” menu
 alias npmls='npm ls -gs --depth=0' # List global NPM packages, ignore annoying peer dep warnings
+alias out='npm outdated' # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
 alias ql='sudo qlmanage -p &> /dev/null' # Open file in Quick Look
 alias r='. ~/.zshrc' # reload zshrc
 alias rebuildspotlight='sudo mdutil -E /' # Rebuild entire Spotlight index
 alias remotes='git remote -v | column -t' # Pretty-print remotes
 alias resetlaunchpad='defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock' # reset Launchpad to its default order
-alias s=". $DOTS/.aliases; . $DOTS/.functions" # Source commonly edited files
+alias s=". $DOTS/.aliases; . $DOTS/.functions; tput cl" # Source commonly edited files
 alias symls_BASH='ls -lhaF | grep ^l' # List symlinks in current directory
-alias symls='colorls -la --color=always | grep ⇒' # List symlinks in current directory
+alias symls='colorls -la --color=always | grep ⇒'                           # List symlinks in current directory
 alias wake='pmset -g assertions | grep Prevent' # List processes keeping mac awake

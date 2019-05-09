@@ -3,6 +3,6 @@
 . ~/code/dotfiles/.colors
 
 # https://help.github.com/en/articles/syncing-a-fork
-printf "${bold}git checkout master -q$reset...\n" && git checkout master -q
-printf "${bold}git fetch upstream$reset...\n" && git fetch upstream
-printf "${bold}git merge upstream/master$reset...\n" && git merge upstream/master
+echo "${bold}git checkout master -q$reset..." && git checkout master -q
+echo "${bold}git fetch upstream$reset..." && git fetch upstream
+echo "${bold}git merge upstream/master$reset..." && git merge upstream/master
