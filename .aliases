@@ -36,7 +36,6 @@ alias syncfork='syncfork'
 alias yolo='git yolo'
 
 ## COMMANDS
-alias whatthecommit='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
 alias amend='git stage . && git commit --amend'
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
@@ -48,11 +47,12 @@ alias npmls='npm ls -gs --depth=0' # List global NPM packages, ignore annoying p
 alias out='npm outdated' # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
 alias ql='sudo qlmanage -p &> /dev/null' # Open file in Quick Look
-alias r='. ~/.zshrc' # reload zshrc
 alias rebuildspotlight='sudo mdutil -E /' # Rebuild entire Spotlight index
 alias remotes='git remote -v | column -t' # Pretty-print remotes
 alias resetlaunchpad='defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock' # reset Launchpad to its default order
-alias s=". $DOTS/.aliases; . $DOTS/.functions; tput cl" # Source commonly edited files
+alias s='r' # alias function r() in .functions
 alias symls_BASH='ls -lhaF | grep ^l' # List symlinks in current directory
-alias symls='colorls -la --color=always | grep ⇒'                           # List symlinks in current directory
+alias symls='colorls -la --color=always | grep ⇒'                             # List symlinks in current directory
 alias wake='pmset -g assertions | grep Prevent' # List processes keeping mac awake
+alias whatthecommit='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+alias zr='r -z' # alias function r() in .functions

@@ -65,30 +65,6 @@ change() {
   esac
 }
 
-# chmod shortcuts
-cm() {
-  case $1 in
-  reset)
-    case $1 in
-    file | -f)
-      chmod 644
-      ;;
-    directory | dir | -d)
-      chmod 755
-      ;;
-    esac
-    ;;
-  *)
-    chmod u+x $1
-    ;;
-  esac
-}
-
-# Print creation date of file
-created() {
-  GetFileInfo -d $1 | head -c 10
-}
-
 cleanupNotificationCenter() {
   # [ ! -f $file.bak ] && sqlite3 $file ".backup $file.bak"
   # sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'SELECT identifier FROM app WHERE identifier LIKE "%canary%";'
@@ -107,18 +83,39 @@ cls() {
   esac
 }
 
-# Easily change & check dns servers on Mac
+# chmod shortcuts
+cm() {
+  case $1 in
+  reset)
+    case $1 in
+    file | -f)
+      chmod 644
+      ;;
+    directory | dir | -d)
+      chmod 755
+      ;;
+    esac
+    ;;
+  help | --help | -h)
+    echo "${yellow}File$reset: ${bold}chmod 644$reset"
+    echo "${yellow}Directory$reset: ${bold}chmod 755$reset"
+    ;;
+  *)
+    chmod u+x $1
+    ;;
+  esac
+}
+
+# Print creation date of file
+created() {
+  GetFileInfo -d $1 | head -c 10
+}
+
+# Easily get and set dns servers on Mac
 dns() {
   # https://servers.opennic.org/
-  dnsservers="\
-8.8.8.8 Google
-8.8.4.4 Google
-2001:4860:4860::8888 Google
-2001:4860:4860::8844 Google
-162.248.241.94 OpenNIC
-172.98.193.42 OpenNIC"
-  local ip=($(echo $dnsservers | cut -d' ' -f1))
-  local name=($(echo $dnsservers | cut -d' ' -f2))
+  local ip=($(echo $DNSSERVERS | cut -d' ' -f1))
+  local name=($(echo $DNSSERVERS | cut -d' ' -f2))
   case $1 in
   set)
     networksetup -setdnsservers Wi-Fi $ip[@]
@@ -147,34 +144,6 @@ dr() {
   notify "dr" "Finished dr!"
 }
 
-themes() {
-  local themes=(
-    amomum.theme-verdigris-light
-    bimbo1989.code-with-a-tan
-    ChirtleLovesDolls.nebula-theme
-    evturn.cosmic-barf
-    felipe-mendes.slack-theme
-    j0hnm4r5.laser-theme
-    jaredkent.laserwave
-    jeremycantu.hack3r-theme
-    liviuschera.noctis
-    max-SS.cyberpunk
-    max-SS.Cyberpunk
-    PKief.material-icon-theme
-    samrapdev.outrun
-    theapemachine.scarface-theme
-    zeebo.hacker-colors
-  )
-  case $1 in
-  uninstall)
-    prompt 'Install extra themes?' 'code --install-extension $themes[@]'
-    ;;
-  *)
-    prompt 'Uninstall extra themes?' 'code --uninstall-extension $themes[@]'
-    ;;
-  esac
-}
-
 # Keyboard shortcuts I want to memorize
 finder() {
   printf "\
@@ -188,6 +157,26 @@ ${bold}Finder$reset
 
 foo() {
   echo foo
+}
+
+hexColor() {
+  # https://gist.github.com/mhulse/b11e568260fb8c3aa2a8
+  hex=$2
+  if [[ $hex == "#"* ]]; then
+    hex=$(echo $2 | awk '{print substr($0,2)}')
+  fi
+  r=$(printf '0x%0.2s' "$hex")
+  g=$(printf '0x%0.2s' ${hex#??})
+  b=$(printf '0x%0.2s' ${hex#????})
+  xtermColorNumber=$(printf $(printf "%03d" "$(((r < 75 ? 0 : (r - 35) / 40) * 6 * 6 + (g < 75 ? 0 : (g - 35) / 40) * 6 + (b < 75 ? 0 : (b - 35) / 40) + 16))"))
+  case $1 in
+  foreground | fg | af)
+    tput setaf $xtermColorNumber
+    ;;
+  background | bg | ab)
+    tput setab $xtermColorNumber
+    ;;
+  esac
 }
 
 highlight() {
@@ -262,16 +251,28 @@ prompt() {
 }
 
 # Reload scripts &/or shell
-# r() {
-# 	case $1 in
-# 	-v | -l)
-# 		zpl update --all -q && tput cl && src
-# 		;;
-# 	*)
-# 		zpl update -q "$DOTS/.aliases" "$DOTS/.functions" && tput cl
-# 		;;
-# 	esac
-# }
+r() {
+  case $1 in
+  zsh | -z)
+    # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/zsh_reload/zsh_reload.plugin.zsh
+    local cache="$ZSH_CACHE_DIR"
+    autoload -U compinit zrecompile
+    compinit -i -d "$cache/zcomp-$HOST"
+
+    for f in ~/.zshrc "$cache/zcomp-$HOST"; do
+      zrecompile -p $f && command rm -f $f.zwc.old
+    done
+
+    # Use $SHELL if available; remove leading dash if login shell
+    [[ -n "$SHELL" ]] && exec ${SHELL#-} || exec zsh
+    ;;
+  *)
+    . $DOTS/.aliases
+    .                   $DOTS/.functions
+    tput                                       cl
+    ;;
+  esac
+}
 
 # Fully reinstall node_modules to fix NPM errors
 reinstall() {
@@ -307,6 +308,34 @@ shortcuts() {
 sleepimage() {
   pmset -g | grep --color hibernatemode
   ls -lh /private/var/vm/sleepimage | grep B
+}
+
+themes() {
+  local themes=(
+    amomum.theme-verdigris-light
+    bimbo1989.code-with-a-tan
+    ChirtleLovesDolls.nebula-theme
+    evturn.cosmic-barf
+    felipe-mendes.slack-theme
+    j0hnm4r5.laser-theme
+    jaredkent.laserwave
+    jeremycantu.hack3r-theme
+    liviuschera.noctis
+    max-SS.cyberpunk
+    max-SS.Cyberpunk
+    PKief.material-icon-theme
+    samrapdev.outrun
+    theapemachine.scarface-theme
+    zeebo.hacker-colors
+  )
+  case $1 in
+  uninstall)
+    prompt 'Install extra themes?' 'code --install-extension $themes[@]'
+    ;;
+  *)
+    prompt 'Uninstall extra themes?' 'code --uninstall-extension $themes[@]'
+    ;;
+  esac
 }
 
 trash() {

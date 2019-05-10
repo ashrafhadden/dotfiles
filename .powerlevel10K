@@ -1,77 +1,84 @@
 #!/usr/bin/env zsh
 
-# envIcons() {
-#   icons="$reset"
-#   node=$(ls package.json) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="$green$reset"
-#   fi
-#   js=$(ls *.js) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+=" $yellow$reset"
-#   fi
-#   py=$(ls *.py) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+=" $green$reset"
-#   fi
-#   shell=$(ls *.sh) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="  $red$reset"
-#   fi
-#   git=$(ls .git) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+=" $red$reset"
-#   fi
-#   echo $icons
-# }
-# envIconsSW() {
-#   icons=''
-#   node=$(ls package.json) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="$green$reset"
-#   fi
-#   js=$(ls *.js) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="$yellow$reset"
-#   fi
-#   py=$(ls *.py) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="$green$reset"
-#   fi
-#   shell=$(ls *.sh) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="$red$reset"
-#   fi
-#   git=$(ls .git) &> /dev/null
-#   if [[ $? == 0 ]]; then
-#     icons+="$red$reset"
-#   fi
-#   echo $icons
-# }
-# POWERLEVEL9K_ETC_ICON=' '
-# POWERLEVEL9K_FOLDER_ICON=' '
-# POWERLEVEL9K_HOME_ICON=' '
-# POWERLEVEL9K_HOME_SUB_ICON=' '
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='clear'
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='yellow'
-POWERLEVEL9K_CUSTOM_ENVICONS_BACKGROUND='black'
-POWERLEVEL9K_CUSTOM_ENVICONS='envIcons'
-POWERLEVEL9K_DIR_DEFAULT_BACKGROUND='clear'
-POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
-POWERLEVEL9K_DIR_HOME_BACKGROUND='clear'
-POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND='clear'
-POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='white'
-POWERLEVEL9K_DIR_PATH_HIGHLIGHT_BOLD='true'
-POWERLEVEL9K_DIR_PATH_HIGHLIGHT_FOREGROUND='yellow'
-POWERLEVEL9K_DIR_PATH_SEPARATOR_FOREGROUND='blue' # /
+POWERLEVEL9K_MODE='nerdfont-complete'
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
+POWERLEVEL9K_COLOR_SCHEME='dark'
+
+## FOLDER ICON
 POWERLEVEL9K_ETC_ICON=
 POWERLEVEL9K_FOLDER_ICON=
 POWERLEVEL9K_HOME_ICON=
 POWERLEVEL9K_HOME_SUB_ICON=
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
-POWERLEVEL9K_LEFT_SEGMENT_END_SEPARATOR=' ' # put space between prompt and cursor
+# POWERLEVEL9K_ETC_ICON=' '
+# POWERLEVEL9K_FOLDER_ICON=' '
+# POWERLEVEL9K_HOME_ICON=' '
+# POWERLEVEL9K_HOME_SUB_ICON=' '
+
+## SEGMENT_SEPARATOR
+POWERLEVEL9K_LEFT_SEGMENT_END_SEPARATOR='' # space between prompt and cursor
 POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='' # Default is 
-POWERLEVEL9K_MODE='nerdfont-complete'
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
+POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='' # Deafult is 
 POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR='' # Default is 
+
+## SEGMENT COLORS
+# clear
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='clear'
+POWERLEVEL9K_CUSTOM_ENVICONS_BACKGROUND='clear'
+POWERLEVEL9K_DIR_DEFAULT_BACKGROUND='clear'
+POWERLEVEL9K_DIR_HOME_BACKGROUND='clear'
+POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND='clear'
+POWERLEVEL9K_VCS_CLEAN_BACKGROUND='clear'
+POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='clear'
+POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='clear'
+
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='yellow'
+POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='white'
+POWERLEVEL9K_DIR_HOME_FOREGROUND='white'
+POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='white'
+POWERLEVEL9K_DIR_PATH_HIGHLIGHT_BOLD='true'
+POWERLEVEL9K_DIR_PATH_HIGHLIGHT_FOREGROUND='yellow'
+POWERLEVEL9K_DIR_PATH_SEPARATOR_FOREGROUND='blue' # /
+POWERLEVEL9K_VCS_CLEAN_FOREGROUND='white'
+POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='yellow'
+POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND='red'
+
+## MULTILINE_PROMPT_PREFIX
+if [ $TERM_PROGRAM = 'vscode' ]; then
+  LEFT_PROMPT_ELEMENTS=(dir)
+  # POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='╭ '
+  # POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='╰  '
+else
+  POWERLEVEL9K_CUSTOM_ENVICONS='envicons'
+  LEFT_PROMPT_ELEMENTS=(custom_envicons dir vcs)
+  POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+fi
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=($LEFT_PROMPT_ELEMENTS)
+
+envicons() {
+  # Match 'Material Icon Theme' icon colors https://github.com/PKief/vscode-material-icon-theme/tree/master/icons
+  color() {
+    hexColor 'foreground' $1
+  }
+  local icons=''
+  node=$(ls package.json) &> /dev/null
+  if [[ $? == 0 ]]; then
+    icons+="$(color '#8BC34A')$reset"
+  fi
+  js=$(ls *.js) &> /dev/null
+  if [[ $? == 0 ]]; then
+    icons+=" $(color '#FFCA28')$reset"
+  fi
+  py=$(ls *.py) &> /dev/null
+  if [[ $? == 0 ]]; then
+    icons+=" $(color '#3C78AA')$reset"
+  fi
+  shell=$(ls *.sh) &> /dev/null
+  if [[ $? == 0 ]]; then
+    icons+="  $(color '#ff7043')$reset"
+  fi
+  git=$(ls .git) &> /dev/null
+  if [[ $? == 0 ]]; then
+    icons+=" $(color '#e64a19')$reset"
+  fi
+  echo $icons
+}
