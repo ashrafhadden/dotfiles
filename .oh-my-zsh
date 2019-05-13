@@ -10,11 +10,6 @@ plugins=(
   zsh-autosuggestions
 )
 
-. ~/code/dotfiles/.exports
-. $DOTS/.powerlevel10k
-. $DOTS/.colors
-. $DOTS/.aliases
-. $DOTS/.functions
 . $ZSH/oh-my-zsh.sh
 
 # Rustup completions

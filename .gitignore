@@ -1,8 +1,10 @@
+.untracked
+
+# Node Chakra Time Travel
 _ttd_log_
 
 # Don't expose personal info often stored in .gitconfigs
 .gitconfig
-
 
 ## gitignore.io
 # Created by https://www.gitignore.io/api/git,node,sass,rust,vuejs,macos,windows,visualstudiocode

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-. ~/code/dotfiles/.colors
-
 # https://help.github.com/en/articles/syncing-a-fork
 echo "${bold}git checkout master -q$reset..." && git checkout master -q
 echo "${bold}git fetch upstream$reset..." && git fetch upstream

@@ -10,7 +10,11 @@ osascript -e 'tell application "System Preferences" to quit'
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+while true; do
+  sudo              -n true
+  sleep                            60
+  kill                                      -0 "$$" || exit
+done                                                              2> /dev/null &
 
 ###############################################################################
 ## PERSONAL                                                           #
@@ -142,6 +146,31 @@ defaults write NSGlobalDomain AppleFontSmoothing -int 1
 # Enable HiDPI display modes (requires restart)
 sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
 
+##################################################################################
+## QuickLook                                                                     #
+##################################################################################
+
+sudo defaults write /Library/QuickLook/iWork.qlgenerator/Contents/Info.plist QLPreviewHeight -float 584
+sudo defaults write /Library/QuickLook/iWork.qlgenerator/Contents/Info.plist QLPreviewWidth -float 1068
+
+defaults write org.n8gray.QLColorCode fontSizePoints 16
+
+# https://github.com/anthonygelibert/QLColorCode#Settings
+defaults write org.n8gray.QLColorCode extraHLFlags '-s dracula --base16'
+
+defaults write org.n8gray.QLColorCode font "Ubuntu Mono Nerd Lig"
+
+defaults write org.n8gray.QLColorCode hlTheme Candy
+
+# 1000000 kB = 1GB
+defaults write org.n8gray.QLColorCode maxFileSize 1000000
+
+# 1000000 kB = 1GB
+defaults write com.whomwah.quicklookstephen maxFileSize 102400
+
+# Enable text selection in QuickLook
+defaults write com.apple.finder QLEnableTextSelection -bool TRUE
+
 ###############################################################################
 ## Finder                                                                     #
 ###############################################################################
@@ -213,8 +242,8 @@ sudo chflags nohidden /Volumes
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
 defaults write com.apple.finder FXInfoPanesExpanded -dict \
-	General -bool true \
-	OpenWith -bool true
+  General -bool true \
+  OpenWith -bool true
 
 ###############################################################################
 ## Dock, Dashboard, and hot corners                                           #
@@ -319,27 +348,27 @@ defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
 # Use `sudo mdutil -i off "/Volumes/foo"` to stop indexing any volume.
 # Change indexing order and disable some search results
 defaults write com.apple.spotlight orderedItems -array \
-	'{"enabled" = 1;"name" = "APPLICATIONS";}' \
-	'{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
-	'{"enabled" = 1;"name" = "DIRECTORIES";}' \
-	'{"enabled" = 1;"name" = "PDF";}' \
-	'{"enabled" = 0;"name" = "FONTS";}' \
-	'{"enabled" = 1;"name" = "DOCUMENTS";}' \
-	'{"enabled" = 0;"name" = "MESSAGES";}' \
-	'{"enabled" = 0;"name" = "CONTACT";}' \
-	'{"enabled" = 0;"name" = "EVENT_TODO";}' \
-	'{"enabled" = 0;"name" = "IMAGES";}' \
-	'{"enabled" = 0;"name" = "BOOKMARKS";}' \
-	'{"enabled" = 0;"name" = "MUSIC";}' \
-	'{"enabled" = 0;"name" = "MOVIES";}' \
-	'{"enabled" = 0;"name" = "PRESENTATIONS";}' \
-	'{"enabled" = 0;"name" = "SPREADSHEETS";}' \
-	'{"enabled" = 1;"name" = "SOURCE";}' \
-	'{"enabled" = 1;"name" = "MENU_DEFINITION";}' \
-	'{"enabled" = 1;"name" = "MENU_OTHER";}' \
-	'{"enabled" = 1;"name" = "MENU_CONVERSION";}' \
-	'{"enabled" = 1;"name" = "MENU_EXPRESSION";}' \
-	'{"enabled" = 1;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
+  '{"enabled" = 1;"name" = "APPLICATIONS";}' \
+  '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
+  '{"enabled" = 1;"name" = "DIRECTORIES";}' \
+  '{"enabled" = 1;"name" = "PDF";}' \
+  '{"enabled" = 0;"name" = "FONTS";}' \
+  '{"enabled" = 1;"name" = "DOCUMENTS";}' \
+  '{"enabled" = 0;"name" = "MESSAGES";}' \
+  '{"enabled" = 0;"name" = "CONTACT";}' \
+  '{"enabled" = 0;"name" = "EVENT_TODO";}' \
+  '{"enabled" = 0;"name" = "IMAGES";}' \
+  '{"enabled" = 0;"name" = "BOOKMARKS";}' \
+  '{"enabled" = 0;"name" = "MUSIC";}' \
+  '{"enabled" = 0;"name" = "MOVIES";}' \
+  '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
+  '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
+  '{"enabled" = 1;"name" = "SOURCE";}' \
+  '{"enabled" = 1;"name" = "MENU_DEFINITION";}' \
+  '{"enabled" = 1;"name" = "MENU_OTHER";}' \
+  '{"enabled" = 1;"name" = "MENU_CONVERSION";}' \
+  '{"enabled" = 1;"name" = "MENU_EXPRESSION";}' \
+  '{"enabled" = 1;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
 # Load new settings before rebuilding the index
 killall mds > /dev/null 2>&1
 # Make sure indexing is enabled for the main volume
@@ -457,23 +486,23 @@ defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool t
 ###############################################################################
 
 for app in "Activity Monitor" \
-	"Address Book" \
-	"Calendar" \
-	"cfprefsd" \
-	"Contacts" \
-	"Dock" \
-	"Finder" \
-	"Google Chrome Canary" \
-	"Google Chrome" \
-	"Mail" \
-	"Messages" \
-	"Opera" \
-	"Photos" \
-	"Safari" \
-	"SizeUp" \
-	"SystemUIServer" \
-	"Terminal" \
-	"iCal"; do
-	killall "${app}" &> /dev/null
+  "Address Book" \
+  "Calendar" \
+  "cfprefsd" \
+  "Contacts" \
+  "Dock" \
+  "Finder" \
+  "Google Chrome Canary" \
+  "Google Chrome" \
+  "Mail" \
+  "Messages" \
+  "Opera" \
+  "Photos" \
+  "Safari" \
+  "SizeUp" \
+  "SystemUIServer" \
+  "Terminal" \
+  "iCal"; do
+  killall "${app}" &> /dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."

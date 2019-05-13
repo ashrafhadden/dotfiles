@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# aliases: lazy
+
+getStatus() {
+  # https://git-scm.com/docs/git-status#_short_format
+  case $1 in
+  M)
+    printf Modifiy
+    ;;
+  A | U | ??)
+    printf Add
+    ;;
+  D)
+    printf rm
+    ;;
+  R)
+    printf Rename
+    ;;
+  C)
+    printf Copy
+    ;;
+  *)
+    printf $(curl -s whatthecommit.com/index.txt)
+    ;;
+  esac
+}
+
+commits=($(git status --porcelain))
+# for $i in $commits; do
+#   local status=$(getStatus $i)
+#   echo boop commit -m \"$commit $status\"
+# done
+
+git status --porcelain | sed -i '
+s/M/Modify/
+s/A|U|(\?\?)/Add/
+s/D/rm/
+s/R/Rename/
+s/C/Copy/
+'

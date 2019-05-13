@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-. ~/code/dotfiles/.colors
-
 printf "Proceed? [${green}y$reset/${red}N$reset]: "
 if read -q; then
   # https://stackoverflow.com/questions/44702757/how-to-remove-all-git-origin-and-local-tags

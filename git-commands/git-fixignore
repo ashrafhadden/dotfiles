@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-. ~/code/dotfiles/.colors
-
 printf "${redb}$black WARNING $reset Make sure all changes committed/stashed, including .gitignore! Proceed? [${green}y$reset/${red}N$reset]: "
 if read -q; then
   printf "${bold}git stash save 'gitignore-fix'${reset}..." && git stash save 'gitignore-fix'

@@ -40,11 +40,6 @@ fi'
   esac
 }
 
-# Change working directory to the top-most Finder window location
-cdf() {
-  cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"
-}
-
 change() {
   case $1 in
   bash)
@@ -84,15 +79,25 @@ cls() {
 }
 
 # chmod shortcuts
-cm() {
+perms() {
   case $1 in
-  reset)
+  reset | rm)
     case $1 in
     file | -f)
-      chmod 644
+      chmod 644 $2
       ;;
     directory | dir | -d)
-      chmod 755
+      chmod 755 $2
+      ;;
+    *)
+      local files=$(ls -la | tail -n +4 | grep ^d | awk "{print \$9}")
+      local dirs=$(ls -la | tail -n +4 | grep ^d -v | awk "{print \$9}")
+      local shortPWD=$(echo $PWD | rev | cut -d'/' -f-1 | rev)
+      printf "⚠️  Reset all permissions in $bold$shortPWD$reset?\n\n${red}Will be modified $reset...\n\n${bold}FILES$reset\n$files\n\n${bold}DIRS$reset\n$dirs\n\n[${green}y$reset/${red}N$reset]: "
+      if read -q; then
+        chmod 755 $files
+        chmod 644 $dirs
+      fi
       ;;
     esac
     ;;
@@ -100,19 +105,32 @@ cm() {
     echo "${yellow}File$reset: ${bold}chmod 644$reset"
     echo "${yellow}Directory$reset: ${bold}chmod 755$reset"
     ;;
+  set | add)
+    chmod u+x $2
+    ;;
   *)
-    chmod u+x $1
+    local systemAppearance=$(defaults read -g AppleInterfaceStyle 2> /dev/null)
+    case $systemAppearance in
+    Dark)
+      colorls -al --sd --dark
+      ;;
+    *)
+      colorls -al --sd --light
+      ;;
+    esac
     ;;
   esac
 }
 
-# Print creation date of file
-created() {
-  GetFileInfo -d $1 | head -c 10
-}
-
 # Easily get and set dns servers on Mac
 dns() {
+  DNSSERVERS="\
+8.8.8.8 Google
+8.8.4.4 Google
+2001:4860:4860::8888 Google
+2001:4860:4860::8844 Google
+162.248.241.94 OpenNIC
+172.98.193.42 OpenNIC"
   # https://servers.opennic.org/
   local ip=($(echo $DNSSERVERS | cut -d' ' -f1))
   local name=($(echo $DNSSERVERS | cut -d' ' -f2))
@@ -159,6 +177,46 @@ foo() {
   echo foo
 }
 
+theme() {
+  case $1 in
+  light)
+    printf "\033]50;SetProfile=Tango Light\a" &
+    &> /dev/null
+    osascript -e '
+			tell application id "com.apple.systemevents"
+				tell appearance preferences
+					set dark mode to false
+				end tell
+			end tell' &
+    &> /dev/null
+    sed -i.bak $'/colorTheme/c\\\n"workbench.colorTheme": "Dracula.min White"\n' ~/Library/Application\ Support/Code/User/settings.json &
+    &> /dev/null
+    osascript -e 'quit app "Firefox"'
+    caffeinate -w $(pgrep firefox)
+    shadowfox -uninstall
+    sed -i.bak -e 's/dark@m/light@m/g' -e 's/"dark"/"light"/g' ~/Library/Application\ Support/Firefox/Profiles/19su5bye.default-1557024518325/prefs.js
+    open -a Firefox
+    ;;
+  dark)
+    printf "\033]50;SetProfile=Dracula\a" &
+    &> /dev/null
+    osascript -e '
+			tell application id "com.apple.systemevents"
+				tell appearance preferences
+					set dark mode to true
+				end tell
+			end tell' &
+    &> /dev/null
+    sed -i.bak $'/colorTheme/c\\\n"workbench.colorTheme": "Dracula.min"\n' ~/Library/Application\ Support/Code/User/settings.json &
+    &> /dev/null
+    osascript -e 'quit app "Firefox"'
+    caffeinate -w $(pgrep firefox)
+    shadowfox -set-dark-theme
+    open -a Firefox
+    ;;
+  esac
+}
+
 hexColor() {
   # https://gist.github.com/mhulse/b11e568260fb8c3aa2a8
   hex=$2
@@ -179,11 +237,11 @@ hexColor() {
   esac
 }
 
-highlight() {
-  local brewls0="'$1'"
-  local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
-  echo ${brewls1//$'\n'/${reset}'\n'} # Replace newline with reset+newline & print
-}
+# highlight() {
+#   local brewls0="'$1'"
+#   local brewls1=${brewls0// / ${bold}} # Replace space with space+bold
+#   echo ${brewls1//$'\n'/${reset}'\n'} # Replace newline with reset+newline & print
+# }
 
 # Keyboard shortcuts I want to memorize
 iterm() {
@@ -241,6 +299,25 @@ path() {
   esac
 }
 
+port() {
+  case $1 in
+  free | clear | remove | clr | rm)
+    case $2 in
+    --force | -f)
+      kill -kill $(lsof -t -i :$3)
+      ;;
+    esac
+    kill $(lsof -t -i :$2)
+    ;;
+  --force | -f)
+    kill -kill $(lsof -t -i :$3)
+    ;;
+  *)
+    lsof -i :$1
+    ;;
+  esac
+}
+
 prompt() {
   printf "$1 [${green}y$reset/${red}N$reset]: "
   if read -q; then
@@ -286,6 +363,10 @@ reinstall() {
   fi
 }
 
+rmverify() {
+  xattr -d com.apple.quarantine /Applications/$1.app
+}
+
 # Check active shell on Mac
 shell() {
   {
@@ -304,12 +385,6 @@ shortcuts() {
   mac
 }
 
-# Verify that SSD Mac is not saving sleep images
-sleepimage() {
-  pmset -g | grep --color hibernatemode
-  ls -lh /private/var/vm/sleepimage | grep B
-}
-
 themes() {
   local themes=(
     amomum.theme-verdigris-light
@@ -322,18 +397,31 @@ themes() {
     jeremycantu.hack3r-theme
     liviuschera.noctis
     max-SS.cyberpunk
-    max-SS.Cyberpunk
     PKief.material-icon-theme
     samrapdev.outrun
     theapemachine.scarface-theme
     zeebo.hacker-colors
   )
+  local builtinthemes=(
+    vscode.theme-defaults
+    vscode.theme-kimbie-dark
+    vscode.theme-monokai-dimmed
+    vscode.theme-monokai
+    vscode.theme-quiet-light
+    vscode.theme-red
+    vscode.solarized-dark
+    vscode.solarized-light
+    vscode.tomorrow-night-blue
+  )
   case $1 in
-  uninstall)
+  install)
     prompt 'Install extra themes?' 'code --install-extension $themes[@]'
     ;;
-  *)
+  uninstall | rm)
     prompt 'Uninstall extra themes?' 'code --uninstall-extension $themes[@]'
+    ;;
+  disable)
+    prompt 'Disable builtin themes?' 'code --disable-extension $builtinthemes[@]'
     ;;
   esac
 }
@@ -351,7 +439,7 @@ update() {
   printf "${bold}git pull$reset ${blue}powerlevel10k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel10k && git pull && cd - > /dev/null
   printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - > /dev/null
   printf "${bold}git pull$reset ${blue}zsh-autosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - > /dev/null
-  printf "${bold}rustup update $reset" && rustup update
+  # printf "${bold}rustup update $reset" && rustup update
   printf "${bold}brew upgrade$reset\n" && brew upgrade
   printf "${bold}brew cask upgrade $reset" && brew cask upgrade
   printf "${bold}brew cleanup$reset\n" && brew cleanup

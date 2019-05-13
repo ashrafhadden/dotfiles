@@ -5,13 +5,6 @@ export DOTS="$HOME/code/dotfiles"  # Path to my dotfiles
 export EDITOR='code'               # Make VSCode the default editor
 export LC_ALL='en_US.UTF-8'        # Use UTF-8
 export ZSH="$HOME/.oh-my-zsh"      # Path to your oh-my-zsh installation.
-export DNSSERVERS="\
-8.8.8.8 Google
-8.8.4.4 Google
-2001:4860:4860::8888 Google
-2001:4860:4860::8844 Google
-162.248.241.94 OpenNIC
-172.98.193.42 OpenNIC"
 
 ## PATH
 export PATH="/usr/local/sbin:$PATH" # Homebrew sbin

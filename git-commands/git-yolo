@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-. ~/code/dotfiles/.colors
-
 case $1 in
 commit | -c)
   printf "Run$bold git yolo commit$reset? [${green}y$reset/${red}N$reset]: "

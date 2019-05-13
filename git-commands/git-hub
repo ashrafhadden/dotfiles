@@ -1,7 +1,12 @@
-##!/usr/bin/env bash
+##!/usr/bin/env zsh
+# aliases: home, repo
 
-. ~/code/dotfiles/.colors
-
+printf "Proceed? [${green}y$reset/${red}N$reset]: "
+if read -q; then
+  printf "\nYou answered ${bold}yes${reset}\n"
+else
+  echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+fi
 if [ -z $1 ]; then
   open $(git config remote.origin.url)
 else

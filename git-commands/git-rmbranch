@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+. $DOTS/.colors
+
+printf "Proceed? [${green}y$reset/${red}N$reset]: "
+if read -q; then
+  # alias cmd="git branch -D $1" && echo $cmd && $cmd
+  # alias cmd="git push origin --delete $1" && echo $cmd && $cmd
+else
+  echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+fi

@@ -8,25 +8,25 @@ alias cdd="cd $DOTS"
 alias cdp='cdc' # Change directory to $CODE (main projects folder)
 
 ## CONFIGS
-alias a="code $DOTS/.aliases" # Open aliases in VSCode
-alias b="code $DOTS/.bashrc" # Open bashrc in VSCode
-alias bt-vue="code $CODE/bt-vue" # Open personal project bt-vue in VSCode
-alias css='code ~/Library/Application\ Support/Code/User/vscode.css' # Open CSS file for VSCode "Custom CSS and JS Loader" Extension https://github.com/be5invis/vscode-custom-css
-alias dots="code $DOTS" # Open dotfiles in VSCode
-alias e="code $DOTS/.exports" # Open exports in VSCode
-alias f="code $DOTS/.functions" # Open _functions in VSCode
-alias gitconfig='git config -e --global' # Open .gitconfig file in VSCode
-alias gitignore="code $DOTS/.gitignore" # Open .gitignore file in VSCode
-alias hosts='code /private/etc/hosts' # Open hosts file in VSCode
-alias ideas="code $CODE/misc/code-ideas.txt" # Open ideas file in VSCode
+alias a="open $DOTS/.aliases" # Open aliases in VSCode
+alias b="open $DOTS/.bashrc" # Open bashrc in VSCode
+alias bt-vue="open $CODE/bt-vue" # Open personal project bt-vue in VSCode
+alias css='open ~/Library/Application\ Support/Code/User/vscode.css' # Open CSS file for VSCode "Custom CSS and JS Loader" Extension https://github.com/be5invis/vscode-custom-css
+alias dots="open $DOTS" # Open dotfiles in VSCode
+alias e="open $DOTS/.exports" # Open exports in VSCode
+alias f="open $DOTS/.functions" # Open _functions in VSCode
+alias gitconfig='git gitconfig' # Open global .gitconfig file in VSCode
+alias gitignore="open $DOTS/.gitignore" # Open .gitignore file in VSCode
+alias hosts='open /private/etc/hosts' # Open hosts file in VSCode
+alias ideas="open $CODE/misc/code-ideas.txt" # Open ideas file in VSCode
 alias notifications='open /private/var/folders/bl/qdmrp0jd71z545k9zkd8ncqm0000gn/0/com.apple.notificationcenter/db2/db'
-alias omz="code $DOTS/.oh-my-zsh" # Open oh-my-zsh config in VSCode
+alias omz="open $DOTS/.oh-my-zsh" # Open oh-my-zsh config in VSCode
 alias openwith='defaults read com.apple.LaunchServices/com.apple.launchservices.secure'
 alias p10k='p9k' # Open powerlevel10k config in VSCode
-alias p9k="code $DOTS/.powerlevel10k" # Alias of p10k
-alias paths='code /etc/paths' # Open paths in VSCode
-alias shells='code /etc/shells' # Open shells in VSCode
-alias z="code $DOTS/.zshrc" # Open zshrc in VSCode
+alias p9k="open $DOTS/.powerlevel10k" # Alias of p10k
+alias paths='open /etc/paths' # Open paths in VSCode
+alias shells='open /etc/shells' # Open shells in VSCode
+alias z="open $DOTS/.zshrc" # Open zshrc in VSCode
 
 ## Git External Commands
 alias fixignore='git fixignore'
@@ -38,8 +38,12 @@ alias yolo='git yolo'
 ## COMMANDS
 alias amend='git stage . && git commit --amend'
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
+alias cdf="cd \"$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')\"" # Change working directory to the top-most Finder window location
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias colortest=". $DOTS/colortest.sh"
+alias commit='git commit'
+alias created="GetFileInfo -d" # Print creation date of file
+alias external='echo External Commands && git help -a | sed "1,/External/d"'
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
 alias grep='grep --color=always'
 alias lscleanup='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder' # Clean up LaunchServices to remove duplicates in the “Open With” menu
@@ -51,8 +55,9 @@ alias rebuildspotlight='sudo mdutil -E /' # Rebuild entire Spotlight index
 alias remotes='git remote -v | column -t' # Pretty-print remotes
 alias resetlaunchpad='defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock' # reset Launchpad to its default order
 alias s='r' # alias function r() in .functions
+alias sleepimage='pmset -g | grep hibernatemode && ls -lh /private/var/vm/sleepimage' # Verify that SSD Mac is not saving sleep images
 alias symls_BASH='ls -lhaF | grep ^l' # List symlinks in current directory
 alias symls='colorls -la --color=always | grep ⇒'                             # List symlinks in current directory
 alias wake='pmset -g assertions | grep Prevent' # List processes keeping mac awake
-alias whatthecommit='git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+alias whatthecommit='git whatthecommit'
 alias zr='r -z' # alias function r() in .functions
