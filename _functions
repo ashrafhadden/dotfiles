@@ -15,6 +15,24 @@ app() {
   esac
 }
 
+aglicense() {
+  cd $CODE/bt-vue/node_modules/ag-grid-enterprise/dist/lib
+  case $1 in
+  undo | reset)
+    rm licenseManager.js
+    mv licenseManager.js.bak licenseManager.js
+    ;;
+  *)
+    local checksum=$(cksum licenseManager.js)
+    local checksum_original='2409036641 13712 licenseManager.js'
+    if [[ $checksum == $checksum_original ]]; then
+      sed -i.bak '218,225d' licenseManager.js
+    fi
+    ;;
+  esac
+  cd - > /dev/null
+}
+
 # Benchmark using https://github.com/sharkdp/hyperfine
 bm() {
   local command1='. ~/.zshrc;
@@ -63,7 +81,7 @@ change() {
 cleanupNotificationCenter() {
   # [ ! -f $file.bak ] && sqlite3 $file ".backup $file.bak"
   # sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'SELECT identifier FROM app WHERE identifier LIKE "%canary%";'
-  sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'DELETE FROM app WHERE identifier LIKE "%canary%";'
+  # sqlite3 $(getconf DARWIN_USER_DIR)com.apple.notificationcenter/db2/db 'DELETE FROM app WHERE identifier LIKE "%canary%";'
 }
 
 cls() {
@@ -93,7 +111,18 @@ perms() {
       local files=$(ls -la | tail -n +4 | grep ^d | awk "{print \$9}")
       local dirs=$(ls -la | tail -n +4 | grep ^d -v | awk "{print \$9}")
       local shortPWD=$(echo $PWD | rev | cut -d'/' -f-1 | rev)
-      printf "⚠️  Reset all permissions in $bold$shortPWD$reset?\n\n${red}Will be modified $reset...\n\n${bold}FILES$reset\n$files\n\n${bold}DIRS$reset\n$dirs\n\n[${green}y$reset/${red}N$reset]: "
+      printf "\
+Reset all permissions in $bold$shortPWD$reset?
+      
+${red}⚠  These will be modified $reset...
+      
+${bold}FILES$reset
+$files
+
+${bold}DIRS$reset
+$dirs
+      
+[${green}y$reset/${red}N$reset]: "
       if read -q; then
         chmod 755 $files
         chmod 644 $dirs
@@ -107,17 +136,6 @@ perms() {
     ;;
   set | add)
     chmod u+x $2
-    ;;
-  *)
-    local systemAppearance=$(defaults read -g AppleInterfaceStyle 2> /dev/null)
-    case $systemAppearance in
-    Dark)
-      colorls -al --sd --dark
-      ;;
-    *)
-      colorls -al --sd --light
-      ;;
-    esac
     ;;
   esac
 }
@@ -177,44 +195,62 @@ foo() {
   echo foo
 }
 
-theme() {
+dark() {
+  sudo -v
+  set +m
   case $1 in
-  light)
+  off)
     printf "\033]50;SetProfile=Tango Light\a" &
-    &> /dev/null
-    osascript -e '
+    sed -i.bak "s/\"workbench.colorTheme.*/\"workbench.colorTheme\": \"Dracula.min White\",/" ~/Library/Application\ Support/Code/User/settings.json &
+    sudo osascript -e '
 			tell application id "com.apple.systemevents"
 				tell appearance preferences
 					set dark mode to false
 				end tell
 			end tell' &
-    &> /dev/null
-    sed -i.bak $'/colorTheme/c\\\n"workbench.colorTheme": "Dracula.min White"\n' ~/Library/Application\ Support/Code/User/settings.json &
-    &> /dev/null
-    osascript -e 'quit app "Firefox"'
-    caffeinate -w $(pgrep firefox)
+    if pgrep firefox > /dev/null; then
+      sudo osascript -e 'quit app "Firefox"'
+      caffeinate -w $(pgrep firefox)
+      shadowfox -uninstall
+      sed -i.bak -e 's/dark@m/light@m/g' -e 's/"dark"/"light"/' ~/Library/Application\ Support/Firefox/Profiles/19su5bye.default-1557024518325/prefs.js
+      open -a Firefox
+      sudo osascript -e '
+      tell application "Firefox"
+        set bounds of front window to {0, 0, 1280, 780}
+      end tell'
+      if pgrep iTerm2; then
+        open -a iTerm # return focus to iTerm
+      fi
+    fi
     shadowfox -uninstall
-    sed -i.bak -e 's/dark@m/light@m/g' -e 's/"dark"/"light"/g' ~/Library/Application\ Support/Firefox/Profiles/19su5bye.default-1557024518325/prefs.js
-    open -a Firefox
+    sed -i.bak -e 's/dark@m/light@m/g' -e 's/"dark"/"light"/' ~/Library/Application\ Support/Firefox/Profiles/19su5bye.default-1557024518325/prefs.js
     ;;
-  dark)
+  on)
     printf "\033]50;SetProfile=Dracula\a" &
-    &> /dev/null
-    osascript -e '
+    sed -i.bak "s/\"workbench.colorTheme.*/\"workbench.colorTheme\": \"Dracula.min\",/" ~/Library/Application\ Support/Code/User/settings.json &
+    sudo osascript -e '
 			tell application id "com.apple.systemevents"
 				tell appearance preferences
 					set dark mode to true
 				end tell
 			end tell' &
-    &> /dev/null
-    sed -i.bak $'/colorTheme/c\\\n"workbench.colorTheme": "Dracula.min"\n' ~/Library/Application\ Support/Code/User/settings.json &
-    &> /dev/null
-    osascript -e 'quit app "Firefox"'
-    caffeinate -w $(pgrep firefox)
+    if pgrep firefox > /dev/null; then
+      sudo osascript -e 'quit app "Firefox"'
+      caffeinate -w $(pgrep firefox) # wait for firefox to close before proceeding
+      shadowfox -set-dark-theme
+      open -a Firefox
+      sudo osascript -e '
+      tell application "Firefox"
+        set bounds of front window to {0, 0, 1280, 780}
+      end tell'
+      if pgrep iTerm2; then
+        open -a iTerm # return focus to iTerm
+      fi
+    fi
     shadowfox -set-dark-theme
-    open -a Firefox
     ;;
   esac
+  set -m
 }
 
 hexColor() {
@@ -259,13 +295,18 @@ ${bold}iTerm$reset
 # Open man page in Google Chrome
 manchrome() {
   man "$1" | col -b > "/tmp/$1"
-  open -a "/Applications/Google Chrome.app" "/tmp/$1"
+  open -a 'Google Chrome' "/tmp/$1"
 }
 
 # Open man page in VSCode
 mancode() {
   man "$1" | col -b > "/tmp/$1"
   code /private/tmp/$1
+}
+
+manfox() {
+  man "$1" | col -b > "/tmp/$1"
+  open -a Firefox "/tmp/$1"
 }
 
 # Open man page in Preview
@@ -330,7 +371,7 @@ prompt() {
 # Reload scripts &/or shell
 r() {
   case $1 in
-  zsh | -z)
+  -zsh | -z | --full)
     # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/zsh_reload/zsh_reload.plugin.zsh
     local cache="$ZSH_CACHE_DIR"
     autoload -U compinit zrecompile
@@ -344,9 +385,9 @@ r() {
     [[ -n "$SHELL" ]] && exec ${SHELL#-} || exec zsh
     ;;
   *)
-    . $DOTS/.aliases
-    .                   $DOTS/.functions
-    tput                                       cl
+    . $DOTS/_aliases
+    . $DOTS/_functions
+    tput cl
     ;;
   esac
 }
@@ -356,7 +397,7 @@ reinstall() {
   printf "Are you sure you want to ${bold}reinstall$reset $yellow/node_modules$reset? [${green}y$reset/${red}n$reset]: "
   if read -q; then
     printf "\nRunning ${bold}trash package-lock.json$reset...\n" && trash package-lock.json
-    printf "Running ${bold}trash node_modules$reset...\n" && trash node_modules
+    printf "Running ${bold}rm -r node_modules$reset...\n" && rm -r node_modules
     printf "Running ${bold}npm install$reset...\n" && npm install
   else
     echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
@@ -432,14 +473,14 @@ trash() {
 
 # Update all system tools
 update() {
+  # printf "${bold}rustup update $reset" && rustup update
+  # printf "${bold}zplg self-update${reset}\n" && zplg self-update
+  # printf "${bold}zplg update --all${reset}\n" && zplg update --all
   printf "$greenb${black} START $reset $bold${green}update$reset!\n"
   printf "${bold}upgrade_oh_my_zsh$reset... " && upgrade_oh_my_zsh | head -2
-  # printf "${bold}zplg update --all${reset}\n" && zplg update --all
-  # printf "${bold}zplg self-update${reset}\n" && zplg self-update
   printf "${bold}git pull$reset ${blue}powerlevel10k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel10k && git pull && cd - > /dev/null
   printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - > /dev/null
   printf "${bold}git pull$reset ${blue}zsh-autosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - > /dev/null
-  # printf "${bold}rustup update $reset" && rustup update
   printf "${bold}brew upgrade$reset\n" && brew upgrade
   printf "${bold}brew cask upgrade $reset" && brew cask upgrade
   printf "${bold}brew cleanup$reset\n" && brew cleanup
@@ -458,9 +499,6 @@ v() {
     printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}Rust$reset $(rustc --version | cut -d' ' -f2)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
-    # printf "${bold}Zplugin$reset\n"
-    # zplg list
-    # zplg ls
     printf "\n${bold}npm$reset $(npm -v)\n"
     npm ls -gs --depth=0 | tail -n +2 | cut -c 5-
     printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)$reset\n"
@@ -470,9 +508,6 @@ v() {
     printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}Rust$reset $(rustc --version | cut -f2)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
-    # printf "${bold}Zplugin$reset\n"
-    # zplg list
-    # zplg ls
     printf "\n${bold}mas$reset $(mas version)\n"
     mas list
     printf "\n${bold}npm$reset $(npm -v)\n"
@@ -487,14 +522,23 @@ v() {
   *)
     printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
-    # printf "${bold}Zplugin$reset\n"
     printf "${bold}Rust$reset $(rustc --version | awk '{print $2}')\n"
     printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)\n"
-    printf "${bold}Node$reset $(node -v | tail -c 8)\n"
+    printf "${bold}Node$reset $(node -v | tail -c 7)\n"
     printf "${bold}npm$reset $(npm -v)\n"
     printf "${bold}VSCode$reset $(code -v | head -1)\n"
     printf "${bold}Vue$reset $(vue --version)\n"
-    # grep -E '\s([0-9].*)'
+    ;;
+  esac
+}
+
+vsicon() {
+  case $1 in
+  verbose | --verbose | v | -v)
+    printf "Argument matched ${bold}v${reset}!\n"
+    ;;
+  *)
+    printf "${bold}${red}Invalid${reset} argument!\n"
     ;;
   esac
 }

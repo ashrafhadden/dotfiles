@@ -1,13 +1,7 @@
-##!/usr/bin/env zsh
+#!/usr/bin/env zsh
 # aliases: home, repo
 
-printf "Proceed? [${green}y$reset/${red}N$reset]: "
-if read -q; then
-  printf "\nYou answered ${bold}yes${reset}\n"
-else
-  echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
-fi
-if [ -z $1 ]; then
+if [ ! $1 ]; then
   open $(git config remote.origin.url)
 else
   open "https://github.com/$1"
