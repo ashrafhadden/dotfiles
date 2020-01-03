@@ -1,5 +1,10 @@
 #!/usr/bin/env zsh
 
+aaxe() {
+  IFS= read -rs "AUTHCODE?Please enter ${bold}AUTHCODE$reset: "
+  bash ~/.AAXtoMP3/AAXtoMP3 --authcode $AUTHCODE --complete_dir /Volumes/Fit\ 256/Audiobooks $1 $2
+}
+
 # Find any application's UTI (Uniform Type Identier), A.K.A. Bundle ID (CFBundleIdentifier) # https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/understanding_utis/understand_utis_intro/understand_utis_intro.html
 app() {
   case $1 in
@@ -56,6 +61,12 @@ fi'
     hyperfine --shell bash --warmup 2 --time-unit second "$command1" "$command2"
     ;;
   esac
+}
+
+# Change dir to frontmost Finder window
+cdf() {
+  local dir=$(osascript -e 'tell application "Finder" to get the POSIX path of (target of front window as alias)')
+  cd $dir
 }
 
 change() {
@@ -142,16 +153,16 @@ $dirs
 
 # Easily get and set dns servers on Mac
 dns() {
-  DNSSERVERS="\
-8.8.8.8 Google
-8.8.4.4 Google
-2001:4860:4860::8888 Google
-2001:4860:4860::8844 Google
-162.248.241.94 OpenNIC
-172.98.193.42 OpenNIC"
+  DNSSERVERS="\n
+1.1.1.1              Cloudflare
+1.0.0.1              Cloudflare
+2606:4700:4700::1111 Cloudflare
+2606:4700:4700::1001 Cloudflare
+172.98.193.42        OpenNIC-(ns1.nc.us.dns.opennic.glue)
+162.248.241.94       OpenNIC-(ns2.nc.us.dns.opennic.glue)"
   # https://servers.opennic.org/
-  local ip=($(echo $DNSSERVERS | cut -d' ' -f1))
-  local name=($(echo $DNSSERVERS | cut -d' ' -f2))
+  local ip=($(echo $DNSSERVERS | awk '{print $1}'))
+  local name=($(echo $DNSSERVERS | awk '{print $2}'))
   case $1 in
   set)
     networksetup -setdnsservers Wi-Fi $ip[@]
@@ -164,9 +175,9 @@ dns() {
     ;;
   *)
     echo ${bold}Wi-Fi$reset
-    paste <(networksetup -getdnsservers Wi-Fi) <(printf '%s\n' $name[@]) | column -ts $'\t'
+    paste <(networksetup -getdnsservers Wi-Fi) <(printf '%s\n' $name[@]) | column -t
     echo ${bold}Thunderbolt Ethernet$reset
-    paste <(networksetup -getdnsservers 'Thunderbolt Ethernet') <(printf '%s\n' $name[@]) | column -ts $'\t'
+    paste <(networksetup -getdnsservers 'Thunderbolt Ethernet') <(printf '%s\n' $name[@]) | column -t
     ;;
   esac
 }
@@ -191,63 +202,42 @@ ${bold}Finder$reset
 "
 }
 
-foo() {
-  echo foo
-}
-
 dark() {
-  sudo -v
   set +m
   case $1 in
   off)
     printf "\033]50;SetProfile=Tango Light\a" &
     sed -i.bak "s/\"workbench.colorTheme.*/\"workbench.colorTheme\": \"Dracula.min White\",/" ~/Library/Application\ Support/Code/User/settings.json &
-    sudo osascript -e '
-			tell application id "com.apple.systemevents"
-				tell appearance preferences
-					set dark mode to false
-				end tell
-			end tell' &
+    osascript -e '
+    	tell application id "com.apple.systemevents"
+    		tell appearance preferences
+    			set dark mode to false
+    		end tell
+    	end tell'
     if pgrep firefox > /dev/null; then
-      sudo osascript -e 'quit app "Firefox"'
-      caffeinate -w $(pgrep firefox)
-      shadowfox -uninstall
-      sed -i.bak -e 's/dark@m/light@m/g' -e 's/"dark"/"light"/' ~/Library/Application\ Support/Firefox/Profiles/19su5bye.default-1557024518325/prefs.js
-      open -a Firefox
-      sudo osascript -e '
-      tell application "Firefox"
-        set bounds of front window to {0, 0, 1280, 780}
-      end tell'
-      if pgrep iTerm2; then
-        open -a iTerm # return focus to iTerm
-      fi
+      osascript -e 'quit app "Firefox"'
+      caffeinate -w $(pgrep firefox) # wait for firefox to close before proceeding
     fi
-    shadowfox -uninstall
-    sed -i.bak -e 's/dark@m/light@m/g' -e 's/"dark"/"light"/' ~/Library/Application\ Support/Firefox/Profiles/19su5bye.default-1557024518325/prefs.js
+    shadowfox -uninstall -profile-name fdvn8zoa.default-1563575108220
+    sed -i.bak 's/dark/light/g' ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js
+    open -a Firefox
     ;;
   on)
     printf "\033]50;SetProfile=Dracula\a" &
     sed -i.bak "s/\"workbench.colorTheme.*/\"workbench.colorTheme\": \"Dracula.min\",/" ~/Library/Application\ Support/Code/User/settings.json &
-    sudo osascript -e '
-			tell application id "com.apple.systemevents"
-				tell appearance preferences
-					set dark mode to true
-				end tell
-			end tell' &
+    osascript -e '
+    	tell application id "com.apple.systemevents"
+    		tell appearance preferences
+    			set dark mode to true
+    		end tell
+    	end tell'
     if pgrep firefox > /dev/null; then
-      sudo osascript -e 'quit app "Firefox"'
+      osascript -e 'quit app "Firefox"'
       caffeinate -w $(pgrep firefox) # wait for firefox to close before proceeding
-      shadowfox -set-dark-theme
-      open -a Firefox
-      sudo osascript -e '
-      tell application "Firefox"
-        set bounds of front window to {0, 0, 1280, 780}
-      end tell'
-      if pgrep iTerm2; then
-        open -a iTerm # return focus to iTerm
-      fi
     fi
-    shadowfox -set-dark-theme
+    shadowfox -set-dark-theme -profile-name fdvn8zoa.default-1563575108220
+    sed -i.bak 's/light/dark/g' ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js
+    open -a Firefox
     ;;
   esac
   set -m
@@ -423,7 +413,6 @@ shell() {
 shortcuts() {
   finder
   iterm
-  mac
 }
 
 themes() {
@@ -474,22 +463,21 @@ trash() {
 # Update all system tools
 update() {
   # printf "${bold}rustup update $reset" && rustup update
-  # printf "${bold}zplg self-update${reset}\n" && zplg self-update
-  # printf "${bold}zplg update --all${reset}\n" && zplg update --all
-  printf "$greenb${black} START $reset $bold${green}update$reset!\n"
+  printf "$greenb${black} START $reset ${green}update$reset!\n"
   printf "${bold}upgrade_oh_my_zsh$reset... " && upgrade_oh_my_zsh | head -2
-  printf "${bold}git pull$reset ${blue}powerlevel10k.zsh-theme$reset... " && cd $ZSH/custom/themes/powerlevel10k && git pull && cd - > /dev/null
-  printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && cd $ZSH/custom/plugins/fast-syntax-highlighting && git pull && cd - > /dev/null
-  printf "${bold}git pull$reset ${blue}zsh-autosuggestions$reset... " && cd $ZSH/custom/plugins/zsh-autosuggestions && git pull && cd - > /dev/null
+  printf "${bold}git pull$reset ${blue}powerlevel10k.zsh-theme$reset... " && git -C $ZSH/custom/themes/powerlevel10k pull
+  printf "${bold}git pull$reset ${blue}fast-syntax-highlighting$reset... " && git -C $ZSH/custom/plugins/fast-syntax-highlighting pull
+  printf "${bold}git pull$reset ${blue}zsh-autosuggestions$reset... " && git -C $ZSH/custom/plugins/zsh-autosuggestions pull
   printf "${bold}brew upgrade$reset\n" && brew upgrade
   printf "${bold}brew cask upgrade $reset" && brew cask upgrade
-  printf "${bold}brew cleanup$reset\n" && brew cleanup
   printf "${bold}npm update --global$reset\n" && npm update --global
   printf "${bold}tldr --update$reset\n" && tldr --update
-  printf "${bold}mas upgrade $reset" && mas upgrade
+  printf "Updating $bold.gitignore$reset...\n" && cat $DOTS/_gitignore > $DOTS/.gitignore && curl --silent https://www.gitignore.io/api/git,node,sass,rust,vuejs,macos,windows,visualstudiocode >> $DOTS/.gitignore
+  printf "Updating ${bold}_packages$reset...\n" && v -lp > $DOTS/_packages
+  # printf "${bold}mas upgrade $reset" && mas upgrade
   printf "${bold}softwareupdate --install --all$reset\n" && softwareupdate --install --all
-  printf "$redb${black} END $reset $bold${green}update$reset!\n"
   notify "update" "Done!"
+  printf "$redb${black} END $reset $bold${green}update$reset!\n"
 }
 
 # List versions of all system tools
@@ -504,11 +492,8 @@ v() {
     printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)$reset\n"
     brew ls --versions $(brew leaves)
     ;;
-  -vl)
-    printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
-    printf "${bold}Rust$reset $(rustc --version | cut -f2)\n"
-    printf "${bold}zsh$reset $ZSH_VERSION\n"
-    printf "\n${bold}mas$reset $(mas version)\n"
+  -l)
+    printf "${bold}mas$reset $(mas version)\n"
     mas list
     printf "\n${bold}npm$reset $(npm -v)\n"
     npm ls -gs --depth=0 | tail -n +2 | cut -c 5-
@@ -519,12 +504,24 @@ v() {
     printf "\n${bold}VSCode$reset $(code -v | head -1)\n"
     code --list-extensions --show-versions
     ;;
+  -lp)
+    printf "mas $(mas version)\n"
+    mas list
+    printf "\nnpm $(npm -v)\n"
+    npm ls -gs --depth=0 | tail -n +2 | cut -c 5-
+    printf "$(brew -v | xargs | head -c 14)\n"
+    brew ls --versions $(brew leaves)
+    printf "\nCasks\n"
+    brew cask ls --versions
+    printf "\nVSCode $(code -v | head -1)\n"
+    code --list-extensions --show-versions
+    ;;
   *)
     printf "${bold}iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "${bold}zsh$reset $ZSH_VERSION\n"
-    printf "${bold}Rust$reset $(rustc --version | awk '{print $2}')\n"
+    # printf "${bold}Rust$reset $(rustc --version | awk '{print $2}')\n"
     printf "${bold}Homebrew$reset $(brew -v | xargs | head -c 14 | tail -c 5)\n"
-    printf "${bold}Node$reset $(node -v | tail -c 7)\n"
+    printf "${bold}Node$reset $(node -v | tail -c 8)\n"
     printf "${bold}npm$reset $(npm -v)\n"
     printf "${bold}VSCode$reset $(code -v | head -1)\n"
     printf "${bold}Vue$reset $(vue --version)\n"

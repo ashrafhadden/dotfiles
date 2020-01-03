@@ -1,0 +1,13 @@
+## My gitignore's
+# Prepended to file:///Users/ashrafhadden/code/dotfiles/.gitignore on update()
+
+_untracked
+
+# Node Chakra Time Travel
+_ttd_log_
+
+# Don't expose personal info often stored in .gitconfigs
+.gitconfig
+
+## gitignore.io
+# Auto-generated and appended to file:///Users/ashrafhadden/code/dotfiles/.gitignore on update()

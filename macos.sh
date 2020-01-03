@@ -11,10 +11,10 @@ sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until `.macos` has finished
 while true; do
-  sudo              -n true
-  sleep                            60
-  kill                                      -0 "$$" || exit
-done                                                              2> /dev/null &
+  sudo -n true
+  sleep 60
+  kill -0 "$$" || exit
+done 2> /dev/null &
 
 ###############################################################################
 ## PERSONAL                                                           #
@@ -24,21 +24,78 @@ done                                                              2> /dev/null &
 sudo pmset -a standby 0
 sudo pmset -a autopoweroff 0
 
-# Set automatic graphics switching to dedicated gpu only https://discussions.apple.com/thread/8160651
+# GPU Only https://discussions.apple.com/thread/8160651
 sudo pmset -a gpuswitch 0
 
 # Immediately show folder contents even before gathering metadata https://support.apple.com/en-us/HT208209
 defaults write com.apple.desktopservices UseBareEnumeration -bool TRUE
+
+##################################################################################
+## "Open With" Defaults                                                          #
+##################################################################################
+
+# Ensure that all typeless and plain-text files are opened by VSCode
+# https://apple.stackexchange.com/questions/13557/choose-a-default-app-for-opening-files-with-no-extension
+
+which duti > /dev/null || brew install duti
+
+sudo duti -s com.microsoft.VSCode public.plain-text all
+sudo duti -s com.microsoft.VSCode public.source-code all
+sudo duti -s com.microsoft.VSCode public.unix-executable all
+sudo duti -s com.microsoft.VSCode sh
+sudo duti -s com.microsoft.VSCode txt
+sudo duti -s com.microsoft.VSCode toml
+
+sudo duti -x sh
+sudo duti -x txt
+sudo duti -x toml
+
+##################################################################################
+## QuickLook                                                                     #
+##################################################################################
+
+# sudo defaults write /Library/QuickLook/iWork.qlgenerator/Contents/Info.plist QLPreviewHeight -float 584
+# sudo defaults write /Library/QuickLook/iWork.qlgenerator/Contents/Info.plist QLPreviewWidth -float 1068
+
+defaults write org.n8gray.QLColorCode fontSizePoints 16
+
+# https://github.com/anthonygelibert/QLColorCode#Settings
+defaults write org.n8gray.QLColorCode extraHLFlags '-s dracula --base16'
+
+defaults write org.n8gray.QLColorCode font "Ubuntu Mono Nerd Lig"
+
+defaults write org.n8gray.QLColorCode hlTheme Candy
+
+defaults write org.n8gray.QLColorCode maxFileSize 1000000 # 1000000 kB = 1GB
+defaults write com.whomwah.quicklookstephen maxFileSize 102400
+
+# Enable text selection in QuickLook
+defaults write com.apple.finder QLEnableTextSelection -bool TRUE
 
 ###############################################################################
 ## General UI/UX                                                              #
 ###############################################################################
 
 # Set computer name (as done via System Preferences → Sharing)
-sudo scutil --set ComputerName "ashmac"
-sudo scutil --set HostName "ashmac"
+sudo scutil --set ComputerName "Ash's Mac"
+sudo scutil --set HostName "Ash's Mac"
 sudo scutil --set LocalHostName "ashmac"
-sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "ashmac"
+sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "Ash's Mac"
+
+# Set sidebar icon size to large
+defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 3
+
+# Always show scrollbars
+defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
+# Possible values: `WhenScrolling`, `Automatic` and `Always`
+
+# Expand save panel by default
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+# Expand print panel by default
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
 # Save to disk (not to iCloud) by default
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
@@ -77,20 +134,6 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 
 ###############################################################################
-## SSD-specific tweaks                                                        #
-###############################################################################
-
-# Disable hibernation (speeds up entering/leaving sleep mode)
-sudo pmset -a hibernatemode 0
-
-# Remove the sleep image file to save disk space
-sudo rm /private/var/vm/sleepimage
-# Create a zero-byte file instead…
-sudo touch /private/var/vm/sleepimage
-# …and make sure it can’t be rewritten
-sudo chflags uchg /private/var/vm/sleepimage
-
-###############################################################################
 ## Trackpad, mouse, keyboard, Bluetooth accessories, and input                #
 ###############################################################################
 
@@ -109,12 +152,18 @@ defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int
 # (e.g. enable Tab in modal dialogs)
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 
+# Use scroll gesture with the Ctrl (^) modifier key to zoom
+defaults write com.apple.universalaccess closeViewScrollWheelToggle -bool true
+defaults write com.apple.universalaccess HIDScrollZoomModifierMask -int 262144
+# Follow the keyboard focus while zoomed in
+defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
+
 # Disable press-and-hold for keys in favor of key repeat
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # Set a fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 2 # Gui Max: 2
-defaults write NSGlobalDomain InitialKeyRepeat -int 15 # Gui Max: 15
+defaults write NSGlobalDomain KeyRepeat -int 2         # GUI Max: 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15 # GUI Max: 15
 
 # Set language and text formats
 defaults write NSGlobalDomain AppleLanguages -array "en"
@@ -123,7 +172,24 @@ defaults write NSGlobalDomain AppleMeasurementUnits -string "Inches"
 defaults write NSGlobalDomain AppleMetricUnits -bool false
 
 # Stop iTunes from responding to the keyboard media keys
-launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
+# launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist 2> /dev/null
+
+###############################################################################
+## Energy saving                                                              #
+###############################################################################
+
+# Hibernation mode
+# 0: Disable hibernation (speeds up entering sleep mode)
+# 3: Copy RAM to disk so the system state can still be restored in case of a
+#    power failure.
+sudo pmset -a hibernatemode 0
+
+# Remove the sleep image file to save disk space
+sudo rm /private/var/vm/sleepimage
+# Create a zero-byte file instead…
+sudo touch /private/var/vm/sleepimage
+# …and make sure it can’t be rewritten
+sudo chflags uchg /private/var/vm/sleepimage
 
 ###############################################################################
 ## Screen                                                                     #
@@ -146,31 +212,6 @@ defaults write NSGlobalDomain AppleFontSmoothing -int 1
 # Enable HiDPI display modes (requires restart)
 sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool true
 
-##################################################################################
-## QuickLook                                                                     #
-##################################################################################
-
-sudo defaults write /Library/QuickLook/iWork.qlgenerator/Contents/Info.plist QLPreviewHeight -float 584
-sudo defaults write /Library/QuickLook/iWork.qlgenerator/Contents/Info.plist QLPreviewWidth -float 1068
-
-defaults write org.n8gray.QLColorCode fontSizePoints 16
-
-# https://github.com/anthonygelibert/QLColorCode#Settings
-defaults write org.n8gray.QLColorCode extraHLFlags '-s dracula --base16'
-
-defaults write org.n8gray.QLColorCode font "Ubuntu Mono Nerd Lig"
-
-defaults write org.n8gray.QLColorCode hlTheme Candy
-
-# 1000000 kB = 1GB
-defaults write org.n8gray.QLColorCode maxFileSize 1000000
-
-# 1000000 kB = 1GB
-defaults write com.whomwah.quicklookstephen maxFileSize 102400
-
-# Enable text selection in QuickLook
-defaults write com.apple.finder QLEnableTextSelection -bool TRUE
-
 ###############################################################################
 ## Finder                                                                     #
 ###############################################################################
@@ -178,7 +219,7 @@ defaults write com.apple.finder QLEnableTextSelection -bool TRUE
 # Set Desktop as the default location for new Finder windows
 # For other paths, use `PfLo` and `file:///full/path/here/`
 defaults write com.apple.finder NewWindowTarget -string "PfLo"
-defaults write com.apple.finder NewWindowTargetPath -string "file:///Users/ashrafhadden/code/"
+defaults write com.apple.finder NewWindowTargetPath -string "file:///Users/ashrafhadden/Downloads/"
 
 # Finder: show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
@@ -207,14 +248,15 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # Enable spring loading for directories
 defaults write NSGlobalDomain com.apple.springing.enabled -bool true
 
-# Avoid creating .DS_Store files on network or USB volumes
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
-
 # Disable disk image verification
 defaults write com.apple.frameworks.diskimages skip-verify -bool true
 defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
 defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
+
+# Automatically open a new Finder window when a volume is mounted
+defaults write com.apple.frameworks.diskimages auto-open-ro-root -bool true
+defaults write com.apple.frameworks.diskimages auto-open-rw-root -bool true
+defaults write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 
 # Show item info near icons on the desktop and in other icon views
 /usr/libexec/PlistBuddy -c "Set :DesktopViewSettings:IconViewSettings:showItemInfo true" ~/Library/Preferences/com.apple.finder.plist
@@ -230,8 +272,11 @@ defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
 /usr/libexec/PlistBuddy -c "Set :StandardViewSettings:IconViewSettings:arrangeBy grid" ~/Library/Preferences/com.apple.finder.plist
 
 # Use list view in all Finder windows by default
-# Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
+# Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
+# Enable AirDrop over Ethernet and on unsupported Macs running Lion
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
 
 # Show the ~/Library folder
 chflags nohidden ~/Library
@@ -242,8 +287,9 @@ sudo chflags nohidden /Volumes
 # Expand the following File Info panes:
 # “General”, “Open with”, and “Sharing & Permissions”
 defaults write com.apple.finder FXInfoPanesExpanded -dict \
-  General -bool true \
-  OpenWith -bool true
+	General -bool true \
+	OpenWith -bool true \
+	Privileges -bool true
 
 ###############################################################################
 ## Dock, Dashboard, and hot corners                                           #
@@ -303,8 +349,14 @@ defaults write com.apple.Safari HomePage -string "about:blank"
 # Prevent Safari from opening ‘safe’ files automatically after downloading
 defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
-# Show Safari’s bookmarks bar by default
-defaults write com.apple.Safari ShowFavoritesBar -bool true
+# Allow hitting the Backspace key to go to the previous page in history
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
+
+# Hide Safari’s bookmarks bar by default
+defaults write com.apple.Safari ShowFavoritesBar -bool false
+
+# Disable Safari’s thumbnail cache for History and Top Sites
+defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
 
 # Enable Safari’s debug menu
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
@@ -331,9 +383,24 @@ defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool fals
 # Warn about fraudulent websites
 defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
 
+# Disable plug-ins
+defaults write com.apple.Safari WebKitPluginsEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled -bool false
+
+# Disable Java
+defaults write com.apple.Safari WebKitJavaEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabledForLocalFiles -bool false
+
 # Block pop-up windows
 defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
+
+# Disable auto-playing video
+defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool false
+defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
+defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
 
 # Enable “Do Not Track”
 defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
@@ -433,6 +500,9 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 ## Address Book, Dashboard, iCal, TextEdit, and Disk Utility                  #
 ###############################################################################
 
+# Enable Dashboard dev mode (allows keeping widgets on the desktop)
+defaults write com.apple.dashboard devmode -bool true
+
 # Use plain text mode for new TextEdit documents
 defaults write com.apple.TextEdit RichText -int 0
 # Open and save files as UTF-8 in TextEdit
@@ -449,6 +519,9 @@ defaults write com.apple.QuickTimePlayerX MGPlayMovieOnOpen -bool true
 # Enable the automatic update check
 defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
 
+# Check for software updates daily, not just once per week
+defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+
 # Download newly available updates in background
 defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
 
@@ -464,6 +537,13 @@ defaults write com.apple.commerce AutoUpdate -bool true
 
 # Prevent Photos from opening automatically when devices are plugged in
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
+
+###############################################################################
+## Messages                                                                   #
+###############################################################################
+
+# Disable automatic emoji substitution (i.e. use plain text smileys)
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
 
 ###############################################################################
 ## Google Chrome & Google Chrome Canary                                       #
@@ -492,14 +572,11 @@ for app in "Activity Monitor" \
   "Contacts" \
   "Dock" \
   "Finder" \
-  "Google Chrome Canary" \
   "Google Chrome" \
-  "Mail" \
+  "Google Chrome Canary" \
   "Messages" \
-  "Opera" \
   "Photos" \
   "Safari" \
-  "SizeUp" \
   "SystemUIServer" \
   "Terminal" \
   "iCal"; do

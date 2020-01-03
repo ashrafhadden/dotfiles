@@ -30,7 +30,7 @@ underline='\e[4m'    # Underline
 underlinerm='\e[24m' # Underline remove
 
 ## TPUT
-# Easy, clean, portable terminal colors
+# Easy, clean, portable terminal colors (at the cost of slight performance)
 # Example Usage:
 # printf "I'm seeing ${red}red${reset}.\n"
 # https://wiki.bash-hackers.org/scripting/terminalcodes#colors_using_tput

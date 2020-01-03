@@ -33,8 +33,21 @@ bindkey "^X^_" redo                  # adds redo
 ## Imports
 . ~/code/dotfiles/_exports
 . $DOTS/_powerlevel10k
-. $DOTS/_colors
 . $DOTS/_aliases
-. $DOTS/_functions
 . $DOTS/_untracked
+. $DOTS/_colors
+. $DOTS/_functions
 . $DOTS/_oh-my-zsh
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" # https://www.iterm2.com/documentation-shell-integration.html
+
+if [[ $(sw_vers -productVersion) != 10.15.2 ]]; then
+  printf "macOS has been updated!  Would you like to re-run $pink~/code/dotfiles/macos.sh$reset? [${green}y$reset/${red}N$reset]: "
+  if read -q; then
+    printf "\nRunning${bold}bootstrap.sh${reset}...\n"
+    . ~/code/dotfiles/macos.sh
+  else
+    echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+  fi
+fi
+

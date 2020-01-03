@@ -3,9 +3,9 @@
 alias sudo='sudo ' # Enable aliases to be sudo’ed https://github.com/mathiasbynens/dotfiles/blob/master/_aliases#L45
 
 ## DIRECTORIES
-alias cdc="cd $CODE" # Change directory to $CODE (main projects folder)
+alias cdc="cd $CODE" # Change dir to $CODE (main projects folder)
 alias cdd="cd $DOTS"
-alias cdp='cdc' # Change directory to $CODE (main projects folder)
+alias cdp='cdc' # Change dir to $CODE (main projects folder)
 
 ## CONFIGS
 alias a="open $DOTS/_aliases" # Open aliases in VSCode
@@ -15,17 +15,19 @@ alias css='open ~/Library/Application\ Support/Code/User/vscode.css' # Open CSS 
 alias dots="code $DOTS" # Open dotfiles in VSCode
 alias e="open $DOTS/_exports" # Open exports in VSCode
 alias f="open $DOTS/_functions" # Open _functions in VSCode
-alias gitconfig='git gitconfig' # Open global .gitconfig file in VSCode
+alias gitconfig='git config' # Open global .gitconfig file in VSCode
 alias gitignore="open $DOTS/.gitignore" # Open .gitignore file in VSCode
 alias hosts='open /private/etc/hosts' # Open hosts file in VSCode
 alias ideas="open $CODE/misc/code-ideas.txt" # Open ideas file in VSCode
 alias notifications='open /private/var/folders/bl/qdmrp0jd71z545k9zkd8ncqm0000gn/0/com.apple.notificationcenter/db2/db'
 alias omz="open $DOTS/_oh-my-zsh" # Open oh-my-zsh config in VSCode
 alias openwith='defaults read com.apple.LaunchServices/com.apple.launchservices.secure'
+alias pip='pip3'
 alias p10k='p9k' # Open powerlevel10k config in VSCode
 alias p9k="open $DOTS/_powerlevel10k" # Alias of p10k
 alias paths='open /etc/paths' # Open paths in VSCode
 alias shells='open /etc/shells' # Open shells in VSCode
+alias user.js='open ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js'
 alias z="open $DOTS/.zshrc" # Open zshrc in VSCode
 
 ## Git External Commands
@@ -36,6 +38,9 @@ alias syncfork='syncfork'
 alias yolo='git yolo'
 
 ## COMMANDS
+alias abbinder='/Applications/AudioBookBinder.app/Contents/MacOS/AudioBookBinder'
+alias adbbackup='adb backup -f adb-backup-$(date +%Y-%m-%d) -apk -obb -shared -all'
+alias adbbackuphelp'open https://developer.android.com/studio/command-line/adb'
 alias amend='git stage . && git commit --amend'
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
@@ -43,6 +48,7 @@ alias colortest=". $DOTS/colortest.sh"
 alias commit='git commit'
 alias created="GetFileInfo -d" # Print creation date of file
 alias external='echo External Commands && git help -a | sed "1,/External/d"'
+alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox'
 alias gitcommands='external'
 alias gitexternal='external'
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
@@ -60,7 +66,7 @@ alias s='r' # alias function r() in _functions
 alias sleepimage='pmset -g | grep hibernatemode && ls -lh /private/var/vm/sleepimage' # Verify that SSD Mac is not saving sleep images
 alias symls_BASH='ls -lhaF | grep ^l' # List symlinks in current directory
 alias symls='colorls -la --color=always | grep ⇒'                             # List symlinks in current directory
-alias wake='pmset -g assertions | grep Prevent' # List processes keeping mac awake
+alias wake='pmset -g assertions | head' # List processes keeping mac awake
 alias webpage='wget -E -H -k -K -N -p -e robots=off -P'
 alias whatthecommit='git whatthecommit'
 alias zr='r -z' # alias function r() in _functions

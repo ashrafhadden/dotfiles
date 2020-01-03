@@ -5,6 +5,7 @@ plugins=(
   # bgnotify
   # cargo
   # rust
+  you-should-use
   colored-man-pages
   fast-syntax-highlighting
   zsh-autosuggestions

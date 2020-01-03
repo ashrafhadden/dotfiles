@@ -3,8 +3,8 @@
 ## Dotfiles
 . ~/code/dotfiles/_exports
 . $DOTS/_powerlevel10k
-. $DOTS/_colors
 . $DOTS/_aliases
+. $DOTS/_colors
 . $DOTS/_functions
 
 ## Misc
