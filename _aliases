@@ -1,54 +1,61 @@
 #!/usr/bin/env bash
 
-alias sudo='sudo ' # Enable aliases to be sudo’ed https://github.com/mathiasbynens/dotfiles/blob/master/_aliases#L45
+alias sudo='sudo ' # Enable aliases to be sudo’ed https://github.com/mathiasbynens/dotfiles/blob/master/.aliases#L45
+
+## OVERRIDES
+alias code='code-insiders'
 
 ## DIRECTORIES
 alias cdc="cd $CODE" # Change dir to $CODE (main projects folder)
-alias cdd="cd $DOTS"
+alias cdd="cd $DOT"
 alias cdp='cdc' # Change dir to $CODE (main projects folder)
 
 ## CONFIGS
-alias a="open $DOTS/_aliases" # Open aliases in VSCode
-alias b="open $DOTS/.bashrc" # Open bashrc in VSCode
+alias a="open $DOT/_aliases" # Open aliases in VSCode
+alias b="open $DOT/.bashrc" # Open bashrc in VSCode
 alias bt-vue="open $CODE/bt-vue" # Open personal project bt-vue in VSCode
 alias css='open ~/Library/Application\ Support/Code/User/vscode.css' # Open CSS file for VSCode "Custom CSS and JS Loader" Extension https://github.com/be5invis/vscode-custom-css
-alias dots="code $DOTS" # Open dotfiles in VSCode
-alias e="open $DOTS/_exports" # Open exports in VSCode
-alias f="open $DOTS/_functions" # Open _functions in VSCode
+alias dots="code $DOT" # Open dotfiles in VSCode
+alias e="open $DOT/_exports" # Open exports in VSCode
+alias f="open $DOT/_functions" # Open _functions in VSCode
+alias ffprofile="open $FFPROFILE"
 alias gitconfig='git config' # Open global .gitconfig file in VSCode
-alias gitignore="open $DOTS/.gitignore" # Open .gitignore file in VSCode
+alias gitignore="open $DOT/.gitignore" # Open .gitignore file in VSCode
 alias hosts='open /private/etc/hosts' # Open hosts file in VSCode
 alias ideas="open $CODE/misc/code-ideas.txt" # Open ideas file in VSCode
 alias notifications='open /private/var/folders/bl/qdmrp0jd71z545k9zkd8ncqm0000gn/0/com.apple.notificationcenter/db2/db'
-alias omz="open $DOTS/_oh-my-zsh" # Open oh-my-zsh config in VSCode
+alias omz="open $DOT/_oh-my-zsh" # Open oh-my-zsh config in VSCode
 alias openwith='defaults read com.apple.LaunchServices/com.apple.launchservices.secure'
-alias pip='pip3'
 alias p10k='p9k' # Open powerlevel10k config in VSCode
-alias p9k="open $DOTS/_powerlevel10k" # Alias of p10k
+alias p9k="open $DOT/_powerlevel10k" # Alias of p10k
 alias paths='open /etc/paths' # Open paths in VSCode
+alias pip='pip3'
 alias shells='open /etc/shells' # Open shells in VSCode
-alias user.js='open ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js'
-alias z="open $DOTS/.zshrc" # Open zshrc in VSCode
+alias user.js="open $DOT/user.js"
+alias z="open $DOT/.zshrc" # Open zshrc in VSCode
 
 ## Git External Commands
 alias fixignore='git fixignore'
-alias hub='git hub'
+alias home='git home'
 alias rmtags='git rmtags'
 alias syncfork='syncfork'
 alias yolo='git yolo'
 
 ## COMMANDS
+alias icons='open https://www.nerdfonts.com/cheat-sheet'
 alias abbinder='/Applications/AudioBookBinder.app/Contents/MacOS/AudioBookBinder'
 alias adbbackup='adb backup -f adb-backup-$(date +%Y-%m-%d) -apk -obb -shared -all'
 alias adbbackuphelp'open https://developer.android.com/studio/command-line/adb'
 alias amend='git stage . && git commit --amend'
 alias brewls='brew list --versions $(brew leaves)' # List top-level Homebrew formulae, `brew help leaves` for detail
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
-alias colortest=". $DOTS/colortest.sh"
+alias colortest=". $DOT/colortest.sh"
 alias commit='git commit'
 alias created="GetFileInfo -d" # Print creation date of file
+alias default='firefox -P default'
 alias external='echo External Commands && git help -a | sed "1,/External/d"'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox'
+alias fixmacruby='trash /Library/Developer/CommandLineTools && xcode-select --install'
 alias gitcommands='external'
 alias gitexternal='external'
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
@@ -58,6 +65,7 @@ alias lscleanup='/System/Library/Frameworks/CoreServices.framework/Frameworks/La
 alias npmls='npm ls -gs --depth=0' # List global NPM packages, ignore annoying peer dep warnings
 alias out='npm outdated' # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
+alias private='firefox -P private'
 alias ql='sudo qlmanage -p &> /dev/null' # Open file in Quick Look
 alias rebuildspotlight='sudo mdutil -E /' # Rebuild entire Spotlight index
 alias remotes='git remote -v | column -t' # Pretty-print remotes
@@ -65,7 +73,7 @@ alias resetlaunchpad='defaults write com.apple.dock ResetLaunchPad -bool true &&
 alias s='r' # alias function r() in _functions
 alias sleepimage='pmset -g | grep hibernatemode && ls -lh /private/var/vm/sleepimage' # Verify that SSD Mac is not saving sleep images
 alias symls_BASH='ls -lhaF | grep ^l' # List symlinks in current directory
-alias symls='colorls -la --color=always | grep ⇒'                             # List symlinks in current directory
+alias symls='colorls -la --color=always | grep ⇒'   # List symlinks in current directory
 alias wake='pmset -g assertions | head' # List processes keeping mac awake
 alias webpage='wget -E -H -k -K -N -p -e robots=off -P'
 alias whatthecommit='git whatthecommit'

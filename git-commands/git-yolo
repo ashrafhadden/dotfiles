@@ -4,7 +4,7 @@ case $1 in
 commit | -c)
   printf "Run$bold git yolo commit$reset? [${green}y$reset/${red}N$reset]: "
   if read -q; then
-    printf "\n${bold}git stage .$reset\n" && git stage .
+    printf "\n${bold}git add -A$reset\n" && git add -A
     echo "${bold}git commit -m \"$(curl -s whatthecommit.com/index.txt)\"$reset" && git commit -m "$(curl -s whatthecommit.com/index.txt)"
     printf "${bold}git push -f --all$reset... " && git push -f --all
     printf "${bold}git push -f --tags$reset... " && git push -f --tags

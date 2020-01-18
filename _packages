@@ -1,4 +1,9 @@
-mas 1.6.3
+ [1m[35m macOS[0m 10.15.2
+  [1m[35m iTerm[0m 3.3.2
+  [1m[35m zsh[0m 5.7.1
+  [1m[35m Rust[0m 1.35.0
+
+  [1m[35mmas[0m 1.6.3
 1351639930 Gifski (2.5.0)
 408981434 iMovie (10.1.14)
 634148309 Logic Pro X (10.4.8)
@@ -6,7 +11,7 @@ mas 1.6.3
 1116599239 NordVPN IKE (5.2.0)
 413969927 AudioBookBinder (2.2)
 
-npm 6.13.4
+[31m  [1m[35mnpm[0m 6.13.4
 @vue/cli@3.12.1
 npm@6.13.4
 serve@11.3.0
@@ -14,18 +19,52 @@ updtr@3.1.0
 vsce@1.71.0
 web-ext@3.2.1
 
-Homebrew 2.2.2
+[31m  [1m[35mRubyGems[0m 2.6.5
+
+CFPropertyList-3.0.2
+bigdecimal-2.0.0
+bundler-2.1.4
+colorls-1.2.0
+csv-3.1.2
+date-3.0.0
+dbm-1.1.0
+did_you_mean-1.4.0
+etc-1.1.0
+fileutils-1.4.1
+forwardable-1.3.1
+io-console-0.5.4
+irb-1.2.1
+json-2.3.0
+logger-1.4.2
+minitest-5.13.0
+nokogiri-1.10.7
+power_assert-1.1.5
+rake-13.0.1
+rdoc-6.2.1
+reline-0.1.2
+rexml-3.2.3
+rss-0.2.8
+shell-0.8.0
+sqlite3-1.4.2
+stringio-0.1.0
+strscan-1.0.3
+test-unit-3.3.4
+webrick-1.6.0
+zlib-1.1.0
+🍺  [1m[35mHomebrew[0m 2.2.3[0m
 bash 5.0.11
 duti 1.5.4
 git 2.24.1
 gnu-sed 4.7
-grep 3.3
+grep 3.4
+hardlink-osx 0.1.1
 hyperfine 1.9.0
 lsd 0.16.0
 mas 1.6.3
+mosl 3.0.0
 mp4v2 2.0.0
 neofetch 6.1.0
-node 13.5.0
+node 13.6.0
 ruby 2.6.5
 shadowfox-updater v2.2.0
 shfmt 3.0.0
@@ -35,7 +74,7 @@ wget 1.20.3_2
 youtube-dl 2020.01.01
 zsh 5.7.1
 
-Casks
+🛢️  [1m[35mCasks[0m
 android-file-transfer latest
 android-platform-tools 29.0.5
 caprine 2.37.0
@@ -50,8 +89,8 @@ google-chrome 70.0.3538.102
 gpg-suite 2018.5
 hyper 2.1.2
 iterm2-nightly latest
-java 13.0.1,9:cec27d702aa74d5a8630c65ae61e4305
-kindle 55093
+java 13.0.2,8:d4173c853231432d94f001e99d882ca7
+kindle 56108
 latest 0.6.3
 ledger-live 1.13.2
 mactracker 7.7.7
@@ -67,38 +106,32 @@ qlstephen 1.4.4
 qlvideo 1.92
 quicklook-json latest
 signal 1.28.0
-smoothscroll 1.4.10
-spotify latest
+smoothscroll 1.4.11
+tor-browser 9.0.4
 upterm 0.4.4
 visual-studio-code 1.34.0,a622c65b2c713c890fcf4fbf07cf34049d5fe758 1.35.0,553cfb2c2205db5f15f3ee8395bbd5cf066d357d
+visual-studio-code-insiders 1.42.0,7e64866a703c83dcdd3b84a8b48dd1673895fb7d
 vlc 3.0.4
 webtorrent 0.20.0
 whatsapp 0.3.2043
 
-VSCode 1.41.1
-RoscoP.ActiveFileInStatusBar@1.0.3
-ashrafhadden.dark-reader-theme@1.0.0
+[34m  [1m[35mVSCode[0m 1.42.0-insider
 ashrafhadden.dracula-dot-min@2.1.1
 be5invis.vscode-custom-css@3.0.9
 benjaminadk.emojis4git@2.1.2
 bierner.emojisense@0.5.3
-bierner.github-markdown-preview@0.0.2
-bierner.markdown-checkbox@0.1.3
-bierner.markdown-emoji@0.0.9
-bierner.markdown-preview-github-styles@0.1.6
-bierner.markdown-yaml-preamble@0.0.4
 bungcip.better-toml@0.3.2
 christian-kohler.npm-intellisense@1.3.0
 CoenraadS.bracket-pair-colorizer@1.0.61
 cssho.vscode-svgviewer@2.0.0
-dbaeumer.vscode-eslint@2.0.11
+dbaeumer.vscode-eslint@2.0.14
 deerawan.vscode-dash@2.3.0
-dracula-theme.theme-dracula@2.19.0
+dracula-theme.theme-dracula@2.19.2
 eamodio.gitlens@10.2.0
 eg2.vscode-npm-script@0.3.10
 esbenp.prettier-vscode@3.18.0
 Exelord.git-commits@0.7.1
-file-icons.file-icons@1.0.20
+file-icons.file-icons@1.0.21
 foxundermoon.shell-format@7.0.0
 Gruntfuggly.todo-tree@0.0.162
 ivangabriele.vscode-git-add-and-commit@2.1.1
@@ -106,16 +139,16 @@ janjoerke.align-by-regex@1.0.4
 jasonnutter.search-node-modules@1.3.0
 joshpeng.sublime-babel-vscode@0.2.10
 lehni.vscode-fix-checksums@1.1.0
-ms-python.python@2019.11.50794
-ms-vscode.powershell@2019.12.0
-ms-vscode.vscode-typescript-tslint-plugin@1.2.3
-msjsdiag.debugger-for-chrome@4.12.3
-octref.vetur@0.22.6
+ms-python.python@2020.1.58038
+ms-vscode.powershell@2020.1.0
+msjsdiag.debugger-for-chrome@4.12.5
+octref.vetur@0.23.0
 OnlyLys.leaper@0.6.0
 pflannery.vscode-versionlens@0.24.0
 PKief.material-icon-theme@3.9.2
 Remisa.shellman@4.3.1
 robinbentley.sass-indented@1.5.1
+RoscoP.ActiveFileInStatusBar@1.0.3
 rpinski.shebang-snippets@0.1.4
 rust-lang.rust@0.7.0
 sdras.vue-vscode-snippets@1.8.0
@@ -125,9 +158,9 @@ slevesque.vscode-autohotkey@0.2.2
 thierrymichel.vscode-gitmoji-snippets@3.2.0
 ttd-trace-tools.node-chakracore-time-travel-debugger@0.2.4
 unional.vscode-sort-package-json@1.2.0
-VisualStudioExptTeam.vscodeintellicode@1.2.2
+VisualStudioExptTeam.vscodeintellicode@1.2.4
 vscode-icons-team.vscode-icons@9.7.0
-yzhang.markdown-all-in-one@2.6.1
+yzhang.markdown-all-in-one@2.7.0
 zengxingxin.sort-js-object-keys@1.0.6
 zhouronghui.propertylist@0.0.2
 ziishaned.snippetmaker@0.0.5

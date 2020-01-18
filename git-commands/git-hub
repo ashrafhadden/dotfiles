@@ -1,8 +1,0 @@
-#!/usr/bin/env zsh
-# aliases: home, repo
-
-if [ ! $1 ]; then
-  open $(git config remote.origin.url)
-else
-  open "https://github.com/$1"
-fi

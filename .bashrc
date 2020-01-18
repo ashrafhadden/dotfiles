@@ -2,10 +2,10 @@
 
 ## Dotfiles
 . ~/code/dotfiles/_exports
-. $DOTS/_powerlevel10k
-. $DOTS/_aliases
-. $DOTS/_colors
-. $DOTS/_functions
+. $DOT/_powerlevel10k
+. $DOT/_aliases
+. $DOT/_colors
+. $DOT/_functions
 
 ## Misc
 . ~/.iterm2_shell_integration.bash # https://www.iterm2.com/documentation-shell-integration.html

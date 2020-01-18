@@ -39,16 +39,21 @@ defaults write com.apple.desktopservices UseBareEnumeration -bool TRUE
 
 which duti > /dev/null || brew install duti
 
-sudo duti -s com.microsoft.VSCode public.plain-text all
-sudo duti -s com.microsoft.VSCode public.source-code all
-sudo duti -s com.microsoft.VSCode public.unix-executable all
-sudo duti -s com.microsoft.VSCode sh
-sudo duti -s com.microsoft.VSCode txt
-sudo duti -s com.microsoft.VSCode toml
+sudo duti -s com.microsoft.VSCodeInsiders com.microsoft.word.doc all
+sudo duti -s com.microsoft.VSCodeInsiders public.html all
+sudo duti -s com.microsoft.VSCodeInsiders public.plain-text all
+sudo duti -s com.microsoft.VSCodeInsiders public.source-code all
+sudo duti -s com.microsoft.VSCodeInsiders public.unix-executable all
+sudo duti -s com.microsoft.VSCodeInsiders sh all
+sudo duti -s com.microsoft.VSCodeInsiders txt all
 
+printf "$bold .sh$reset \"Open With\" app default: "
 sudo duti -x sh
+echo
+printf "$bold .sh$reset \"Open With\" app default: "
 sudo duti -x txt
-sudo duti -x toml
+
+echo "⚠️ Logout / Restart may be required for$bold duti$reset changes to apply!"
 
 ##################################################################################
 ## QuickLook                                                                     #
@@ -105,6 +110,11 @@ defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 
 # Disable the “Are you sure you want to open this application?” dialog
 defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+# Add "Allow apps downloaded from: Anywhere" option to "Security & Privacy" System Preferences http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/
+# spctl --master-enable
+# osascript -e 'quit app "System Preferences"' && open -a 'System Preferences'
+# printf "⚠️  You must still manually check \"Allow apps downloaded from: Anywhere\" in \"Security & Privacy\" System Preferences\n"
 
 # Remove duplicates in the “Open With” menu (also see `lscleanup` alias)
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user

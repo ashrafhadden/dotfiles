@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
-# aliases: lazy
+#!/usr/bin/env zsh
 
-getStatus() {
+getAction() {
   # https://git-scm.com/docs/git-status#_short_format
   case $1 in
   M)
@@ -25,16 +24,29 @@ getStatus() {
   esac
 }
 
-commits=($(git status --porcelain))
-# for $i in $commits; do
-#   local status=$(getStatus $i)
-#   echo boop commit -m \"$commit $status\"
-# done
+commitsRaw=("${(@f)$(git status --porcelain)}")
+filesRaw=($(git status --porcelain | awk '{print $2}'))
+for i in $commitsRaw; do
+  local actionLetter=$(echo $i | awk '{print $1}')
+  local action=$(getAction $actionLetter)
+  local fileRaw=$(echo $i | awk '{print $2}')
+  local file=${fileRaw##*/}
+  commits+=("$action $file")
+done
 
-git status --porcelain | sed -i '
-s/M/Modify/
-s/A|U|(\?\?)/Add/
-s/D/rm/
-s/R/Rename/
-s/C/Copy/
-'
+commits=$(print -l "${(@)commits}")
+
+printf "$commits\n Proceed with commits? [${green}y$reset/${red}N$reset]: "
+  if read -q; then
+    echo
+    for i in $filesRaw; do
+      # echo $i
+      git add $i
+    done
+    for i in $commits; do
+      # echo $i
+      git commit -m $i
+    done
+  else
+    echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
+fi

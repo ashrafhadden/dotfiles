@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-. $DOTS/_colors
+. $DOT/_colors
 
 printf "Proceed? [${green}y$reset/${red}N$reset]: "
 if read -q; then

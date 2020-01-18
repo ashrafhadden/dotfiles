@@ -4,7 +4,7 @@ printf "${redb}$black WARNING $reset Make sure all changes committed/stashed, in
 if read -q; then
   printf "${bold}git stash save 'gitignore-fix'${reset}..." && git stash save 'gitignore-fix'
   printf "${bold}git rm -r --cached .${reset}..." && git rm -r --cached .
-  printf "${bold}git add .${reset}..." && git add .
+  printf "${bold}git add -A${reset}..." && git add -A
   printf "${bold}git commit -m '.gitignore fix'${reset}..." && git commit -m '.gitignore fix'
 else
   echo "$redb$black Aborting $reset$bold$funcstack[1]$reset..."
