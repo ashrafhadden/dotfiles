@@ -1,23 +1,24 @@
- [1m[35m macOS[0m 10.15.2
+ [1m[35m macOS[0m 10.15.3
   [1m[35m iTerm[0m 3.3.2
   [1m[35m zsh[0m 5.7.1
-  [1m[35m Rust[0m 1.35.0
 
   [1m[35mmas[0m 1.6.3
-1351639930 Gifski (2.5.0)
-408981434 iMovie (10.1.14)
-634148309 Logic Pro X (10.4.8)
-992115977 Image2icon (2.10)
-1116599239 NordVPN IKE (5.2.0)
+497799835 Xcode (11.3.1)
+1116599239 NordVPN IKE (5.4.3)
 413969927 AudioBookBinder (2.2)
+992115977 Image2icon (2.11)
+1351639930 Gifski (2.7.0)
+634148309 Logic Pro X (10.4.8)
 
 [31m  [1m[35mnpm[0m 6.13.4
-@vue/cli@3.12.1
-npm@6.13.4
+@vue/cli@4.2.3
+@vue/cli-service-global@4.2.3
+npm@6.14.2
 serve@11.3.0
 updtr@3.1.0
-vsce@1.71.0
+vsce@1.74.0
 web-ext@3.2.1
+yarn@1.22.0
 
 [31m  [1m[35mRubyGems[0m 2.6.5
 
@@ -51,32 +52,46 @@ strscan-1.0.3
 test-unit-3.3.4
 webrick-1.6.0
 zlib-1.1.0
-🍺  [1m[35mHomebrew[0m 2.2.3[0m
+🍺  [1m[35mHomebrew[0m 2.2.1[0m
 bash 5.0.11
+cmake 3.16.4
+coreutils 8.31
 duti 1.5.4
+findutils 4.7.0
+gcc@4.9 4.9.4_1
 git 2.24.1
 gnu-sed 4.7
 grep 3.4
 hardlink-osx 0.1.1
 hyperfine 1.9.0
+isl 0.22
+libmpc 1.1.0
+libssh 0.9.3
+libusb 1.0.23
 lsd 0.16.0
 mas 1.6.3
 mosl 3.0.0
 mp4v2 2.0.0
+nasm 2.14.02
 neofetch 6.1.0
-node 13.6.0
+node 13.8.0
+node@12 12.14.1_1
+pkg-config 0.29.2
 ruby 2.6.5
 shadowfox-updater v2.2.0
 shfmt 3.0.0
+speedtest-cli 2.1.2
 terminal-notifier 2.0.0
 tldr 1.3.0_2
+travis 1.8.10
+vde 2.3.2
 wget 1.20.3_2
 youtube-dl 2020.01.01
 zsh 5.7.1
 
 🛢️  [1m[35mCasks[0m
 android-file-transfer latest
-android-platform-tools 29.0.5
+android-platform-tools 29.0.6
 caprine 2.37.0
 carbon-copy-cloner 5.1.8.5704
 daisydisk 4.6.5.1
@@ -89,77 +104,86 @@ google-chrome 70.0.3538.102
 gpg-suite 2018.5
 hyper 2.1.2
 iterm2-nightly latest
-java 13.0.2,8:d4173c853231432d94f001e99d882ca7
-kindle 56108
+java 14,36:076bab302c7b4508975440c56f6cc26a
+kindle 57029
 latest 0.6.3
+league-of-legends latest
 ledger-live 1.13.2
+liteicon 4.1
 mactracker 7.7.7
 moom 3.2.13
 music-manager 1.0.478.2698
 nordvpn 4.15.5
 open-in-code 1.0
-powershell 6.2.3
+osxfuse 3.10.4
+powershell 7.0.0
 qlcolorcode 2.1.0
 qlimagesize 2.6.1
 qlmarkdown-gfm 1.2.2
-qlstephen 1.4.4
-qlvideo 1.92
+qlstephen 1.5.1
+qlvideo 193
 quicklook-json latest
 signal 1.28.0
 smoothscroll 1.4.11
 tor-browser 9.0.4
 upterm 0.4.4
-visual-studio-code 1.34.0,a622c65b2c713c890fcf4fbf07cf34049d5fe758 1.35.0,553cfb2c2205db5f15f3ee8395bbd5cf066d357d
+visual-studio-code 1.42.1
 visual-studio-code-insiders 1.42.0,7e64866a703c83dcdd3b84a8b48dd1673895fb7d
 vlc 3.0.4
 webtorrent 0.20.0
 whatsapp 0.3.2043
 
-[34m  [1m[35mVSCode[0m 1.42.0-insider
+[34m  [1m[35mVSCode[0m 1.43.1
+RoscoP.ActiveFileInStatusBar@1.0.3
 ashrafhadden.dracula-dot-min@2.1.1
 be5invis.vscode-custom-css@3.0.9
 benjaminadk.emojis4git@2.1.2
-bierner.emojisense@0.5.3
+bierner.emojisense@0.6.1
+bierner.github-markdown-preview@0.0.2
+bierner.markdown-checkbox@0.1.3
+bierner.markdown-emoji@0.0.9
+bierner.markdown-preview-github-styles@0.1.6
+bierner.markdown-yaml-preamble@0.0.4
 bungcip.better-toml@0.3.2
 christian-kohler.npm-intellisense@1.3.0
 CoenraadS.bracket-pair-colorizer@1.0.61
 cssho.vscode-svgviewer@2.0.0
-dbaeumer.vscode-eslint@2.0.14
+dbaeumer.vscode-eslint@2.1.1
 deerawan.vscode-dash@2.3.0
-dracula-theme.theme-dracula@2.19.2
-eamodio.gitlens@10.2.0
-eg2.vscode-npm-script@0.3.10
-esbenp.prettier-vscode@3.18.0
-Exelord.git-commits@0.7.1
-file-icons.file-icons@1.0.21
-foxundermoon.shell-format@7.0.0
-Gruntfuggly.todo-tree@0.0.162
+dracula-theme.theme-dracula@2.21.0
+eamodio.gitlens@10.2.1
+eg2.vscode-npm-script@0.3.11
+esbenp.prettier-vscode@3.20.0
+Exelord.git-commits@2.1.0
+file-icons.file-icons@1.0.22
+foxundermoon.shell-format@7.0.1
+Gruntfuggly.todo-tree@0.0.170
 ivangabriele.vscode-git-add-and-commit@2.1.1
 janjoerke.align-by-regex@1.0.4
 jasonnutter.search-node-modules@1.3.0
 joshpeng.sublime-babel-vscode@0.2.10
 lehni.vscode-fix-checksums@1.1.0
-ms-python.python@2020.1.58038
-ms-vscode.powershell@2020.1.0
-msjsdiag.debugger-for-chrome@4.12.5
-octref.vetur@0.23.0
+ms-python.python@2020.3.69010
+ms-vscode.powershell@2020.3.0
+ms-vscode.vscode-typescript-tslint-plugin@1.2.3
+msjsdiag.debugger-for-chrome@4.12.6
+octref.vetur@0.24.0
 OnlyLys.leaper@0.6.0
-pflannery.vscode-versionlens@0.24.0
-PKief.material-icon-theme@3.9.2
-Remisa.shellman@4.3.1
+pflannery.vscode-versionlens@0.25.0
+PKief.material-icon-theme@4.0.1
+Remisa.shellman@4.4.0
 robinbentley.sass-indented@1.5.1
-RoscoP.ActiveFileInStatusBar@1.0.3
 rpinski.shebang-snippets@0.1.4
 rust-lang.rust@0.7.0
 sdras.vue-vscode-snippets@1.8.0
-serayuzgur.crates@0.4.7
+serayuzgur.crates@0.4.9
 Shan.code-settings-sync@3.4.3
 slevesque.vscode-autohotkey@0.2.2
 thierrymichel.vscode-gitmoji-snippets@3.2.0
 ttd-trace-tools.node-chakracore-time-travel-debugger@0.2.4
-unional.vscode-sort-package-json@1.2.0
-VisualStudioExptTeam.vscodeintellicode@1.2.4
-vscode-icons-team.vscode-icons@9.7.0
+unional.vscode-sort-package-json@1.2.2
+VisualStudioExptTeam.vscodeintellicode@1.2.6
+vscode-icons-team.vscode-icons@10.0.0
 yzhang.markdown-all-in-one@2.7.0
 zengxingxin.sort-js-object-keys@1.0.6
 zhouronghui.propertylist@0.0.2

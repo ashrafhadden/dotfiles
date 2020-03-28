@@ -17,6 +17,7 @@ plugins=(
   # bgnotify
   # cargo
   # rust
+  zsh_reload
   you-should-use
   colored-man-pages
   fast-syntax-highlighting
@@ -53,10 +54,10 @@ if [[ $TERM_PROGRAM == 'iTerm.app' ]]; then
   esac
 fi
 
-if [[ $(sw_vers -productVersion) != 10.15.2 ]]; then
+if [[ $(sw_vers -productVersion) != 10.15.3 ]]; then
   printf "macOS has been updated!  Would you like to re-run $pink~/code/dotfiles/macos.sh$reset? [${green}y$reset/${red}N$reset]: "
   if read -q; then
-    printf "\nRunning${bold}bootstrap.sh${reset}...\n"
+    printf "\nRunning${bold}macos.sh${reset}...\n"
     . ~/code/dotfiles/macos.sh
   else
     echo " $redb$black Aborting $reset $bold$funcstack[1]$reset..."
@@ -65,3 +66,4 @@ fi
 
 . ~/.iterm2_shell_integration.zsh # https://www.iterm2.com/documentation-shell-integration.html
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" # https://www.iterm2.com/documentation-shell-integration.html
+export PATH="/usr/local/opt/node@12/bin:$PATH"

@@ -4,9 +4,11 @@ export CODE="$HOME/CODE"                        # Path to my code projects
 export CPPFLAGS="-I/usr/local/opt/ruby/include" # For compilers to find ruby (`brew info ruby`)
 export DOT="$HOME/code/dotfiles"                # Path to my dotfiles
 export EDITOR='code'                            # Make VSCode the default editor
-export FFPROFILE="$HOME/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220"
+export FFPROFILE='fdvn8zoa.default-1563575108220'
+export FFPROFILEURL="/Users/ashrafhadden/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220"
 export LC_ALL='en_US.UTF-8'                     # Use UTF-8
 export LDFLAGS="-L/usr/local/opt/ruby/lib"      # For compilers to find ruby (`brew info ruby`)
+export MISC="$CODE/misc"
 export RUBY_HOME='/usr/local/opt/ruby/bin'
 export ZSH="$HOME/.oh-my-zsh" # Path to your oh-my-zsh installation.
 

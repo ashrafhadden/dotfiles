@@ -3,7 +3,10 @@
 alias sudo='sudo ' # Enable aliases to be sudo’ed https://github.com/mathiasbynens/dotfiles/blob/master/.aliases#L45
 
 ## OVERRIDES
-alias code='code-insiders'
+# alias code='code-insiders'
+
+## DOCUMENTS
+alias docssharenotetemplate="open $MISC/docs-share-note-template.txt"
 
 ## DIRECTORIES
 alias cdc="cd $CODE" # Change dir to $CODE (main projects folder)
@@ -18,7 +21,7 @@ alias css='open ~/Library/Application\ Support/Code/User/vscode.css' # Open CSS 
 alias dots="code $DOT" # Open dotfiles in VSCode
 alias e="open $DOT/_exports" # Open exports in VSCode
 alias f="open $DOT/_functions" # Open _functions in VSCode
-alias ffprofile="open $FFPROFILE"
+alias ffprofile="open $FFPROFILEURL"
 alias gitconfig='git config' # Open global .gitconfig file in VSCode
 alias gitignore="open $DOT/.gitignore" # Open .gitignore file in VSCode
 alias hosts='open /private/etc/hosts' # Open hosts file in VSCode
@@ -31,6 +34,7 @@ alias p9k="open $DOT/_powerlevel10k" # Alias of p10k
 alias paths='open /etc/paths' # Open paths in VSCode
 alias pip='pip3'
 alias shells='open /etc/shells' # Open shells in VSCode
+alias tor-user.js="open $DOT/tor-user.js"
 alias user.js="open $DOT/user.js"
 alias z="open $DOT/.zshrc" # Open zshrc in VSCode
 
@@ -42,7 +46,6 @@ alias syncfork='syncfork'
 alias yolo='git yolo'
 
 ## COMMANDS
-alias icons='open https://www.nerdfonts.com/cheat-sheet'
 alias abbinder='/Applications/AudioBookBinder.app/Contents/MacOS/AudioBookBinder'
 alias adbbackup='adb backup -f adb-backup-$(date +%Y-%m-%d) -apk -obb -shared -all'
 alias adbbackuphelp'open https://developer.android.com/studio/command-line/adb'
@@ -52,28 +55,37 @@ alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
 alias colortest=". $DOT/colortest.sh"
 alias commit='git commit'
 alias created="GetFileInfo -d" # Print creation date of file
+alias curl='curl -m 10'
 alias default='firefox -P default'
 alias external='echo External Commands && git help -a | sed "1,/External/d"'
 alias firefox='/Applications/Firefox.app/Contents/MacOS/firefox'
 alias fixmacruby='trash /Library/Developer/CommandLineTools && xcode-select --install'
+alias ghacks='firefox -no-remote -P ghacks'
 alias gitcommands='external'
 alias gitexternal='external'
 alias gpgls='gpg --list-secret-keys --keyid-format LONG' # List gpg keys
 alias grep='grep --color=always'
+alias icons='open https://www.nerdfonts.com/cheat-sheet'
 alias logitech="sed -i.bak 's/"autostart" : true/"autostart" : false/' /Users/ashrafhadden/Library/Application\ Support/Logitech/Gaming/settings.json"
 alias lscleanup='/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder' # Clean up LaunchServices to remove duplicates in the “Open With” menu
+alias newtemp='firefox -no-remote -P $(mktemp -d)'
 alias npmls='npm ls -gs --depth=0' # List global NPM packages, ignore annoying peer dep warnings
 alias out='npm outdated' # List outdated local NPM packages
 alias parent="printf '$(ps -p $PPID)\n'" # Print parent process
-alias private='firefox -P private'
+alias prof='firefox --ProfileManager'
+alias pyllyukko='firefox -no-remote -P pyllyukko'
 alias ql='sudo qlmanage -p &> /dev/null' # Open file in Quick Look
+alias r='src'
 alias rebuildspotlight='sudo mdutil -E /' # Rebuild entire Spotlight index
 alias remotes='git remote -v | column -t' # Pretty-print remotes
 alias resetlaunchpad='defaults write com.apple.dock ResetLaunchPad -bool true && killall Dock' # reset Launchpad to its default order
 alias s='r' # alias function r() in _functions
 alias sleepimage='pmset -g | grep hibernatemode && ls -lh /private/var/vm/sleepimage' # Verify that SSD Mac is not saving sleep images
+alias st='speedtest-cli'
 alias symls_BASH='ls -lhaF | grep ^l' # List symlinks in current directory
 alias symls='colorls -la --color=always | grep ⇒'   # List symlinks in current directory
+alias syncffp='echo *(.) ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/extensions'
+alias temp='firefox -no-remote -P temp'
 alias wake='pmset -g assertions | head' # List processes keeping mac awake
 alias webpage='wget -E -H -k -K -N -p -e robots=off -P'
 alias whatthecommit='git whatthecommit'

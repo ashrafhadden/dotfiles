@@ -213,8 +213,9 @@ dark() {
       osascript -e 'quit app "Firefox"'
       caffeinate -w $(pgrep firefox) # wait for firefox to close before proceeding
     fi
-    shadowfox -uninstall -profile-name fdvn8zoa.default-1563575108220
-    sed -i.bak 's/dark/light/g' ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js
+    shadowfox -uninstall -profile-name $FFPROFILE
+    # TODO FIX 
+    sed -i.bak "s/'e", true'/'e", false'/g" ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js
     open -a Firefox
     ;;
   on)
@@ -229,8 +230,8 @@ dark() {
       osascript -e 'quit app "Firefox"'
       caffeinate -w $(pgrep firefox) # wait for firefox to close before proceeding
     fi
-    shadowfox -set-dark-theme -profile-name fdvn8zoa.default-1563575108220
-    sed -i.bak 's/light/dark/g' ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js
+    shadowfox -set-dark-theme -profile-name $FFPROFILE
+    sed -i.bak 's/"browser.in-content.dark-mode", false/"browser.in-content.dark-mode", true/g' ~/Library/Application\ Support/Firefox/Profiles/fdvn8zoa.default-1563575108220/user.js
     open -a Firefox
     ;;
   esac
@@ -352,30 +353,6 @@ prompt() {
   fi
 }
 
-# Reload scripts &/or shell
-r() {
-  case $1 in
-  -zsh | -z | --full)
-    # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/zsh_reload/zsh_reload.plugin.zsh
-    local cache="$ZSH_CACHE_DIR"
-    autoload -U compinit zrecompile
-    compinit -i -d "$cache/zcomp-$HOST"
-
-    for f in ~/.zshrc "$cache/zcomp-$HOST"; do
-      zrecompile -p $f && command rm -f $f.zwc.old
-    done
-
-    # Use $SHELL if available; remove leading dash if login shell
-    [[ -n "$SHELL" ]] && exec ${SHELL#-} || exec zsh
-    ;;
-  *)
-    . $DOT/_aliases
-    . $DOT/_functions
-    tput cl
-    ;;
-  esac
-}
-
 # Fully reinstall node_modules to fix NPM errors
 reinstall() {
   printf "Are you sure you want to ${bold}reinstall$reset $yellow/node_modules$reset? [${green}y$reset/${red}n$reset]: "
@@ -470,9 +447,9 @@ update() {
   # printf "$bold  mas upgrade $reset" && mas upgrade
   printf " $bold softwareupdate --install --all$reset\n" && softwareupdate --install --all
   printf "$red$reset  Updating $bold.gitignore$reset...\n" && cat $DOT/_gitignore > $DOT/.gitignore && curl https://www.gitignore.io/api/git,node,sass,rust,vuejs,macos,windows,visualstudiocode >> $DOT/.gitignore
-  printf "$red$reset  Updating$bold tor-user.js$reset...\n" && cat $DOT/tor-user.js > ~/Library/Application\ Support/TorBrowser-Data/Browser/ew57mn4o.default/user.js
-  printf "$red$reset  Syncing pyllyukko$bold user.js$reset...\n" && curl https://raw.githubusercontent.com/pyllyukko/user.js/master/user.js > ~/Library/Application\ Support/Firefox/Profiles/cb2bsclc.pyllyukko/user.js
-  printf "$red$reset  Syncing ghacks$bold user.js$reset...\n" && curl https://raw.githubusercontent.com/ghacksuserjs/ghacks-user.js/master/user.js > ~/Library/Application\ Support/Firefox/Profiles/i9ky32oq.ghacks/user.js
+  printf "$red$reset  Updating pyllyukko$bold user.js$reset...\n" && curl https://raw.githubusercontent.com/pyllyukko/user.js/master/user.js > ~/Library/Application\ Support/Firefox/Profiles/cb2bsclc.pyllyukko/user.js
+  printf "$red$reset  Updating ghacks$bold user.js$reset...\n" && curl https://raw.githubusercontent.com/ghacksuserjs/ghacks-user.js/master/user.js > ~/Library/Application\ Support/Firefox/Profiles/i9ky32oq.ghacks/user.js
+  printf "$red$reset  Syncing$bold Tor Browser$reset prefs with$bold Firefox$reset prefs...\n" && cat $DOT/user.js > ~/Library/Application\ Support/TorBrowser-Data/Browser/ew57mn4o.default/user.js
   printf "$brown📦$reset  Updating$bold _packages$reset...\n" && v -l > $DOT/_packages
   notify "update" "Done!"
   printf "$redb$black END $reset$bold$green update$reset!\n"
@@ -497,7 +474,7 @@ v() {
     printf " $bold macOS$reset $(sw_vers -productVersion)\n"
     printf "  $bold iTerm$reset $(app -v iterm | head -c 5)\n"
     printf "  $bold zsh$reset $ZSH_VERSION\n"
-    printf "  $bold Rust$reset $(rustc --version | cut -d' ' -f2)\n"
+    # printf "  $bold Rust$reset $(rustc --version | cut -d' ' -f2)\n"
     echo
     printf "  ${bold}mas$reset $(mas version)\n"
     mas list
